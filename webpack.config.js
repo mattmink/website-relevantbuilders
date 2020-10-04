@@ -27,6 +27,17 @@ module.exports = {
             return pageEntries;
         }, {})
     },
+    module: {
+        rules: [
+            {
+                test: /\.(html)$/,
+                include: path.resolve('./src/pages'),
+                use: {
+                    loader: 'html-loader',
+                }
+            },
+        ]
+    },
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({

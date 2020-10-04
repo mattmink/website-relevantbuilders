@@ -1,6 +1,8 @@
 import routes from './routes';
 
-document.addEventListener('click', async (e) => {
+const $content = document.querySelector('#content');
+
+document.addEventListener('click', (e) => {
     const { target } = e;
     const link = target.tagName === 'A' ? target : target.closest('a');
 
@@ -8,14 +10,22 @@ document.addEventListener('click', async (e) => {
 
     const { pathname } = link;
 
-    if (!pathname || pathname === location.pathname) return;
+    if (!pathname) return;
+
+    if (pathname === location.pathname) {
+        e.preventDefault();
+        return;
+    }
 
     const route = routes.find(({ path }) => path === pathname);
 
     if (!route) return;
 
     e.preventDefault();
-    const { default: component } = await route.component();
+    const { template, component } = route;
+
+    $content.innerHTML = template;
+
     history.pushState(null, null, pathname);
     component();
 });
