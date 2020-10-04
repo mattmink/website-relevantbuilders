@@ -1,5 +1,5 @@
 const path = require('path');
-const { lstatSync, readdirSync } = require('fs');
+const { lstatSync, readdirSync, readFileSync } = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -32,12 +32,18 @@ module.exports = {
         new HtmlWebpackPlugin({
             ...templateConfig,
             title: 'Home',
+            templateParameters: {
+                pageContent: readFileSync(`./src/pages/index.html`, 'utf8'),
+            },
             chunks: ['common', 'home'],
         }),
         ...pages.map((page) => new HtmlWebpackPlugin({
             ...templateConfig,
             title: page.toUpperCase(),
             filename: `${page}/index.html`,
+            templateParameters: {
+                pageContent: readFileSync(`./src/pages/${page}/index.html`, 'utf8'),
+            },
             chunks: ['common', page],
         }))
     ],

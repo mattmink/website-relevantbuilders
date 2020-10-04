@@ -1,3 +1,3 @@
 export default function design() {
-    document.querySelector('#content').innerHTML = 'design';
+    console.log('design');
 }
