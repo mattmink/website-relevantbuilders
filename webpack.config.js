@@ -59,7 +59,7 @@ module.exports = {
         }))
     ],
     output: {
-        filename: (pathData) => (['home', 'common'].includes(pathData.chunk.name) ? '[id].[hash].js' : '[name]/[id].[hash].js'),
+        filename: (pathData) => (['home', 'common'].includes(pathData.chunk.name) ? '[name].[hash].js' : '[name]/[name].[hash].js'),
         path: path.resolve(__dirname, 'dist'),
     },
     devServer: {
