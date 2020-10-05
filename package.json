@@ -8,7 +8,7 @@
         "watch": "webpack --watch",
         "start": "webpack-dev-server --open",
         "build": "webpack  --mode=production",
-        "server": "PORT=3000 node -r dotenv/config src/server"
+        "server": "PORT=3000 node src/server"
     },
     "dependencies": {
         "axios": "^0.20.0",
