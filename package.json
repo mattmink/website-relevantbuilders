@@ -9,7 +9,7 @@
         "start": "webpack-dev-server --open",
         "build": "webpack  --mode=production",
         "server": "node -r dotenv/config src/server",
-        "server:dev": "NODE_ENV=development node -r dotenv/config src/server"
+        "server:dev": "PORT=3000 node -r dotenv/config src/server"
     },
     "dependencies": {
         "axios": "^0.20.0",
