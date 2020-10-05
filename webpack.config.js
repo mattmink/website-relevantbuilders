@@ -3,7 +3,7 @@ const { lstatSync, readdirSync, readFileSync } = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-const pagesRoot = path.resolve(__dirname, 'src/pages');
+const pagesRoot = path.resolve(__dirname, 'src/public/pages');
 const isDirectory = (source) => lstatSync(source).isDirectory();
 const getDirectories = (source) => readdirSync(source)
     .map((name) => path.join(source, name))
@@ -14,16 +14,16 @@ const getDirectories = (source) => readdirSync(source)
     }, []);
 const pages = getDirectories(pagesRoot).map((dir) => dir.replace(`${pagesRoot}/`, ''));
 const templateConfig = {
-    template: path.resolve(__dirname, './src/public/index.html'),
-    favicon: path.resolve(__dirname, './src/public/favicon.ico'),
+    template: path.resolve(__dirname, './src/public/assets/index.html'),
+    favicon: path.resolve(__dirname, './src/public/assets/favicon.ico'),
 };
 
 module.exports = {
     entry: {
-        common: './src/common.js',
-        home: './src/pages/index.js',
+        common: './src/public/common.js',
+        home: './src/public/pages/index.js',
         ...pages.reduce((pageEntries, page) => {
-            pageEntries[page] = `./src/pages/${page}`;
+            pageEntries[page] = `./src/public/pages/${page}`;
             return pageEntries;
         }, {})
     },
@@ -31,7 +31,7 @@ module.exports = {
         rules: [
             {
                 test: /\.(html)$/,
-                include: path.resolve('./src/pages'),
+                include: path.resolve('./src/public/pages'),
                 use: {
                     loader: 'html-loader',
                 }
@@ -44,7 +44,7 @@ module.exports = {
             ...templateConfig,
             title: 'Home',
             templateParameters: {
-                pageContent: readFileSync(`./src/pages/index.html`, 'utf8'),
+                pageContent: readFileSync(`./src/public/pages/index.html`, 'utf8'),
             },
             chunks: ['common', 'home'],
         }),
@@ -53,7 +53,7 @@ module.exports = {
             title: page.toUpperCase(),
             filename: `${page}/index.html`,
             templateParameters: {
-                pageContent: readFileSync(`./src/pages/${page}/index.html`, 'utf8'),
+                pageContent: readFileSync(`./src/public/pages/${page}/index.html`, 'utf8'),
             },
             chunks: ['common', page],
         }))

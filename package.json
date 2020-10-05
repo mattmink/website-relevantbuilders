@@ -7,7 +7,15 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "watch": "webpack --watch",
         "start": "webpack-dev-server --open",
-        "build": "webpack  --mode=production"
+        "build": "webpack  --mode=production",
+        "server": "node -r dotenv/config src/server"
+    },
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "mailgen": "^2.0.14",
+        "nodemailer": "^6.4.13"
     },
     "devDependencies": {
         "@babel/cli": "^7.11.6",
