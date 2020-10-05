@@ -5,10 +5,10 @@
     "private": true,
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "watch": "webpack --watch",
         "start": "webpack-dev-server --open",
         "build": "webpack  --mode=production",
-        "server": "PORT=3000 node src/server"
+        "deploy": "npm run build && /bin/cp -R dist/. /home/releenph/public_html/dev/",
+        "server": "PORT=3000 node src"
     },
     "dependencies": {
         "axios": "^0.20.0",
