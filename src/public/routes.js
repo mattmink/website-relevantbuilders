@@ -5,7 +5,7 @@ import processTemplate from './pages/process/index.html';
 import Design from './pages/process/design/design.js';
 import designTemplate from './pages/process/design/index.html';
 
-
+const routerView = document.querySelector('#content');
 const routes = [
     {
         path: '/',
@@ -24,4 +24,15 @@ const routes = [
     }
 ];
 
-export default routes;
+export function goTo(path) {
+    const route = routes.find(route => route.path === path);
+
+    if (!route) return;
+
+    const { template, component } = route;
+
+    routerView.innerHTML = template;
+
+    history.pushState(null, null, path);
+    component();
+}

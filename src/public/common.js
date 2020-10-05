@@ -1,7 +1,5 @@
 import axios from "axios";
-import routes from './routes';
-
-const $content = document.querySelector('#content');
+import { goTo } from './routes';
 
 document.addEventListener('click', (e) => {
     const { target } = e;
@@ -18,17 +16,9 @@ document.addEventListener('click', (e) => {
         return;
     }
 
-    const route = routes.find(({ path }) => path === pathname);
-
-    if (!route) return;
-
     e.preventDefault();
-    const { template, component } = route;
 
-    $content.innerHTML = template;
-
-    history.pushState(null, null, pathname);
-    component();
+    goTo(pathname);
 });
 
 document.querySelector('#footerForm').addEventListener('submit', async (e) => {
