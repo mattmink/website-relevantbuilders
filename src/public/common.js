@@ -1,3 +1,4 @@
+import axios from "axios";
 import routes from './routes';
 
 const $content = document.querySelector('#content');
@@ -28,4 +29,10 @@ document.addEventListener('click', (e) => {
 
     history.pushState(null, null, pathname);
     component();
+});
+
+document.querySelector('#footerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const response = await axios.post('/api/message/send', new FormData(e.target));
+    alert('thank you for your message! we will respond soon!');
 });

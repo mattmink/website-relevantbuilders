@@ -16,9 +16,11 @@ const transporter = nodemailer.createTransport({
         pass: serverEmailPassword,
     },
 });
+const isAjaxRequest = req => req.xhr || req.headers.accept.indexOf('json') > -1;
 
 const sendMessage = (req, res) => {
     const { email: replyTo, name } = req.body;
+    const { origin } = new URL(req.get('Referrer'));
 
     const message = {
         from: serverEmailAddress,
@@ -30,18 +32,12 @@ const sendMessage = (req, res) => {
 
     transporter
         .sendMail(message)
-        .then(() => {
-            return res
-                .status(200)
-                .json({ msg: "you should receive an email from us" });
-        })
+        .then(() => (isAjaxRequest(req) ? res.sendStatus(200) : res.redirect(`${origin}/thank-you`)))
         .catch((error = {}) => {
-            const { response = 'An unknown error occurred', responseCode = 500 } = error;
+            const { response = 'An unknown error occurred while sending your message', responseCode = 500 } = error;
             res.status(responseCode).send(response);
             console.error(error);
         });
-
-
 };
 
 module.exports = { sendMessage };

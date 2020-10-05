@@ -12,5 +12,13 @@
         <div><a href="/process/design">Custom Design</a></div>
     </nav>
     <div id="content"><%= pageContent %></div>
+    <footer>
+        <form id="footerForm" action="/api/message/send?redirect=1" method="post">
+            <input type="text" name="name" placeholder="Name" required><br>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <textarea name="description"></textarea>
+            <button>Submit</button>
+        </form>
+    </footer>
 </body>
 </html>
