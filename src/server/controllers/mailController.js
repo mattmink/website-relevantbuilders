@@ -8,14 +8,6 @@ const {
     emailTo
 } = require("../config").mailer;
 
-console.log({
-    host,
-    port,
-    serverEmailAddress,
-    serverEmailPassword,
-    emailTo
-});
-
 const transporter = nodemailer.createTransport({
     host,
     port,
