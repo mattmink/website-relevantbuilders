@@ -14,7 +14,7 @@ const getDirectories = (source) => readdirSync(source)
     }, []);
 const pages = getDirectories(pagesRoot).map((dir) => dir.replace(`${pagesRoot}/`, ''));
 const templateConfig = {
-    template: path.resolve(__dirname, './src/public/assets/index.html'),
+    template: path.resolve(__dirname, './src/public/templates/index.html'),
     favicon: path.resolve(__dirname, './src/public/assets/favicon.ico'),
 };
 
