@@ -23,6 +23,16 @@ document.addEventListener('click', (e) => {
 
 document.querySelector('#footerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const response = await axios.post('/api/message/send', new FormData(e.target));
+    const formData = {
+        name: '',
+        email: '',
+        description: '',
+    };
+
+    Object.keys(formData).forEach((dataKey) => {
+        formData[dataKey] = e.target.querySelector(`[name="${dataKey}"]`).value;
+    });
+
+    await axios.post('/api/message/send', formData);
     alert('thank you for your message! we will respond soon!');
 });
