@@ -1,0 +1,5 @@
+@mixin background-svg($url, $fill, $stroke, $fill-opacity: 1) {
+    $fill-color: str-slice(inspect($fill), 2);
+    $stroke-color: str-slice(inspect($stroke), 2);
+    background-image: unquote('url("' + $url + '?fill=%23' + $fill-color + '&stroke=%23' + $stroke-color + '&fill-opacity=' + $fill-opacity + '")');
+}
