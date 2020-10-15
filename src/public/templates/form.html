@@ -1,6 +1,16 @@
 <form id="footerForm" action="/api/message/send" method="post">
-    <input type="text" name="name" placeholder="Name" required pattern="[\w\d]+"><br>
-    <input type="email" name="email" placeholder="Email" required><br>
-    <textarea name="description"></textarea>
+    <input class="form-control"
+            type="text"
+            name="name"
+            placeholder="Name"
+            required
+            pattern="[\w\d]+"><br>
+    <input class="form-control"
+            type="email"
+            name="email"
+            placeholder="Email"
+            required><br>
+    <textarea class="form-control"
+            name="description"></textarea>
     <button>Submit</button>
 </form>

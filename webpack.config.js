@@ -34,6 +34,12 @@ module.exports = {
             return pageEntries;
         }, {})
     },
+    resolve: {
+        alias: {
+            icons: path.resolve(__dirname, './node_modules/feather-icons/dist/icons/'),
+            '@': path.resolve(__dirname, './src/public/'),
+        }
+    },
     module: {
         rules: [
             {
@@ -74,7 +80,7 @@ module.exports = {
                 ]
             },
             {
-                test: /\.s[ac]ss$/i,
+                test: /\.s?css$/i,
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,

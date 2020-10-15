@@ -1,21 +1,20 @@
 @import 'variables';
 @import 'mixins';
-
-@mixin invalid-input($selector: '') {
-
-}
+@import '~normalize.css';
 
 body {
-    color: $danger;
+    background: $brand-1;
+    color: #fff;
 }
 
-input, textarea, select {
+.form-control {
     &.error {
         border-color: $danger;
         background-repeat: no-repeat;
         background-position: right 2px center;
         background-size: contain;
-        @include background-svg('~feather-icons/dist/icons/alert-circle.svg', #fff, #f00, 0);
-        color: #fff;
+        @include background-svg('~icons/alert-circle.svg', #fff, #f00, 0);
     }
 }
+
+.btn

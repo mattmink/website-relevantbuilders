@@ -52,7 +52,6 @@ class TemplateBuilderPlugin {
                             removeStyleLinkTypeAttributes: true,
                             useShortDoctype: true
                         });
-                        console.log(template);
                         templateMap[outputName] = template;
                     }
 
