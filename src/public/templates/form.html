@@ -1,16 +1,37 @@
-<form id="footerForm" action="/api/message/send" method="post">
-    <input class="form-control"
-            type="text"
-            name="name"
-            placeholder="Name"
-            required
-            pattern="[\w\d]+"><br>
-    <input class="form-control"
-            type="email"
-            name="email"
-            placeholder="Email"
-            required><br>
-    <textarea class="form-control"
-            name="description"></textarea>
-    <button>Submit</button>
+<form id="footerForm" class="wrapper" action="/api/message/send" method="post">
+    <div class="form-group">
+        <label for="name" class="control-label">What's your name?</label>
+        <input class="form-control"
+                type="text"
+                name="name"
+                id="footerFormName"
+                placeholder="First and Last"
+                required
+                pattern="[\w\d' \.-]+">
+    </div>
+    <div class="form-group">
+        <label for="contactInfo" class="control-label">How can we reach you?</label>
+        <input class="form-control"
+                type="text"
+                name="contactInfo"
+                id="footerFormContactInfo"
+                placeholder="example@example.com / 715-555-1234"
+                required>
+    </div>
+    <div class="form-group">
+        <label for="location" class="control-label">Where are you from?</label>
+        <input class="form-control"
+                type="text"
+                name="location"
+                id="footerFormLocation"
+                placeholder="City, State"
+                required>
+    </div>
+    <div class="form-group">
+        <label for="description" class="control-label">Briefly describe your project</label>
+        <textarea class="form-control"
+                name="description"
+                id="footerFormDescription"></textarea>
+    </div>
+    <button class="btn" type="submit">Submit</button>
 </form>

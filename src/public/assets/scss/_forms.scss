@@ -1,0 +1,57 @@
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.control-label {
+    font-weight: 500;
+    display: block;
+    margin-bottom: .125rem;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    border-radius: 3px;
+    border: 1px solid #495057;
+    box-shadow: $shadow;
+    font-size: 1rem;
+    font-weight: 300;
+    padding: .5rem;
+    transition: color .15s ease-in-out,
+        background-color .15s ease-in-out,
+        border-color .15s ease-in-out,
+        box-shadow .15s ease-in-out;
+
+    &::placeholder {
+        color: #b2b2b2;
+    }
+
+    &:focus {
+        outline: 0 none;
+        border-color: $link-color;
+        box-shadow: focus-shadow($link-color);
+    }
+
+    &.error {
+        border-color: $danger;
+        background-repeat: no-repeat;
+        background-position: right .5em center;
+        background-size: 1em;
+        box-shadow: $shadow, 0 0 0 1px inset $danger;
+        padding-right: 2em;
+        @include background-svg('~icons/alert-circle.svg', #fff, #f00, 0);
+
+        &::placeholder {
+            color: #aaa;
+        }
+
+        &:focus {
+            border-color: $danger;
+            box-shadow: focus-shadow($danger);
+        }
+    }
+}
+
+textarea.form-control {
+    min-height: 6em;
+}
