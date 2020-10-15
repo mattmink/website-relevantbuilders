@@ -55,8 +55,34 @@ a {
     margin: 0 auto;
 }
 
+.d-flex {
+    display: flex;
+}
+
+.flex-fill {
+    flex: 1;
+}
+
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.spinner {
+    animation-name: spin;
+    animation-duration: 1500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
 @import 'whitespace';
 @import 'forms';
 @import 'buttons';
+@import 'toast';
 
 

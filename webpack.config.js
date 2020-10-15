@@ -69,7 +69,7 @@ module.exports = {
             },
             {
                 test: /\.(html)$/,
-                include: path.resolve('./src/public/pages'),
+                include: [path.resolve('./src/public/pages'), path.resolve('./src/public/components')],
                 use: [
                     {
                         loader: path.resolve('./template-builder.js'),

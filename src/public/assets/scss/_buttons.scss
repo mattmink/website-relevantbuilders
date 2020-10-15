@@ -31,4 +31,11 @@
         background-color: darken($link-color, 7%);
         border-color: darken($link-color, 9%);
     }
+
+    &:disabled {
+        background: #aaa;
+        border-color: #aaa;
+        opacity: .75;
+        cursor: default;
+    }
 }

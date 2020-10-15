@@ -1,0 +1,46 @@
+$zindex-toast: 2000 !default;
+
+.toaster {
+    position: fixed;
+    bottom: map-get($spacers, 3);
+    right: map-get($spacers, 3);
+    width: 100%;
+    max-width: 600px;
+    z-index: $zindex-toast;
+}
+
+.toast-message {
+    background: #555;
+    color: #fff;
+    border-radius: 3px;
+    transition: all ease 0.5s;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+
+    .close-toast {
+        background: none transparent;
+        border: 0 none;
+        color: inherit;
+        cursor: pointer;
+        outline: 0 none;
+    }
+
+    &.toast-error {
+        background: $danger;
+    }
+    &.toast-success {
+        background: $success;
+    }
+    &.toast-warning {
+        background: $warning;
+    }
+}
+
+.toast-enter {
+    opacity: 0;
+    transform: translateY(50px);
+}
+.toast-leave {
+    transform: translateX(-50px);
+    opacity: 0;
+}

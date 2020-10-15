@@ -2,6 +2,8 @@ import axios from "axios";
 import './polyfills';
 import { goTo } from './routes';
 import './assets/scss/style.scss';
+import { error, success } from "./toast";
+import { icons } from 'feather-icons';
 
 const handleLinkClick = function handleLinkClick(e, link) {
     const { pathname } = link;
@@ -52,11 +54,27 @@ Array.from(document.querySelectorAll('input, select, textarea')).forEach((input)
     }, false);
 });
 
+let isSubmitting = false;
 const handleFormSubmit = function handleContactFormSubmitEvent(e) {
     e.preventDefault();
+
+    if (isSubmitting) return;
+
+    isSubmitting = true;
+
+    const loadingContainer = document.createElement('div');
+    loadingContainer.innerHTML = icons['refresh-cw'].toSvg({ class: 'icon spinner ml-2' });
+
+    const $loading = loadingContainer.firstChild;
+    const $submit = e.target.querySelector('button');
+
+    $submit.appendChild($loading);
+    $submit.disabled = true;
+
     const formData = {
         name: '',
-        email: '',
+        contactInfo: '',
+        location: '',
         description: '',
     };
 
@@ -66,7 +84,16 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
 
     axios.post('/api/message/send', formData)
         .then(() => {
-            alert('thank you for your message! we will respond soon!');
+            success('Thank you for your message. We look forward to speaking with you soon.');
+            e.target.reset();
+        })
+        .catch(() => {
+            error('Hmmm. That didn\'t work. Please try sending your message again.')
+        })
+        .finally(() => {
+            isSubmitting = false;
+            $submit.removeChild($loading);
+            $submit.disabled = false;
         });
 }
 
