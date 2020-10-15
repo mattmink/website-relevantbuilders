@@ -3,3 +3,14 @@
     $stroke-color: str-slice(inspect($stroke), 2);
     background-image: unquote('url("' + $url + '?fill=%23' + $fill-color + '&stroke=%23' + $stroke-color + '&fill-opacity=' + $fill-opacity + '")');
 }
+
+@mixin media-breakpoint-up($name) {
+    $min: map-get($breakpoints, $name);
+    @if $min != 0 {
+        @media (min-width: $min) {
+            @content;
+        }
+    } @else {
+        @content;
+    }
+}
