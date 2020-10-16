@@ -7,7 +7,8 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "NODE_ENV=development webpack-dev-server --open",
         "build": "NODE_ENV=production webpack  --mode=production",
-        "deploy": "npm run build && /bin/cp -R dist/. /home/releenph/public_html/dev/",
+        "deploy": "npm run build -- --scripts-prepend-node-path=auto&& /bin/cp -R dist/. /home/releenph/public_html/",
+        "deploy:dev": "npm run build -- --scripts-prepend-node-path=auto && /bin/cp -R dist/. /home/releenph/public_html/dev/",
         "server": "PORT=3000 node src"
     },
     "dependencies": {
