@@ -58,6 +58,9 @@ const sendMessage = (req, res) => {
                         text-align: left;
                         vertical-align: top;
                     }
+                    .quick-links {
+                        display: block !important;
+                    }
                 </style>
             </head>
             <body>
@@ -89,7 +92,7 @@ const sendMessage = (req, res) => {
                     </tbody>
                 </table>
                 ${!replyTo && !phone ? '' : `
-                <p style="font-size: 1.5rem;">
+                <p class="quick-links" style="font-size: 1.5rem ;display: none;">
                     ${!replyTo ? '' : `
                     <a href="mailto:${replyTo}" style="margin-right: 1rem;">
                         <svg xmlns="http://www.w3.org/2000/svg"
