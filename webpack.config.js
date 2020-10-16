@@ -117,7 +117,9 @@ module.exports = {
             chunks: [page, 'common'],
         })),
         new TemplateBuilderPlugin(),
-        new MiniCssExtractPlugin()
+        new MiniCssExtractPlugin({
+            filename: '[name].[hash].css',
+        }),
     ],
     output: {
         filename: (pathData) => (['home', 'common'].includes(pathData.chunk.name) ? '[name].[hash].js' : '[name]/[name].[hash].js'),
