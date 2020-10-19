@@ -1,4 +1,5 @@
-import 'core-js/features/promise';
+import 'promise-polyfill/src/polyfill';
+import 'whatwg-fetch'
 
 if (window.Element && !Element.prototype.closest) {
     Element.prototype.closest = function(s) {

@@ -1,8 +1,8 @@
-import feather from 'feather-icons';
+import icons from './icons';
+import { arrayFindIndex } from './utils';
 
 const toastMessages = [];
 const $toaster = document.createElement('div');
-const x = feather.icons.x.toSvg({ class: 'icon close-toast-icon' });
 
 $toaster.classList.add('toaster');
 document.body.appendChild($toaster);
@@ -10,7 +10,7 @@ document.body.appendChild($toaster);
 const toastTemplate = (message, messageType) => `<div class="toast-message toast-${messageType} d-flex mb-3 py-2">
     <div class="px-3 py-1 flex-fill">${message}</div>
     <div>
-        <button class="close-toast px-2 py-2 js-close-toast" type="button">${x}</button>
+        <button class="close-toast px-2 py-2 js-close-toast" type="button">${icons.x()}</button>
     </div>
 </div>`;
 
@@ -43,7 +43,7 @@ class Toast {
     }
 
     close() {
-        const index = toastMessages.findIndex(toast => toast === this);
+        const index = arrayFindIndex(toastMessages, toast => toast === this);
         this.$el.classList.add('toast-leave');
         setTimeout(() => {
             $toaster.removeChild(this.$el);

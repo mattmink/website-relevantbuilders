@@ -39,7 +39,7 @@
         background-size: 1em;
         box-shadow: $shadow, 0 0 0 1px inset $danger;
         padding-right: 2em;
-        @include background-svg('~icons/alert-circle.svg', #fff, #f00, 0);
+        @include background-svg('~icons/alert-circle.svg', #fff, $danger, 0);
 
         &::placeholder {
             color: #aaa;

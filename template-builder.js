@@ -4,7 +4,6 @@ const { minify: htmlMinify } = require('html-minifier-terser');
 const feather = require('feather-icons');
 const path = require('path');
 
-const isDev = process.env.NODE_ENV === 'development';
 const iconRegex = /<icon (?:class=\\?"([\w-]+)\\?" )?name=\\?"([\w-]+)\\?"(?: class=\\?"([\w-]+)\\?")? ?\/?>/g;
 const pagesPath = path.resolve('./src/public/pages');
 const templateMap = {};
@@ -24,7 +23,12 @@ const getTemplateName = filePath => {
 }
 
 class TemplateBuilderPlugin {
+    constructor({ mode }) {
+        this.mode = mode;
+    }
+
     apply(compiler) {
+        const isDev = this.mode = 'development';
         if (isDev) {
             compiler.hooks.watchRun.tap('TemplateBuilderPlugin', (comp) => {
                 updated = Object.keys(comp.watchFileSystem.watcher.mtimes)

@@ -1,5 +1,6 @@
 import Home from './pages/home.js';
 import homeTemplate from './pages/index.html';
+import { arrayFind } from './utils.js';
 
 const routerView = document.querySelector('#content');
 const routes = [
@@ -7,11 +8,11 @@ const routes = [
         path: '/',
         component: Home,
         template: homeTemplate,
-    },
+    }
 ];
 
 export function goTo(path) {
-    const route = routes.find(route => route.path === path);
+    const route = arrayFind(routes, route => route.path === path);
 
     if (!route) return;
 

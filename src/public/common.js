@@ -1,9 +1,9 @@
-import axios from "axios";
 import './polyfills';
 import { goTo } from './routes';
 import './assets/scss/style.scss';
 import { error, success } from "./toast";
-import { icons } from 'feather-icons';
+import icons from './icons';
+import { arrayFrom } from './utils';
 
 const handleLinkClick = function handleLinkClick(e, link) {
     const { pathname } = link;
@@ -34,7 +34,7 @@ const onInputWrapper = cb => (e) => {
     cb(e);
 }
 
-Array.from(document.querySelectorAll('input, select, textarea')).forEach((input) => {
+arrayFrom(document.querySelectorAll('input, select, textarea')).forEach((input) => {
     // Input event
     input.addEventListener('input', onInputWrapper(() => {
         input.isDirty = true;
@@ -63,7 +63,7 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
     isSubmitting = true;
 
     const loadingContainer = document.createElement('div');
-    loadingContainer.innerHTML = icons['refresh-cw'].toSvg({ class: 'icon spinner ml-2' });
+    loadingContainer.innerHTML = icons.refreshCw({ class: 'icon spinner ml-2' });
 
     const $loading = loadingContainer.firstChild;
     const $submit = e.target.querySelector('button');
@@ -82,9 +82,18 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
         formData[dataKey] = e.target.querySelector(`[name="${dataKey}"]`).value;
     });
 
-    axios.post('/api/message/send', formData)
+
+    fetch('/api/message/send', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    })
         .then(() => {
-            success('Thank you for your message. We look forward to speaking with you soon.');
+            if (!response.ok) throw new Error();
+            success('Thank you for your message. We look forward to speaking with you soon.', { autoClose: false });
             e.target.reset();
         })
         .catch(() => {
