@@ -14,12 +14,15 @@ const toastTemplate = (message, messageType) => `<div class="toast-message toast
     </div>
 </div>`;
 
+const add = (a, b) => a + b;
+
 class Toast {
     constructor(message = '', { messageType = 'error', autoClose = true, displayDuration = 5000 } = {}) {
         const toastWrapper = document.createElement('div');
         toastWrapper.innerHTML = toastTemplate(message, messageType);
 
         this.$el = toastWrapper.firstChild;
+        this.$el.classList.add('toast-enter-start');
         this.$el.classList.add('toast-enter');
 
         this.$close = this.$el.querySelector('.js-close-toast');
@@ -38,16 +41,38 @@ class Toast {
         $toaster.appendChild(this.$el);
 
         setTimeout(() => {
-            this.$el.classList.remove('toast-enter');
-        }, 100)
+            if (toastMessages.length > 1) {
+                const { marginBottom, borderTopWidth, borderBottomWidth } = getComputedStyle(this.$el);
+                const height = [this.$el.scrollHeight, marginBottom, borderTopWidth, borderBottomWidth].map(parseFloat).reduce(add, 0);
+                toastMessages
+                    .filter(toast => toast !== this)
+                    .forEach((toast) => {
+                        toast.$el.style.transform = `translateY(-${height}px)`;
+                    });
+
+            }
+
+            this.$el.classList.remove('toast-enter-start');
+
+            setTimeout(() => {
+                toastMessages.forEach((toast) => {
+                    toast.$el.style.transition = 'none';
+                    toast.$el.style.transform = '';
+                    setTimeout(() => {
+                        toast.$el.style = '';
+                    }, 10);
+                });
+                this.$el.classList.remove('toast-enter');
+            }, 600);
+        });
     }
 
     close() {
         const index = arrayFindIndex(toastMessages, toast => toast === this);
-        this.$el.classList.add('toast-leave');
+        toastMessages.splice(index, 1);
+        this.$el.classList.add('toast-leave-start');
         setTimeout(() => {
             $toaster.removeChild(this.$el);
-            toastMessages.splice(index, 1);
         }, 600);
     }
 }

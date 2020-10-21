@@ -4,7 +4,7 @@ $zindex-toast: 2000 !default;
     position: fixed;
     bottom: map-get($spacers, 3);
     right: map-get($spacers, 3);
-    width: 100%;
+    width: calc(90% - #{(map-get($spacers, 3) * 2)});
     max-width: 600px;
     z-index: $zindex-toast;
 }
@@ -13,9 +13,10 @@ $zindex-toast: 2000 !default;
     background: #555;
     color: #fff;
     border-radius: 3px;
-    transition: all ease 0.5s;
+    transition: opacity ease 0.5s, transform ease 0.5s;
     border: 1px solid rgba(255, 255, 255, 0.25);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    width: 100%;
 
     .close-toast {
         background: none transparent;
@@ -36,11 +37,16 @@ $zindex-toast: 2000 !default;
     }
 }
 
-.toast-enter {
+.toast-enter-start {
     opacity: 0;
     transform: translateY(50px);
 }
-.toast-leave {
+.toast-enter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.toast-leave-start {
     transform: translateX(-50px);
     opacity: 0;
 }

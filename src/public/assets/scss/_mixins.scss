@@ -4,6 +4,13 @@
     background-image: unquote('url("' + $url + '?fill=%23' + $fill-color + '&stroke=%23' + $stroke-color + '&fill-opacity=' + $fill-opacity + '")');
 }
 
+@mixin control-transition() {
+    transition: color .15s ease-in-out,
+        background-color .15s ease-in-out,
+        border-color .15s ease-in-out,
+        box-shadow .15s ease-in-out;
+}
+
 @mixin media-breakpoint-up($name) {
     $min: map-get($breakpoints, $name);
     @if $min != 0 {
