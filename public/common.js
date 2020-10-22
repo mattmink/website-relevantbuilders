@@ -3,7 +3,6 @@ import { goTo } from './routes';
 import './assets/scss/style.scss';
 import { error, success } from "./toast";
 import icons from './icons';
-import { arrayFrom } from './utils';
 
 const handleLinkClick = function handleLinkClick(e, link) {
     const { pathname } = link;
@@ -34,7 +33,7 @@ const onInputWrapper = cb => (e) => {
     cb(e);
 }
 
-arrayFrom(document.querySelectorAll('input, select, textarea')).forEach((input) => {
+Array.from(document.querySelectorAll('input, select, textarea')).forEach((input) => {
     // Input event
     input.addEventListener('input', onInputWrapper(() => {
         input.isDirty = true;

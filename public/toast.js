@@ -1,5 +1,4 @@
 import icons from './icons';
-import { arrayFindIndex } from './utils';
 
 const toastMessages = [];
 const $toaster = document.createElement('div');
@@ -68,7 +67,7 @@ class Toast {
     }
 
     close() {
-        const index = arrayFindIndex(toastMessages, toast => toast === this);
+        const index = toastMessages.findIndex(toast => toast === this);
         toastMessages.splice(index, 1);
         this.$el.classList.add('toast-leave-start');
         setTimeout(() => {

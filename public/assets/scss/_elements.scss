@@ -1,15 +1,10 @@
-@import 'variables';
-@import 'functions';
-@import 'mixins';
-@import '~normalize.css';
-
 * {
     box-sizing: border-box;
 }
 
 html {
     height: 100%;
-    font-size: 18px;
+    font-size: 20px;
 
     @include media-breakpoint-up(md) {
         font-size: 24px;
@@ -33,12 +28,12 @@ body {
 h1 {
     margin-top: 0;
     margin-bottom: .4em;
-    font-size: 16vw;
+    font-size: 14vw;
     font-weight: 200;
-    line-height: 1.2em;
+    line-height: 1em;
 
     @include media-breakpoint-up(md) {
-        font-size: 4.5rem;
+        font-size: 4rem;
     }
 }
 
@@ -46,47 +41,6 @@ p {
     margin: 1em 0;
 }
 
-.text-center {
-    text-align: center !important;
-}
-
 a {
     color: $link-color;
 }
-
-.wrapper {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.d-flex {
-    display: flex;
-}
-
-.flex-fill {
-    flex: 1;
-}
-
-.icon {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.spinner {
-    animation-name: spin;
-    animation-duration: 1500ms;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-}
-
-@keyframes spin {
-    from {transform:rotate(0deg);}
-    to {transform:rotate(360deg);}
-}
-
-@import 'whitespace';
-@import 'forms';
-@import 'buttons';
-@import 'toast';
-
-

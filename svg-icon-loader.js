@@ -1,5 +1,3 @@
-const path = require('path');
-
 const camelCase = str => str.split('-')
     .reduce((converted, part, index) => `${converted}${index === 0 ? part : `${part[0].toUpperCase()}${part.slice(1)}`}`, '')
 

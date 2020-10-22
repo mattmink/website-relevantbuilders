@@ -5,10 +5,11 @@ const feather = require('feather-icons');
 const path = require('path');
 
 const iconRegex = /<icon (?:class=\\?"([\w-]+)\\?" )?name=\\?"([\w-]+)\\?"(?: class=\\?"([\w-]+)\\?")? ?\/?>/g;
-const pagesPath = path.resolve('./src/public/pages');
+const pagesPath = path.resolve('./public/pages');
 const templateMap = {};
+const imageRegex = /[-_@\.\/\~\\\w\d]+\.(?:jpe?g|png|gif)/g;
+const imageSrcMap = {};
 let updated = [];
-
 
 const convertIcons = (str, { escapeQuotes } = {}) => str.replace(iconRegex, (_, _styleClass, name, styleClass = _styleClass) => {
     const replacement = feather.icons[name].toSvg({ class: styleClass });
@@ -55,7 +56,7 @@ class TemplateBuilderPlugin {
                             removeScriptTypeAttributes: true,
                             removeStyleLinkTypeAttributes: true,
                             useShortDoctype: true
-                        });
+                        }).replace(imageRegex, match => imageSrcMap[match]);
                         templateMap[outputName] = template;
                     }
 
@@ -68,6 +69,13 @@ class TemplateBuilderPlugin {
 }
 
 module.exports = function (source, map) {
+    (source.match(imageRegex) || [])
+        .forEach((name) => {
+            this.loadModule(name, (err, source) => {
+                const [mappedName] = source.match(imageRegex) || [];
+                imageSrcMap[name] = mappedName;
+            });
+        });
     this.callback(null, convertIcons(source, { escapeQuotes: true }), map);
 };
 
