@@ -1,0 +1,16 @@
+/* White Space
+   ========================================================================== */
+@each $direction-key in map-keys($directions) {
+    @each $spacer-key in map-keys($spacers) {
+        .m#{$direction-key}-#{$spacer-key} {
+            @each $direction in map-get($directions, $direction-key) {
+                margin-#{$direction}: map-get($spacers, $spacer-key) !important;
+            }
+        }
+        .p#{$direction-key}-#{$spacer-key} {
+            @each $direction in map-get($directions, $direction-key) {
+                padding-#{$direction}: map-get($spacers, $spacer-key) !important;
+            }
+        }
+    }
+}
