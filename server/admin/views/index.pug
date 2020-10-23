@@ -1,0 +1,17 @@
+html
+
+    head
+        include ../templates/head
+
+    body
+        div#app.container-fluid
+            h1
+                icon(name="settings").mr-2
+                =title
+            file-upload(name="file" @change="testing")
+
+        //- Components
+        include ../components/icon/icon
+        include ../components/file-upload/file-upload
+
+        script(src="/admin/js/main.js")
