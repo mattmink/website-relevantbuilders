@@ -1,0 +1,15 @@
+.logo {
+    width: 150px;
+    height: auto;
+}
+.navbar-brand {
+    font-size: 1.5rem;
+}
+.navbar-brand .app-name {
+    border-left: 1px solid currentColor;
+    margin-left: 1rem;
+    padding-left: 1rem;
+}
+.logo path {
+    fill: #fff !important;
+}

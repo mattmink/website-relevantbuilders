@@ -26,7 +26,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
 
     if (!isDev) {
         copySync(path.resolve('./public'), publicRoot, { recursive: true });
-        copySync(path.resolve('./server/uploads'), path.join(publicRoot, '/assets/images'), { recursive: true });
+        copySync(path.resolve('./server/uploads/images'), path.join(publicRoot, '/assets/images'), { recursive: true });
     }
 
     const pages = getDirectories(pagesRoot).map((dir) => dir.replace(`${pagesRoot}/`, ''));

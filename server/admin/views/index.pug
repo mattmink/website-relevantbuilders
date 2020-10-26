@@ -2,13 +2,34 @@ html
 
     head
         include ../templates/head
+        link(rel="stylesheet" href="/admin/css/home.css")
 
     body
-        div#app.container-fluid
-            h1
-                icon(name="settings").mr-2
-                =title
-            file-upload(name="file" @change="testing")
+        #app
+            nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+                span.navbar-brand
+                    include ../img/logo.svg
+                    span.app-name
+                        |Website Admin
+
+            .container-fluid.pt-3
+                h2.mb-4
+                    icon(name="home").mr-2
+                    |Home
+
+                h3
+                    |Main Image
+                .row
+                    .col-lg-6.mb-3
+                        file-upload(name="file" @change="uploadImage($event, 'home-main')")
+                    .col-md-6.mb-3
+                        h5
+                            |Current image
+                        img.img-fluid(
+                            srcset="/admin/uploads/images/home-main.jpg, /admin/uploads/images/home-main@2x.jpg 2x"
+                            src="/admin/uploads/images/home-main.jpg"
+                            ref="home-main"
+                        )
 
         //- Components
         include ../components/icon/icon

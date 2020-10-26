@@ -8,18 +8,18 @@ const { auth: {
     googleClientId,
     googleClientSecret
 }} = require('./config');
-const router = require('./routes');
 
-const admin = (route = '') => `/admin${route}`;
 const googleConfig = {
     clientID: googleClientId,
     clientSecret: googleClientSecret,
-    callbackURL: admin('/auth/return')
+    callbackURL: '/admin/auth/return',
 };
 
 passport.use(new GoogleStrategy(googleConfig, (_, __, profile, cb) => {
     const user = profile._json;
+    console.log(user);
     if (!validUsers.includes(user.email)) {
+        console.log('not a valid user');
         cb(null, null, { message: 'Not a valid user' });
         return;
     }
@@ -28,16 +28,6 @@ passport.use(new GoogleStrategy(googleConfig, (_, __, profile, cb) => {
 
 passport.serializeUser((user, cb) => cb(null, user));
 passport.deserializeUser((user, cb) => cb(null, user));
-
-// Authentication routes
-router.get(admin('/auth'), passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/userinfo.email' }));
-router.get(
-    admin('/auth/return'),
-    passport.authenticate('google', {
-        scope: 'https://www.googleapis.com/auth/plus.login',
-        failureRedirect: admin(),
-    }),
-    (req, res) => res.redirect(admin()));
 
 module.exports = {
     init(app) {
@@ -49,4 +39,19 @@ module.exports = {
         app.use(passport.initialize());
         app.use(passport.session());
     },
+    authenticate({ failureRedirect } = {}) {
+        return passport.authenticate('google', {
+            failureRedirect,
+            scope: 'https://www.googleapis.com/auth/userinfo.email',
+        });
+    },
+    ensureIsLoggedIn(redirectTo) {
+        return (req, res, next) => {
+            if (!req.isAuthenticated || !req.isAuthenticated()) {
+                if (redirectTo) return res.redirect(redirectTo);
+                return res.sendStatus(403);
+            }
+            next();
+        }
+    }
 };
