@@ -40,6 +40,7 @@ app.use('/admin/vendor/vue', express.static(path.resolve(__dirname, '../node_mod
 app.use('/admin/vendor/cropperjs', express.static(path.resolve(__dirname, '../node_modules/cropperjs/dist')));
 app.use('/admin/vendor/feather-icons', express.static(path.resolve(__dirname, '../node_modules/feather-icons/dist')));
 app.use('/admin/vendor/bootstrap', express.static(path.resolve(__dirname, '../node_modules/bootstrap/dist/css')));
+app.use('/admin/vendor/vue-toasted', express.static(path.resolve(__dirname, '../node_modules/vue-toasted/dist')));
 
 // Start the server
 app.listen(PORT, () => {

@@ -29,14 +29,7 @@
         },
     };
 
-    const cloneAttributes = (element, sourceNode) => {
-        let attr;
-        const attributes = Array.from(sourceNode.attributes);
-        while (attr = attributes.pop()) {
-            element.setAttribute(attr.nodeName, attr.nodeValue);
-        }
-        return element;
-    }
+    Vue.use(Toasted);
 
     new Vue({
         el: '#app',
@@ -65,8 +58,11 @@
                     .then(() => {
                         refreshImage(this.$refs[imageId]);
                         this.closeImageUpload(imageId);
+                        this.alertSuccess('The image was updated successfully. You will need to publish your changes');
                     })
-                    .catch(console.error);
+                    .catch(() => {
+                        this.alertError('An error occurred while uploading the image. Please try again.');
+                    });
             },
             uploadCropped(imageId) {
                 const { formData, cropper } = this.imagePreviews[imageId];
@@ -79,7 +75,7 @@
                 const { height, width } = img;
 
                 if (height < minHeight || width < minWidth) {
-                    console.error('BAD IMAGE!!!!');
+                    this.alertError(`Your image needs to be at least ${minWidth}px wide and ${minHeight}px tall.`)
                     return;
                 }
 
@@ -111,6 +107,32 @@
 
                 this.$set(this.imagePreviews[imageId], 'cropper', cropper);
             },
-        }
+            alertSuccess(message) {
+                this.$toasted.show(message, {
+                    position: 'top-left',
+                    className: 'success',
+                    duration: 5000,
+                    action : {
+                        text : 'CLOSE',
+                        onClick : (e, toastObject) => {
+                            toastObject.goAway(0);
+                        }
+                    },
+                });
+            },
+            alertError(message) {
+                this.$toasted.show(message, {
+                    position: 'top-left',
+                    className: 'error',
+                    duration: 5000,
+                    action : {
+                        text : 'CLOSE',
+                        onClick : (e, toastObject) => {
+                            toastObject.goAway(0);
+                        }
+                    },
+                });
+            },
+        },
     });
 })();
