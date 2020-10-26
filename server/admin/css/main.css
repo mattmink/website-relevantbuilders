@@ -25,3 +25,8 @@ body {
 .logo .logo-tagline {
     display: none;
 }
+@media (min-width: 992px) {
+    .cropper-point {
+        transform: scale(3);
+    }
+}

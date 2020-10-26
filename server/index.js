@@ -37,6 +37,7 @@ app.use('/admin/img', express.static(path.join(__dirname, '/admin/img')));
 app.use('/admin/js', ensureIsLoggedIn(), express.static(path.join(__dirname, '/admin/js')));
 app.use('/admin/uploads', ensureIsLoggedIn(), express.static(path.join(__dirname, './uploads')));
 app.use('/admin/vendor/vue', express.static(path.resolve(__dirname, '../node_modules/vue/dist')));
+app.use('/admin/vendor/cropperjs', express.static(path.resolve(__dirname, '../node_modules/cropperjs/dist')));
 app.use('/admin/vendor/feather-icons', express.static(path.resolve(__dirname, '../node_modules/feather-icons/dist')));
 app.use('/admin/vendor/bootstrap', express.static(path.resolve(__dirname, '../node_modules/bootstrap/dist/css')));
 

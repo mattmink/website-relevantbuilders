@@ -19,17 +19,42 @@ html
 
                 h3
                     |Main Image
-                .row
-                    .col-lg-6.mb-3
-                        file-upload(name="file" @change="uploadImage($event, 'home-main')")
-                    .col-md-6.mb-3
-                        h5
-                            |Current image
-                        img.img-fluid(
-                            srcset="/admin/uploads/images/home-main.jpg, /admin/uploads/images/home-main@2x.jpg 2x"
-                            src="/admin/uploads/images/home-main.jpg"
-                            ref="home-main"
-                        )
+
+                div(v-show="!imagePreviews['home-main']")
+                    button.btn.btn-secondary(@click="imagePreviews['home-main'] = {}")
+                        icon(name="edit").mr-1
+                        |Edit
+                    .mt-2.row
+                        .col-lg-6
+                            img.img-fluid(
+                                srcset="/admin/uploads/images/home-main.jpg, /admin/uploads/images/home-main@2x.jpg 2x"
+                                src="/admin/uploads/images/home-main.jpg"
+                                ref="home-main"
+                            )
+
+                div(v-show="!!imagePreviews['home-main']")
+                    button.btn.btn-primary(
+                        v-show="imagePreviews['home-main'] && imagePreviews['home-main'].img"
+                        @click="uploadCropped('home-main')"
+                    )
+                        icon(name="check-circle").mr-1
+                        |Done
+                    button.btn.btn-outline-danger(@click="closeImageUpload('home-main')")
+                        icon(name="x-circle").mr-1
+                        |Cancel
+                    .mt-2.row
+                        .col-lg-6
+                            file-upload(
+                                v-show="!imagePreviews['home-main'] || !imagePreviews['home-main'].img"
+                                name="file"
+                                description="Drop a file here, or click 'Browse'"
+                                @change="handleImageChange($event, 'home-main')"
+                            )
+                            div(v-show="imagePreviews['home-main'] && imagePreviews['home-main'].img")
+                                canvas(ref="home-main-preview").img-fluid
+
+
+
 
         //- Components
         include ../components/icon/icon
