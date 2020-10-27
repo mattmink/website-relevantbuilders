@@ -1,6 +1,6 @@
 const path = require('path');
 const multer = require('multer');
-const sharp = require("sharp");
+const jimp = require("jimp");
 const fs = require('fs-extra');
 const { images } = fs.readJsonSync(path.resolve(__dirname, '../admin/content.json'));
 
@@ -52,20 +52,22 @@ const resizeImage = async ({ file, query: { imageId, cropData } }, res, next) =>
                 return obj;
             }, {});
         const { minWidth, minHeight } = images[imageId];
-        const cropped = sharp(file.buffer)
-                .extract(crop)
-                .resize(minWidth, minHeight);
 
-        const imageData = await Promise.all([
-            cropped
-                .jpeg({ quality: 70 })
-                .toFile(`${uploadsImagesDir}/${imageId}@2x.jpg`),
-            cropped
-                .resize(minWidth / 2, minHeight / 2)
-                .jpeg({ quality: 70 })
-                .toFile(`${uploadsImagesDir}/${imageId}.jpg`)
-        ])
-        res.status(200).json(imageData);
+        const cropped = (await jimp.read(file.buffer)).crop(...Object.values(crop));
+        const croppedSmall = cropped.clone();
+        const fileName2x = `${imageId}@2x.jpg`;
+        const fileName1x = `${imageId}.jpg`;
+
+        cropped
+            .resize(minWidth, minHeight)
+            .quality(70)
+            .write(`${uploadsImagesDir}/${fileName2x}`);
+        croppedSmall
+            .resize(minWidth / 2, minHeight / 2)
+            .quality(70)
+            .write(`${uploadsImagesDir}/${fileName1x}`);
+
+        res.status(200).json([fileName2x, fileName1x]);
     } catch (error) {
         res.status(500).send(error.message);
     }
