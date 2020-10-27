@@ -22,14 +22,6 @@
         img.src = window.URL.createObjectURL(file);
     });
 
-    // TODO: Get these from the content.json file somehow
-    const imageRequirements = {
-        'home-main': {
-            minWidth: 1200,
-            minHeight: 800,
-        },
-    };
-
     const toastConfig = {
         position: 'top-left',
         duration: 5000,
@@ -41,15 +33,43 @@
         },
     };
 
+    const fetchJson = (url, config) => fetch(url, config).then((response) => {
+        if (!response.ok) throw new Error(response.statusText);
+        return response.json();
+    });
+
+    const isClickOutside = (event, elements, { handleKeyup = true } = {}) => {
+        const {
+            type,
+            key,
+            target,
+            composedPath = () => null,
+            path = composedPath.call(event),
+        } = event;
+
+        if (type !== 'click' && (!handleKeyup || key !== 'Tab')) return false;
+
+        const containers = Array.isArray(elements) ? elements : [elements];
+        const isInsideAnyContainer = containers.some((container) => {
+            if (container.contains(document.activeElement)) return true;
+            return (path && path.includes(container)) || container.contains(target);
+        });
+
+        return !isInsideAnyContainer;
+    };
+
+    Vue.use(VueLoading);
     Vue.use(Toasted);
 
     new Vue({
         el: '#app',
         data() {
             return {
-                imagePreviews: {
-                    'home-main': null
-                },
+                activePage: '',
+                pages: [],
+                imagePreviews: {},
+                showPagesDropdown: false,
+                showCollapseMenu: false,
             };
         },
         methods: {
@@ -60,8 +80,22 @@
                 }
                 this.imagePreviews[imageId] = null;
             },
+            async publish() {
+                const loading = this.loading('Publishing your changes...');
+                try {
+                    await fetch('/api/publish', {
+                        method: 'POST',
+                        mode: 'no-cors',
+                    });
+                    this.alertSuccess('Your changes have been published!');
+                } catch (error) {
+                    this.alertError('An error occurred while publishing your changes.');
+                }
+                loading.hide();
+            },
             uploadImage(formData, imageId, cropData = {}) {
                 const serializedCropData = Object.keys(cropData).map(key => `${key}:${cropData[key]}`).join(',');
+                const loading = this.loading('Saving image...');
                 return fetch(`/api/image/upload?imageId=${imageId}&cropData=${serializedCropData}`, {
                     method: 'POST',
                     body: formData,
@@ -77,6 +111,9 @@
                     })
                     .catch(() => {
                         this.alertError('An error occurred while uploading the image. Please try again.');
+                    })
+                    .finally(() => {
+                        loading.hide();
                     });
             },
             uploadCropped(imageId) {
@@ -86,7 +123,7 @@
             },
             async handleImageChange({ files: [file], formData }, imageId) {
                 const img = await getImageFromFile(file);
-                const { minHeight = 0, minWidth = 0 } = imageRequirements[imageId];
+                const { minHeight = 0, minWidth = 0 } = this.imageRequirements[imageId];
                 const { height, width } = img;
 
                 if (height < minHeight || width < minWidth) {
@@ -134,6 +171,43 @@
                     className: 'error',
                 });
             },
+            loading(message) {
+                const props = !message ? null : { before: this.$createElement('h3', { class: 'text-center mb-3' }, message) };
+                return this.$loading.show({ isFullPage: true }, props);
+            }
         },
+        watch: {
+            showPagesDropdown(showPagesDropdown) {
+                if (showPagesDropdown) {
+                    this.clickOutsideHandler = (event) => {
+                        if (isClickOutside(event, this.$refs.pagesDropdown)) {
+                            this.showPagesDropdown = false;
+                        }
+                    };
+                    document.addEventListener('click', this.clickOutsideHandler);
+                } else {
+                    document.removeEventListener('click', this.clickOutsideHandler);
+                }
+            },
+            activePage() {
+                this.showPagesDropdown = false;
+            }
+        },
+        async mounted() {
+            const loading = this.loading();
+            try {
+                const content = await fetchJson('/api/content');
+                this.imageRequirements = { ...content.images };
+                this.imagePreviews = Object.keys(content.images).reduce((obj, key) => {
+                    obj[key] = null;
+                    return obj;
+                }, {});
+                this.pages = content.pages;
+                this.activePage = this.pages[0].id;
+            } catch (error) {
+                this.alertError('An error occurred while publishing your changes.');
+            }
+            loading.hide();
+        }
     });
 })();

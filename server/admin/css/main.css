@@ -25,6 +25,13 @@ body {
 .logo .logo-tagline {
     display: none;
 }
+.dropdown-toggle.no-toggle-icon::before,
+.dropdown-toggle.no-toggle-icon::after {
+    display: none;
+}
+.vld-icon {
+    text-align: center;
+}
 @media (min-width: 992px) {
     .cropper-point {
         transform: scale(3);

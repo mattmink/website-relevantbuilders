@@ -7,10 +7,31 @@ html
     body
         #app
             nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-                span.navbar-brand
+                a.navbar-brand(href="/")
                     include ../img/logo.svg
                     span.app-name
                         |Website Admin
+
+                button.navbar-toggler(type="button" @click="showCollapseMenu = !showCollapseMenu")
+                    span.navbar-toggler-icon
+
+                div(:class="['collapse navbar-collapse', { show: showCollapseMenu }]")
+                    ul.navbar-nav.mr-auto
+                        li(v-if="pages.length > 1" :class="['nav-item dropdown', { show: showPagesDropdown }]" ref="pagesDropdown")
+                            a.nav-link.dropdown-toggle.no-toggle-icon(href="javascript:void(0)" @click="showPagesDropdown = !showPagesDropdown")
+                                |Pages
+                                icon(name="chevron-down").ml-1
+                            div(:class="['dropdown-menu', { show: showPagesDropdown }]")
+                                a(v-for="page in pages"
+                                    :key="page.id"
+                                    :class="['dropdown-item', { active: activePage ===  page.id}]"
+                                    href="javascript:void(0)"
+                                    @click.prevent="activePage = page.id"
+                                )
+                                    |{{ page.name }}
+
+                    button.ml-auto.btn.btn-primary(@click="publish")
+                        |Publish
 
             .container-fluid.pt-3
                 h2.mb-4

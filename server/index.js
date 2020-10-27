@@ -41,6 +41,7 @@ app.use('/admin/vendor/cropperjs', express.static(path.resolve(__dirname, '../no
 app.use('/admin/vendor/feather-icons', express.static(path.resolve(__dirname, '../node_modules/feather-icons/dist')));
 app.use('/admin/vendor/bootstrap', express.static(path.resolve(__dirname, '../node_modules/bootstrap/dist/css')));
 app.use('/admin/vendor/vue-toasted', express.static(path.resolve(__dirname, '../node_modules/vue-toasted/dist')));
+app.use('/admin/vendor/vue-loading', express.static(path.resolve(__dirname, '../node_modules/vue-loading-overlay/dist')));
 
 // Start the server
 app.listen(PORT, () => {

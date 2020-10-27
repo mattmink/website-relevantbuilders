@@ -48,7 +48,7 @@ const resizeImage = async ({ file, query: { imageId, cropData } }, res, next) =>
         const crop = cropData.split(',')
             .map(part => trim(part).split(':').map(trim))
             .reduce((obj, [key, value]) => {
-                obj[cropKeys[key]] = Number.parseInt(value);
+                obj[cropKeys[key]] = Math.max(0, Number.parseInt(value));
                 return obj;
             }, {});
         const { minWidth, minHeight } = images[imageId];

@@ -91,7 +91,7 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
         body: JSON.stringify(formData),
     })
         .then((response) => {
-            if (!response.ok) throw new Error();
+            if (!response.ok) throw new Error(response.statusText);
             success('Thank you for your message. We look forward to speaking with you soon.', { autoClose: false });
             e.target.reset();
         })
