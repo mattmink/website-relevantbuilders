@@ -1,5 +1,5 @@
 const path = require('path');
-const { lstatSync, readdirSync, readFileSync } = require('fs');
+const { lstatSync, readdirSync, readFileSync, copySync, remove } = require('fs-extra');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -8,7 +8,6 @@ const WatchFilesPlugin = require('webpack-watch-files-plugin').default;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const seo = require('./public/seo');
 
-const pagesRoot = path.resolve(__dirname, './public/pages');
 const isDirectory = (source) => lstatSync(source).isDirectory();
 const getDirectories = (source) => readdirSync(source)
     .map((name) => path.join(source, name))
@@ -17,31 +16,41 @@ const getDirectories = (source) => readdirSync(source)
         mapped.push(dir, ...getDirectories(dir));
         return mapped;
     }, []);
-const pages = getDirectories(pagesRoot).map((dir) => dir.replace(`${pagesRoot}/`, ''));
-const templateConfig = {
-    chunksSortMode: 'manual',
-    template: path.resolve(__dirname, './public/templates/index.html'),
-    favicon: path.resolve(__dirname, './public/assets/favicon.ico'),
-    templateParameters: {
-        include: filePath => readFileSync(path.resolve('./public/templates', filePath), 'utf8'),
-    },
-};
+
 
 module.exports = (_, { mode = 'development', analyze }) => {
+    const isDev = mode === 'development';
+    const publicRoot = path.resolve(__dirname, `./public${isDev ? '' : '-tmp'}`);
+    const pagesRoot = path.join(publicRoot, '/pages');
+    const componentsRoot = path.join(publicRoot, '/components');
+
+    if (!isDev) {
+        copySync(path.resolve('./public'), publicRoot, { recursive: true });
+        copySync(path.resolve('./server/uploads/images'), path.join(publicRoot, '/assets/images'), { recursive: true });
+    }
+
+    const pages = getDirectories(pagesRoot).map((dir) => dir.replace(`${pagesRoot}/`, ''));
+    const templateConfig = {
+        chunksSortMode: 'manual',
+        template: path.join(publicRoot, '/templates/index.html'),
+        favicon: path.join(publicRoot, '/assets/favicon.ico'),
+        templateParameters: {
+            include: filePath => readFileSync(path.join(publicRoot, '/templates', filePath), 'utf8'),
+        },
+    };
+
     const config = {
         entry: {
-            common: './public/common.js',
-            home: './public/pages/index.js',
+            common: `./public${isDev ? '' : '-tmp'}/common.js`,
+            home: `./public${isDev ? '' : '-tmp'}/pages/index.js`,
             ...pages.reduce((pageEntries, page) => {
-                pageEntries[page] = `./public/pages/${page}`;
+                pageEntries[page] = `./public${isDev ? '' : '-tmp'}/pages/${page}`;
                 return pageEntries;
             }, {})
         },
         resolve: {
             alias: {
                 icons: path.resolve(__dirname, './node_modules/feather-icons/dist/icons/'),
-                images: path.resolve(__dirname, './public/assets/images'),
-                '@': path.resolve(__dirname, './public/'),
             }
         },
         module: {
@@ -75,7 +84,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
                 },
                 {
                     test: /\.(html)$/,
-                    include: [path.resolve('./public/pages'), path.resolve('./public/components')],
+                    include: [pagesRoot, componentsRoot],
                     use: [
                         {
                             loader: path.resolve('./template-builder.js'),
@@ -144,12 +153,22 @@ module.exports = (_, { mode = 'development', analyze }) => {
             },
         },
     };
-    if (mode === 'development') {
+    if (isDev) {
         config.plugins.push(
             new WatchFilesPlugin({
                 files: ['./public/**/*.html'],
             })
         );
+    } else {
+        config.plugins.push(
+            {
+                apply: (compiler) => {
+                    compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {
+                        remove(publicRoot);
+                    });
+                }
+            }
+        )
     }
     if (analyze) {
         config.plugins.push(new BundleAnalyzerPlugin());
