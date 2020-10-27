@@ -7,12 +7,12 @@ const { auth: {
     sessionSecret,
     googleClientId,
     googleClientSecret
-}} = require('./config');
+}, appRoot } = require('./config');
 
 const googleConfig = {
     clientID: googleClientId,
     clientSecret: googleClientSecret,
-    callbackURL: '/admin/auth/return',
+    callbackURL: `${appRoot}/admin/auth/return`,
 };
 
 passport.use(new GoogleStrategy(googleConfig, (_, __, profile, cb) => {
