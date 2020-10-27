@@ -22,10 +22,22 @@
         img.src = window.URL.createObjectURL(file);
     });
 
+    // TODO: Get these from the content.json file somehow
     const imageRequirements = {
         'home-main': {
             minWidth: 1200,
             minHeight: 800,
+        },
+    };
+
+    const toastConfig = {
+        position: 'top-left',
+        duration: 5000,
+        action: {
+            text: 'CLOSE',
+            onClick(e, toastObject){
+                toastObject.goAway(0);
+            }
         },
     };
 
@@ -55,7 +67,10 @@
                     body: formData,
                     mode: 'no-cors',
                 })
-                    .then(() => {
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
                         refreshImage(this.$refs[imageId]);
                         this.closeImageUpload(imageId);
                         this.alertSuccess('The image was updated successfully. You will need to publish your changes');
@@ -109,28 +124,14 @@
             },
             alertSuccess(message) {
                 this.$toasted.show(message, {
-                    position: 'top-left',
+                    ...toastConfig,
                     className: 'success',
-                    duration: 5000,
-                    action : {
-                        text : 'CLOSE',
-                        onClick : (e, toastObject) => {
-                            toastObject.goAway(0);
-                        }
-                    },
                 });
             },
             alertError(message) {
                 this.$toasted.show(message, {
-                    position: 'top-left',
+                    ...toastConfig,
                     className: 'error',
-                    duration: 5000,
-                    action : {
-                        text : 'CLOSE',
-                        onClick : (e, toastObject) => {
-                            toastObject.goAway(0);
-                        }
-                    },
                 });
             },
         },

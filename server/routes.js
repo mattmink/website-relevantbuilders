@@ -1,7 +1,7 @@
 const express = require('express');
 const { authenticate, ensureIsLoggedIn } = require('./auth.js');
 const { sendMessage } = require('./controllers/mailController.js');
-const { uploadImage } = require('./controllers/photosController.js');
+const { uploadImage, resizeImage } = require('./controllers/photosController.js');
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ const admin = (route = '') => `/admin${route}`;
 
 router.post(api('/message/send'), sendMessage);
 
-router.post(api('/image/upload'), ensureIsLoggedIn(), uploadImage);
+router.post(api('/image/upload'), ensureIsLoggedIn(), uploadImage, resizeImage);
 
 // Authentication routes
 router.get(admin('/auth'), authenticate());
