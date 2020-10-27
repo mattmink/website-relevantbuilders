@@ -8,6 +8,7 @@ const {
     AUTH_SESSION_SECRET,
     AUTH_GOOGLE_CLIENT_ID,
     AUTH_GOOGLE_CLIENT_SECRET,
+    APP_ROOT,
 } = process.env;
 
 const requiredSettings = [
@@ -19,7 +20,8 @@ const requiredSettings = [
     'AUTH_VALID_USERS',
     'AUTH_SESSION_SECRET',
     'AUTH_GOOGLE_CLIENT_ID',
-    'AUTH_GOOGLE_CLIENT_SECRET'
+    'AUTH_GOOGLE_CLIENT_SECRET',
+    'APP_ROOT'
 ];
 const missingSettings = requiredSettings.filter(setting => process.env[setting] === undefined);
 
@@ -28,6 +30,7 @@ if (missingSettings.length > 0) {
 }
 
 module.exports = {
+    appRoot: APP_ROOT,
     mailer: {
         host: MAILER_HOST,
         port: MAILER_PORT,
