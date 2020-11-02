@@ -6,7 +6,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { TemplateBuilderPlugin } = require('./template-builder');
 const WatchFilesPlugin = require('webpack-watch-files-plugin').default;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const seo = require('./public/seo');
+
+const content = JSON.parse(readFileSync(path.resolve(__dirname, './server/admin/content.json'), 'utf8'));
 
 const isDirectory = (source) => lstatSync(source).isDirectory();
 const getDirectories = (source) => readdirSync(source)
@@ -127,14 +128,15 @@ module.exports = (_, { mode = 'development', analyze }) => {
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
                 ...templateConfig,
-                ...seo.home,
+                ...content.pages.filter(({ id }) => id === 'home').map(({ title, description }) => ({ title, description })).pop(),
                 chunks: ['home', 'common'],
             }),
-            ...pages.map((page) => new HtmlWebpackPlugin({
+            ...content.pages.filter(({ id }) => id !== 'home').map(({ id, title, description}) => new HtmlWebpackPlugin({
                 ...templateConfig,
-                title: page.toUpperCase(),
-                filename: `${page}/index.html`,
-                chunks: [page, 'common'],
+                title,
+                description,
+                filename: `${id}/index.html`,
+                chunks: [id, 'common'],
             })),
             new TemplateBuilderPlugin({ mode }),
             new MiniCssExtractPlugin({
