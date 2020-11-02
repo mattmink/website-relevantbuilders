@@ -30,7 +30,7 @@ const sendMessage = (req, res) => {
     const formattedPhone = !phone ? '' : cleanPhone.slice(-10).replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 
     const message = {
-        from: serverEmailAddress,
+        from: `${name} <${serverEmailAddress}>`,
         to: emailTo,
         replyTo,
         subject: 'RelevantBuilders.com Inquiry',
