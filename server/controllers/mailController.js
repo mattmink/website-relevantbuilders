@@ -134,7 +134,16 @@ const sendMessage = (req, res) => {
 
     transporter
         .sendMail(message)
-        .then(() => (isAjaxRequest(req) ? res.sendStatus(200) : res.redirect(`${origin}/thank-you`)))
+        .then(() => {
+            if (isAjaxRequest(req)) {
+                return res.status(200).json({
+                    body: req.responseObject,
+                    success: true,
+                    status: req.responseStatus || 200,
+                });
+            }
+            return res.redirect(`${origin}/thank-you`);
+        })
         .catch((error = {}) => {
             const { response = 'An unknown error occurred while sending your message', responseCode = 500 } = error;
             res.status(responseCode).send(response);
