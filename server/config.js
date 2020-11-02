@@ -1,3 +1,4 @@
+const path = require('path');
 const {
     MAILER_HOST,
     MAILER_PORT,
@@ -9,6 +10,7 @@ const {
     AUTH_GOOGLE_CLIENT_ID,
     AUTH_GOOGLE_CLIENT_SECRET,
     APP_ROOT,
+    DEPLOY_DIR,
 } = process.env;
 
 const requiredSettings = [
@@ -31,6 +33,7 @@ if (missingSettings.length > 0) {
 
 module.exports = {
     appRoot: APP_ROOT,
+    deployDir: DEPLOY_DIR || path.resolve(__dirname, '../dist'),
     mailer: {
         host: MAILER_HOST,
         port: MAILER_PORT,

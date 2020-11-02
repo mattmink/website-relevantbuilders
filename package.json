@@ -6,9 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "NODE_ENV=development webpack-dev-server",
-        "build": "NODE_ENV=production webpack  --mode=production",
-        "deploy": "npm run build && /bin/cp -R dist/. /home/releenph/public_html/",
-        "deploy:dev": "npm run build && /bin/cp -R dist/. /home/releenph/public_html/dev/",
+        "build": "node -e 'require(\"./build\").build()'",
         "server": "PORT=3000 node server"
     },
     "dependencies": {

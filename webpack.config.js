@@ -149,7 +149,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
         devServer: {
             contentBase: './dist',
             proxy: {
-                '/api': 'http://localhost:3000',
+                '/s/api': 'http://localhost:3000',
             },
         },
     };
