@@ -3,6 +3,7 @@ import { goTo } from './routes';
 import './assets/scss/style.scss';
 import { error, success } from "./toast";
 import icons from './icons';
+import http from './http';
 
 const handleLinkClick = function handleLinkClick(e, link) {
     const { pathname } = link;
@@ -81,17 +82,8 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
         formData[dataKey] = e.target.querySelector(`[name="${dataKey}"]`).value;
     });
 
-
-    fetch('/api/message/send', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify(formData),
-    })
-        .then((response) => {
-            if (!response.ok) throw new Error(response.statusText);
+    http.post('/message/send', formData)
+        .then(() => {
             success('Thank you for your message. We look forward to speaking with you soon.', { autoClose: false });
             e.target.reset();
         })
