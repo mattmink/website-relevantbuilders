@@ -83,7 +83,7 @@
             async publish() {
                 const loading = this.loading('Publishing your changes...');
                 try {
-                    await fetch('/api/publish', {
+                    await fetch('/s/api/publish', {
                         method: 'POST',
                         mode: 'no-cors',
                     });
@@ -96,7 +96,7 @@
             uploadImage(formData, imageId, cropData = {}) {
                 const serializedCropData = Object.keys(cropData).map(key => `${key}:${cropData[key]}`).join(',');
                 const loading = this.loading('Saving image...');
-                return fetch(`/api/image/upload?imageId=${imageId}&cropData=${serializedCropData}`, {
+                return fetch(`/s/api/image/upload?imageId=${imageId}&cropData=${serializedCropData}`, {
                     method: 'POST',
                     body: formData,
                     mode: 'no-cors',
@@ -196,7 +196,7 @@
         async mounted() {
             const loading = this.loading();
             try {
-                const content = await fetchJson('/api/content');
+                const content = await fetchJson('/s/api/content');
                 this.imageRequirements = { ...content.images };
                 this.imagePreviews = Object.keys(content.images).reduce((obj, key) => {
                     obj[key] = null;
@@ -205,7 +205,7 @@
                 this.pages = content.pages;
                 this.activePage = this.pages[0].id;
             } catch (error) {
-                this.alertError('An error occurred while publishing your changes.');
+                this.alertError('An error occurred while loading website content.');
             }
             loading.hide();
         }

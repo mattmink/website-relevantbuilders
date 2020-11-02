@@ -1,12 +1,20 @@
-const { exec } = require("child_process");
-const path = require('path');
+const { build } = require('../../build');
 
-const publish = (req, res) => {
-    const cdPath = path.resolve(__dirname, '../../');
-    exec(`cd ${cdPath} && npm run build`, (err, stdout, stderr) => {
-        if (err) return res.status(500).send(stderr);
+let isPublishing = false;
+
+function publish(req, res) {
+    if(isPublishing) return res.status(500).send('Please wait. Publish is still in progress');
+
+    isPublishing = true;
+
+    try {
+        build();
         res.sendStatus(200);
-    });
-};
+    } catch(e) {
+        res.status(400).send(e);
+    }
+    isPublishing = false;
+}
+
 
 module.exports = { publish };
