@@ -11,20 +11,6 @@
 body {
     color: #333;
 }
-.logo {
-    width: 300px;
-}
-.logo .logo-roof,
-.logo .logo-builders {
-    fill: var(--brand-2);
-}
-.logo .logo-r,
-.logo .logo-relevant {
-    fill: var(--brand-1);
-}
-.logo .logo-tagline {
-    display: none;
-}
 .dropdown-toggle.no-toggle-icon::before,
 .dropdown-toggle.no-toggle-icon::after {
     display: none;

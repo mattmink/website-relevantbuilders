@@ -7,18 +7,28 @@ html
     body
         #app
             nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-                a.navbar-brand(href="/s/admin")
-                    include ../img/logo.svg
-                    span.app-name
-                        |Website Admin
-
-                button.navbar-toggler(type="button" @click="showCollapseMenu = !showCollapseMenu")
+                button.mr-2.navbar-toggler.d-md-none(type="button" @click="showCollapseMenu = !showCollapseMenu")
                     span.navbar-toggler-icon
 
-                div(:class="['collapse navbar-collapse', { show: showCollapseMenu }]")
-                    ul.navbar-nav.mr-auto
+                a.mr-auto.navbar-brand.d-flex.align-items-center(href="/s/admin")
+                    include ../img/logo-no-tag.svg
+                    include ../img/logo-r.svg
+                    span.app-name
+                        span.d-none.d-md-inline-block.mr-2
+                            |Website
+                        |Admin
+
+                div.navbar-nav-wrapper.bg-dark.d-sm-flex.align-items-center.flex-fill.ml-md-3
+                    h5.d-sm-none.text-muted.font-weight-light
+                        |Menu
+                    ul.navbar-nav.mr-auto.flex-md-row
+                        li.nav-item
+                            a.nav-link(href=publicRoot target="_blank")
+                                icon(name="globe").mr-1
+                                |View Website
                         li(v-if="pages.length > 1" :class="['nav-item dropdown', { show: showPagesDropdown }]" ref="pagesDropdown")
                             a.nav-link.dropdown-toggle.no-toggle-icon(href="javascript:void(0)" @click="showPagesDropdown = !showPagesDropdown")
+                                icon(name="file").mr-1
                                 |Pages
                                 icon(name="chevron-down").ml-1
                             div(:class="['dropdown-menu', { show: showPagesDropdown }]")
@@ -30,8 +40,10 @@ html
                                 )
                                     |{{ page.name }}
 
-                    button.ml-auto.btn.btn-primary(@click="publish")
-                        |Publish
+                button.btn.btn-primary.d-none.d-md-inline-block(@click="publish")
+                    |Publish
+                button.btn.btn-primary.btn-sm.d-md-none(@click="publish")
+                    |Publish
 
             .container-fluid.pt-3
                 h2.mb-4
