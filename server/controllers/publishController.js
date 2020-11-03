@@ -10,8 +10,9 @@ function publish(req, res) {
     try {
         build();
         res.sendStatus(200);
-    } catch(e) {
-        res.status(400).send(e);
+    } catch(error) {
+        console.error(error);
+        res.status(400).send(error);
     }
     isPublishing = false;
 }

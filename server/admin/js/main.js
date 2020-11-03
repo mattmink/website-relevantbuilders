@@ -27,7 +27,7 @@
         duration: 5000,
         action: {
             text: 'CLOSE',
-            onClick(e, toastObject){
+            onClick(e, toastObject) {
                 toastObject.goAway(0);
             }
         },
@@ -177,6 +177,26 @@
             }
         },
         watch: {
+            showCollapseMenu(showCollapseMenu) {
+                const closingClass = 'mobile-menu-closing';
+                const body = document.body;
+                const bodyClassList = body.classList;
+
+                if (!showCollapseMenu) {
+                    if (!this.onMenuClosed) {
+                        this.onMenuClosed = () => {
+                            bodyClassList.remove(closingClass);
+                            body.removeEventListener('transitionend', this.onMenuClosed);
+                        };
+                    }
+                    body.addEventListener('transitionend', this.onMenuClosed);
+                } else {
+                    body.removeEventListener('transitionend', this.onMenuClosed);
+                    bodyClassList.remove(closingClass);
+                }
+
+                bodyClassList.toggle('mobile-menu-open');
+            },
             showPagesDropdown(showPagesDropdown) {
                 if (showPagesDropdown) {
                     this.clickOutsideHandler = (event) => {

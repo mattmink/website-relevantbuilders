@@ -32,11 +32,12 @@ const uploadImage = (req, res, next) => {
     try {
         uploadSingle(req, res, (err) => {
             if (err) {
-                console.log(err);
+                console.error(err);
             }
             next();
         });
     } catch (error) {
+        console.error(error)
         res.sendStatus(500);
     }
 }
@@ -69,6 +70,7 @@ const resizeImage = async ({ file, query: { imageId, cropData } }, res, next) =>
 
         res.status(200).json([fileName2x, fileName1x]);
     } catch (error) {
+        console.error(error);
         res.status(500).send(error.message);
     }
 };

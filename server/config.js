@@ -10,6 +10,7 @@ const {
     AUTH_GOOGLE_CLIENT_ID,
     AUTH_GOOGLE_CLIENT_SECRET,
     APP_ROOT,
+    PUBLIC_ROOT,
     DEPLOY_DIR,
 } = process.env;
 
@@ -23,7 +24,8 @@ const requiredSettings = [
     'AUTH_SESSION_SECRET',
     'AUTH_GOOGLE_CLIENT_ID',
     'AUTH_GOOGLE_CLIENT_SECRET',
-    'APP_ROOT'
+    'APP_ROOT',
+    'PUBLIC_ROOT',
 ];
 const missingSettings = requiredSettings.filter(setting => process.env[setting] === undefined);
 
@@ -33,6 +35,7 @@ if (missingSettings.length > 0) {
 
 module.exports = {
     appRoot: APP_ROOT,
+    publicRoot: PUBLIC_ROOT,
     deployDir: DEPLOY_DIR || path.resolve(__dirname, '../dist'),
     mailer: {
         host: MAILER_HOST,

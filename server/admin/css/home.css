@@ -1,15 +1,83 @@
 .logo {
     width: 150px;
     height: auto;
+    fill: #fff;
 }
+
+.logo-no-tag {
+    display: none;
+}
+
+.logo-compact {
+    width: 48px;
+    height: auto;
+}
+
 .navbar-brand {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
 }
+
 .navbar-brand .app-name {
     border-left: 1px solid currentColor;
-    margin-left: 1rem;
-    padding-left: 1rem;
+    margin-left: .75rem;
+    padding-left: .75rem;
 }
-.logo path {
-    fill: #fff !important;
+
+button.navbar-toggler {
+    padding: .125rem .5rem;
+}
+
+span.navbar-toggler-icon {
+    width: 1.25em;
+    height: 1.25em;
+}
+
+@media (max-width: 767px) {
+    :root {
+        --mobile-menu-width: 250px;
+    }
+
+    body {
+        transition: transform .25s ease-in-out;
+    }
+    body.mobile-menu-open,
+    body.mobile-menu-closing {
+        overflow: hidden;
+    }
+    body.mobile-menu-open {
+        transform: translateX(var(--mobile-menu-width));
+    }
+    .navbar-nav-wrapper {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: var(--mobile-menu-width);
+        z-index: 50;
+        background: black;
+        transform: translate(calc(-1 * var(--mobile-menu-width)));
+        padding: .5rem;
+        border-right: 2px solid black;
+        box-shadow: -3px 0 8px rgba(0,0,0,.5) inset;
+    }
+}
+
+@media (min-width: 768px) {
+    .logo-no-tag {
+        display: inline-block;
+    }
+
+    .logo-compact {
+        display: none;
+    }
+
+    .navbar-brand .app-name {
+        margin-left: 1rem;
+        padding-left: 1rem;
+    }
+
+    .navbar-expand-lg .navbar-nav .nav-link {
+        padding-right: .5rem;
+        padding-left: .5rem;
+    }
 }

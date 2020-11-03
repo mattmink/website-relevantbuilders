@@ -5,7 +5,7 @@ const { authenticate, ensureIsLoggedIn } = require('./auth.js');
 const { sendMessage } = require('./controllers/mailController.js');
 const { uploadImage, resizeImage } = require('./controllers/photosController.js');
 const { publish } = require('./controllers/publishController.js');
-const { appRoot } = require('./config.js');
+const { appRoot, publicRoot } = require('./config.js');
 const content = readJsonSync(path.resolve(__dirname, './admin/content.json'));
 
 const router = express.Router();
@@ -29,7 +29,7 @@ router.get(admin('/auth/return'), authenticate({ failureRedirect: adminRoot }), 
 
 router.get(admin(), (req, res) => {
     if (req.user) {
-        res.render('index', { title: 'Relevant Builders Website Admin' });
+        res.render('index', { title: 'Relevant Builders Website Admin', publicRoot });
     } else {
         res.render('login', { title: 'Sign In: Relevant Builders Website Admin' });
     }

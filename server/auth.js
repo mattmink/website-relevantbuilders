@@ -17,9 +17,7 @@ const googleConfig = {
 
 passport.use(new GoogleStrategy(googleConfig, (_, __, profile, cb) => {
     const user = profile._json;
-    console.log(user);
     if (!validUsers.includes(user.email)) {
-        console.log('not a valid user');
         cb(null, null, { message: 'Not a valid user' });
         return;
     }
