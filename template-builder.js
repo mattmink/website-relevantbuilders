@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { minify: htmlMinify } = require('html-minifier-terser');
 const feather = require('feather-icons');
 const path = require('path');
+const { injectIncludes } = require('./include');
 
 const iconRegex = /<icon (?:class=\\?"([\w-]+)\\?" )?name=\\?"([\w-]+)\\?"(?: class=\\?"([\w-]+)\\?")? ?\/?>/g;
 const pagesPath = path.resolve('./public/pages');
@@ -49,7 +50,7 @@ class TemplateBuilderPlugin {
                     let template = templateMap[outputName];
 
                     if (!isDev || !template || updated.includes(outputName)) {
-                        template = htmlMinify(readFileSync(`${pagesPath}/${outputName}`, 'utf8'), {
+                        template = htmlMinify(injectIncludes(readFileSync(`${pagesPath}/${outputName}`, 'utf8')), {
                             collapseWhitespace: true,
                             removeComments: true,
                             removeRedundantAttributes: true,
@@ -76,7 +77,8 @@ module.exports = function (source, map) {
                 imageSrcMap[name] = mappedName;
             });
         });
-    this.callback(null, convertIcons(source, { escapeQuotes: true }), map);
+    const escapeQuotes = true;
+    this.callback(null, convertIcons(injectIncludes(source, { escapeQuotes }), { escapeQuotes }), map);
 };
 
 module.exports.TemplateBuilderPlugin = TemplateBuilderPlugin;
