@@ -80,8 +80,10 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
     $submit.appendChild($loading);
     $submit.disabled = true;
 
+    // email is a honeypot field to catch most spam
     const formData = {
         name: '',
+        email: '',
         contactInfo: '',
         location: '',
         description: '',
@@ -91,18 +93,34 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
         formData[dataKey] = e.target.querySelector(`[name="${dataKey}"]`).value;
     });
 
+    const afterSuccess = () => {
+        success('Thank you for your message. We look forward to speaking with you soon.', { autoClose: false });
+        e.target.reset();
+    };
+
+    const afterSubmit = () => {
+        isSubmitting = false;
+        $submit.removeChild($loading);
+        $submit.disabled = false;
+    };
+
+    // email is a honeypot field to catch most spam
+    if (formData.email !== '') {
+        afterSuccess();
+        afterSubmit();
+        return;
+    }
+
     http.post('/message/send', formData)
-        .then(() => {
-            success('Thank you for your message. We look forward to speaking with you soon.', { autoClose: false });
-            e.target.reset();
+        .then((response) => {
+            if (!response.ok) throw new Error();
+            afterSuccess();
         })
         .catch(() => {
             error('Hmmm. That didn\'t work. Please try sending your message again.')
         })
         .finally(() => {
-            isSubmitting = false;
-            $submit.removeChild($loading);
-            $submit.disabled = false;
+            afterSubmit();
         });
 }
 

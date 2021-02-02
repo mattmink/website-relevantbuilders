@@ -21,8 +21,26 @@ const emailRegex = /(?!.*\.{2})^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-
 const usPhoneRegex = /^(?:\+(?=1)){0,1}(1[ -]|1){0,1}(?:\((?=\d{3}\))[2-9](?!11)\d{2}\)|[2-9](?!11)\d{2})[ -]{0,1}[2-9](?!11)\d{2}[ -]{0,1}\d{4}$/;
 
 const sendMessage = (req, res) => {
-    const { name, contactInfo, location, description  } = req.body;
+    // email is not used. It's a hidden honeypot field to catch most spam
+    const { name, contactInfo, location, description, email  } = req.body;
     const { origin } = new URL(req.get('Referrer'));
+    const handleSuccess = () => {
+        if (isAjaxRequest(req)) {
+            return res.status(200).json({
+                body: req.responseObject,
+                success: true,
+                status: req.responseStatus || 200,
+            });
+        }
+        return res.redirect(`${origin}/thank-you`);
+    };
+
+    // This is likely spam, since email is the hidden honepot field. Simply return a 200.
+    if (!!email) {
+        handleSuccess();
+        return;
+    }
+
     const contactInfoParts = contactInfo.split(/([,\/:]|(?<!\(\d{3}\)) )/).map(part => part.trim());
     const replyTo = contactInfoParts.find(part => emailRegex.test(part));
     const phone = contactInfoParts.find(part => usPhoneRegex.test(part));
@@ -134,16 +152,7 @@ const sendMessage = (req, res) => {
 
     transporter
         .sendMail(message)
-        .then(() => {
-            if (isAjaxRequest(req)) {
-                return res.status(200).json({
-                    body: req.responseObject,
-                    success: true,
-                    status: req.responseStatus || 200,
-                });
-            }
-            return res.redirect(`${origin}/thank-you`);
-        })
+        .then(() => handleSuccess())
         .catch((error = {}) => {
             const { response = 'An unknown error occurred while sending your message', responseCode = 500 } = error;
             res.status(responseCode).send(response);
