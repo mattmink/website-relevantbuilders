@@ -6,7 +6,16 @@ import icons from './icons';
 import http from './http';
 
 const handleLinkClick = function handleLinkClick(e, link) {
-    const { pathname } = link;
+    const { pathname, hash } = link;
+
+    if (Boolean(hash)) {
+        e.preventDefault();
+        const scrollTo = document.querySelector(hash);
+        if (scrollTo) {
+            scrollTo.scrollIntoView({ behavior: 'smooth' });
+        }
+        return;
+    }
 
     if (!pathname) return;
 

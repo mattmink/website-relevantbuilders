@@ -6,7 +6,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { TemplateBuilderPlugin } = require('./template-builder');
 const WatchFilesPlugin = require('webpack-watch-files-plugin').default;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const { injectIncludes } = require('./include');
 
 const content = JSON.parse(readFileSync(path.resolve(__dirname, './server/admin/content.json'), 'utf8'));
 
@@ -36,9 +35,6 @@ module.exports = (_, { mode = 'development', analyze }) => {
         chunksSortMode: 'manual',
         template: path.join(publicRoot, '/templates/index.html'),
         favicon: path.join(publicRoot, '/assets/favicon.ico'),
-        templateParameters: {
-            include: filePath => injectIncludes(readFileSync(path.join(publicRoot, '/templates', filePath), 'utf8')),
-        },
     };
 
     const config = {

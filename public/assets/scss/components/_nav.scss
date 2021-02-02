@@ -1,0 +1,18 @@
+.main-nav {
+    font-size: .875rem;
+
+    .nav-brand {
+        width: 224px;
+    }
+
+    .logo {
+        fill: #fff;
+    }
+
+    .nav-link {
+        display: inline-block;
+        padding: $button-padding;
+        color: #fff;
+        text-decoration: none;
+    }
+}

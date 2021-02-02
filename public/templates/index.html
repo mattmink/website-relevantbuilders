@@ -1,28 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="preload"
-            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;500&display=swap"
-            as="style"
-            onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;500&display=swap" rel="stylesheet"></noscript>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <include file="templates/_head.html" />
     <meta name="description" content="<%= htmlWebpackPlugin.options.description %>">
     <title><%= htmlWebpackPlugin.options.title %> | Relevant Builders | Eau Claire, WI</title>
 </head>
 <body>
-    <div class="text-center">
-        <%= include('./_nav.html') %>
-    </div>
-    <div id="content"><page /></div>
-    <footer>
-        <div class="wrapper-800">
-            <h1>talk to us</h1>
-            <p>This is where it all begins. Drop us a line, and we'll get back to you to set up a consultation.</p>
-            <%= include('./_form.html') %>
-        </div>
-    </footer>
+    <include file="templates/_nav.html" />
+    <div id="content" class="page-content"><page /></div>
+    <include file="templates/_footer.html" />
 </body>
 </html>

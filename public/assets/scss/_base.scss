@@ -1,14 +1,63 @@
-.wrapper {
-    max-width: 800px;
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    font-size: 20px;
+
+    @include media-breakpoint-up(md) {
+        font-size: 24px;
+    }
+}
+
+body {
+    min-height: 100%;
+    background-color: $brand-1;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+h1 {
+    margin-top: 0;
+    margin-bottom: .4em;
+    font-size: 12vw;
+    font-weight: 200;
+    line-height: 1em;
+
+    @include media-breakpoint-up(lg) {
+        font-size: 4.5rem;
+    }
+}
+
+a {
+    color: $link-color;
+    border-bottom: 4px solid transparent;
+    text-decoration: none;
+    transition: border-color ease .3s;
+
+    &:hover {
+        border-bottom-color: currentColor;
+    }
+}
+
+p {
+    margin: 1em 0;
+}
+
+.wrapper,
+.wrapper-800 {
     margin: 0 auto;
 }
 
-.logo {
-    fill: #fff;
-    width: 75%;
-    height: auto;
-    max-width: 400px;
-    margin-bottom: 1rem;
+.wrapper {
+    max-width: 1140px;
+}
+
+.wrapper-800 {
+    max-width: 800px;
 }
 
 .img-responsive {
@@ -19,6 +68,7 @@
 .icon {
     display: inline-block;
     vertical-align: middle;
+    stroke: currentColor;
 }
 
 .spinner {
@@ -26,6 +76,10 @@
     animation-duration: 1500ms;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
+}
+
+.page-content .dark-section a {
+    color: $link-color-light;
 }
 
 @keyframes spin {
