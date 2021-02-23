@@ -1,7 +1,8 @@
 .h1-sm {
     font-size: .5em;
-    line-height: 1.5;
+    line-height: 1.25;
     opacity: .5;
+    margin-bottom: -.5em;
 
     @include media-breakpoint-up(md) {
         font-size: .4em;

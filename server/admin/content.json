@@ -19,8 +19,8 @@
     ],
     "images": {
         "home-main": {
-            "minWidth": 1600,
-            "minHeight": 1000
+            "minWidth": 1440,
+            "minHeight": 1600
         }
     }
 }

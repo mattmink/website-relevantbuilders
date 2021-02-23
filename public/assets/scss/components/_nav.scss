@@ -1,5 +1,5 @@
 .main-nav {
-    font-size: .875rem;
+    font-size: .75rem;
 
     .nav-brand {
         width: 224px;
@@ -9,10 +9,46 @@
         fill: #fff;
     }
 
+    .nav-item {
+        position: relative;
+        overflow: hidden;
+        margin-left: 3vw;
+
+        &:hover,
+        &:focus-within {
+            box-shadow: 0 2px 4px rgb(0, 0, 0, .3);
+        }
+    }
+
     .nav-link {
-        display: inline-block;
+        display: block;
         padding: $button-padding;
         color: #fff;
         text-decoration: none;
+        transition: all ease-in-out .2s;
+        font-weight: 500;
+
+
+        &::after {
+            display: block;
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            bottom: 0;
+            width: 100%;
+            opacity: 0;
+            background: #fff;
+            transform: skewX(40deg) translate3d(-50%, 0, 0) scale3d(0, 1, 1);
+            transform-origin: center;
+            transition: all ease-in-out .25s;
+            z-index: -1;
+        }
+
+        &:hover::after,
+        &:focus::after {
+            opacity: .2;
+            transform: skewX(40deg) translate3d(-50%, 0, 0)  scale3d(1.5, 1.5, 1);
+        }
     }
 }
