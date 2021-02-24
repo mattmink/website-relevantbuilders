@@ -18,18 +18,29 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     line-height: 1.5;
+
+    &::before {
+        display: block;
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        padding-top: 100%;
+        background: #fff;
+        opacity: .1;
+        transform-origin: top right;
+        transform: rotate(38deg) translate(-12vw, 45vw);
+        z-index: -1;
+    }
 }
 
 h1 {
     margin-top: 0;
     margin-bottom: .4em;
-    font-size: 12vw;
     font-weight: 200;
     line-height: 1em;
-
-    @include media-breakpoint-up(lg) {
-        font-size: 4.5rem;
-    }
+    @include flex-font-size($h1-size);
 }
 
 a {
@@ -59,6 +70,16 @@ p {
     max-width: 800px;
 }
 
+.featured-section {
+    min-height: 100vh;
+}
+.featured-section-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 20vh;
+}
+
 .img-responsive {
     max-width: 100%;
     height: auto;
@@ -77,7 +98,7 @@ p {
     animation-timing-function: linear;
 }
 
-.page-content .dark-section a {
+.page-content .dark-section a:not(.btn) {
     color: $link-color-light;
 }
 

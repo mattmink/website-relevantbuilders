@@ -10,6 +10,13 @@ $success: #27be61;
 $danger: #d43333;
 $warning: #e9a920;
 
+$gray-100: #e5e5f1;
+$gray-200: #cacad4;
+$gray-300: #acacb6;
+$gray-400: #95959e;
+$gray-500: #4f4f53;
+$gray-600: #1f1f20;
+
 $shadow: 0 2px 3px rgba(0, 0, 0, .25);
 
 $button-padding: 0.5em 1em;
@@ -43,3 +50,5 @@ $directions: (
 );
 
 $displays: none, inline, inline-block, block, flex;
+
+$h1-size: 4rem;

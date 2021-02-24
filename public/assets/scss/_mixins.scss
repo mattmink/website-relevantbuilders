@@ -21,3 +21,10 @@
         @content;
     }
 }
+
+@mixin flex-font-size($font-size, $breakpoint: lg) {
+    font-size: strip-unit($font-size) * 3vw;
+    @include media-breakpoint-up($breakpoint) {
+        font-size: $font-size;
+    }
+}
