@@ -5,7 +5,7 @@ const feather = require('feather-icons');
 const path = require('path');
 
 
-const iconRegex = /<icon (?:class=\\?"([\w-]+)\\?" )?name=\\?"([\w-]+)\\?"(?: class=\\?"([\w-]+)\\?")? ?\/?>/g;
+const iconRegex = /<icon (?:class=\\?"([\w\s-]+)\\?" )?name=\\?"([\w-]+)\\?"(?: class=\\?"([\w\s-]+)\\?")? ?\/?>/g;
 const includeRegex = /<include file=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
 const includeRoot = path.resolve('./public');
 

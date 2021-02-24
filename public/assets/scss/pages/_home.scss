@@ -98,6 +98,17 @@
     }
 }
 
+.home-section-2 {
+    background-image: linear-gradient(to top,
+        #A2A7C1,
+        #A2A7C1 30px,
+        #BBBED2 30px,
+        #BBBED2 60px,
+        #DADAE6 60px,
+        #DADAE6 90px,
+        #FFFFFF 90px);
+}
+
 @keyframes rotate-bounce-in {
     0% { transform: rotate3d(0, 0, 1, 90deg); }
     36% { transform: rotate3d(0, 0, 1, 0deg); }

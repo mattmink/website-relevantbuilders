@@ -14,7 +14,7 @@ html {
 body {
     height: 100%;
     background-color: $brand-1;
-    color: #fff;
+    color: $brand-1-dark;
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     line-height: 1.5;
@@ -98,8 +98,12 @@ p {
     animation-timing-function: linear;
 }
 
-.page-content .dark-section a:not(.btn) {
-    color: $link-color-light;
+.page-content .dark-section {
+    color: #fff;
+
+    a:not(.btn) {
+        color: $link-color-light;
+    }
 }
 
 @keyframes spin {

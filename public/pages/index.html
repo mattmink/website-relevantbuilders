@@ -1,7 +1,7 @@
 <section class="dark-section d-md-flex featured-section home-hero text-center">
-    <div class="flex-fill featured-section-text" aria-label="A custom home to fit your lifestyle">
+    <div class="flex-fill featured-section-text">
         <div>
-            <h1>
+            <h1 aria-label="A custom home to fit your lifestyle">
                 <div class="h1-sm home-hero-text-row1">a custom</div>
                 <div class="home-hero-text-row2">home</div>
                 <div class="h1-sm home-hero-text-row3">
@@ -18,14 +18,51 @@
     <div class="flex-fill featured-section-image">
         <div class="home-hero-image-wrapper">
             <img class="home-hero-image"
-                    srcset="../assets/images/home-main.jpg,
+                 srcset="../assets/images/home-main.jpg,
                             ../assets/images/home-main@2x.jpg 2x"
-                    src="../assets/images/home-main.jpg"
-                    alt="A home, built by Relevant Builders">
+                 src="../assets/images/home-main.jpg"
+                 alt="A home, built by Relevant Builders">
         </div>
     </div>
 </section>
 
-<section>
+<section class="featured-section text-center bg-white py-5 home-section-2">
+    <h1 aria-label="a personal approach to home construction">
+        <div class="h1-sm">a personal approach to</div>
+        home construction
+    </h1>
+    <div class="wrapper-800">
+        <include file="content/home-main.html">
+    </div>
+    <div class="d-flex">
+        <div class="flex-fill">
+            <a href="#">new homes<icon class="icon ml-1" name="chevron-right" /></a>
+        </div>
+        <div class="flex-fill">
+            <a href="#">additions<icon class="icon ml-1" name="chevron-right" /></a>
+        </div>
+        <div class="flex-fill">
+            <a href="#">general contracting<icon class="icon ml-1" name="chevron-right" /></a>
+        </div>
+    </div>
+</section>
 
+<section class="featured-section d-flex bg-gray dark-section">
+    <div class="flex-fill featured-section-image">
+        <img class="img-responsive"
+                srcset="../assets/images/home-main.jpg,
+                        ../assets/images/home-main@2x.jpg 2x"
+                src="../assets/images/home-main.jpg"
+                alt="A home, built by Relevant Builders">
+    </div>
+    <div class="flex-fill featured-section-text py-5 px-4">
+        <div>
+            <h1 aria-label="custom floor plans">
+                <div class="h1-sm ml-5">custom</div>
+                floor plans
+            </h1>
+            <include file="content/home-2.html" />
+            <p><a href="#" class="text-lg text-white">Custom design<icon class="icon ml-1" name="chevron-right" /></a></p>
+        </div>
+    </div>
 </section>
