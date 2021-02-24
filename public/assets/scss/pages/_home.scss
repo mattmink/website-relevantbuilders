@@ -12,6 +12,7 @@
 .home-hero {
     min-height: 500px;
     height: calc(100vh - 107px);
+    overflow: hidden;
 
     h1 {
         @include flex-font-size(5rem, md);
@@ -38,11 +39,13 @@
             left: 0;
             border-top: 6px solid #fff;
             border-bottom: 16px solid #fff;
+            animation: slide-left-fade-in ease-in-out 4s;
         }
         &::after {
             bottom: 30px;
             left: -20px;
             border-bottom: 12px solid $brand-2;
+            animation: slide-left-fade-in ease-in-out 2.5s;
         }
     }
     .home-hero-image-wrapper {
@@ -51,6 +54,7 @@
         height: calc(100% - 52px);
         padding-top: 18px;
         margin-left: -40px;
+        animation: slide-left-fade-in ease-out 1.25s;
     }
     .home-hero-image {
         display: block;
@@ -101,4 +105,17 @@
     74% { transform: rotate3d(0, 0, 1, 0deg); }
     82% { transform: rotate3d(0, 0, 1, 2deg); }
     100% { transform: rotate3d(0, 0, 1, 0deg); }
+}
+
+@keyframes slide-left-fade-in {
+    0% {
+        opacity: 0;
+        transform: translate3d(150px, 0, 0);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
 }
