@@ -55,27 +55,10 @@
 }
 
 @keyframes rotate-bounce-in {
-    0% {
-        transform: rotate3d(0, 0, 1, 90deg);
-    }
-
-    36% {
-        transform: rotate3d(0, 0, 1, 0deg);
-    }
-
-    54% {
-        transform: rotate3d(0, 0, 1, 6deg);
-    }
-
-    74% {
-        transform: rotate3d(0, 0, 1, 0deg);
-    }
-
-    82% {
-        transform: rotate3d(0, 0, 1, 2deg);
-    }
-
-    100% {
-        transform: rotate3d(0, 0, 1, 0deg);
-    }
+    0% { transform: rotate3d(0, 0, 1, 90deg); }
+    36% { transform: rotate3d(0, 0, 1, 0deg); }
+    54% { transform: rotate3d(0, 0, 1, 6deg); }
+    74% { transform: rotate3d(0, 0, 1, 0deg); }
+    82% { transform: rotate3d(0, 0, 1, 2deg); }
+    100% { transform: rotate3d(0, 0, 1, 0deg); }
 }

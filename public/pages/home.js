@@ -1,14 +1,31 @@
+const makeCarouselElement = function mapStringToCarouselElement(string, i) {
+    const el = document.createElement('span', );
+
+    el.innerText = string;
+    el.classList.add('carousel-item');
+
+    if (i === 0) el.classList.add('in');
+
+    return el;
+};
+
 export default function home() {
+    const transitionDelay = 1200;
+    const adjCarousel = document.querySelector('[data-adjectives]');
+    const adjectives = adjCarousel.dataset.adjectives.split(',').map(makeCarouselElement);
     let activeItemIndex = 0;
     let prevItemIndex = 0;
-    const transitionDelay = 1200;
+
     const nextWord = function displayNextWordInCarousel() {
         prevItemIndex = activeItemIndex;
-        activeItemIndex = (prevItemIndex + 1) % adjectivesCount;
+        activeItemIndex = (prevItemIndex + 1) % adjectives.length;
         const previousItem = adjectives[prevItemIndex];
         const activeItem = adjectives[activeItemIndex];
         previousItem.classList.add('leaving');
         activeItem.classList.add('entering');
+    };
+    const prepareNextWord = function prepareNextWord() {
+        setTimeout(nextWord, transitionDelay);
     };
     const afterTransition = function afterTransitionComplete({ target }) {
         if (target.classList.contains('leaving')) {
@@ -16,31 +33,17 @@ export default function home() {
         } else if (target.classList.contains('entering')) {
             target.classList.add('in');
             target.classList.remove('entering');
-            setTimeout(nextWord, transitionDelay);
+            prepareNextWord();
         }
     };
-    const adjCarousel = document.querySelector('[data-adjectives]');
-    const adjectives = adjCarousel.dataset.adjectives.split(',').map((adj, i) => {
-        const adjEl = document.createElement('span');
 
-        adjEl.innerText = adj;
-        adjEl.classList.add('carousel-item');
-
-        if (i === 0) adjEl.classList.add('in');
-
-        adjEl.addEventListener('transitionend', afterTransition);
-        adjEl.addEventListener('animationend', afterTransition);
-
-        return adjEl;
-    });
-    const adjectivesCount = adjectives.length;
-
-    prevItemIndex = adjectivesCount;
+    adjCarousel.addEventListener('transitionend', afterTransition);
+    adjCarousel.addEventListener('animationend', afterTransition);
     adjCarousel.classList.add('active');
     adjCarousel.innerHTML = '';
     adjectives.forEach((adjEl) => {
         adjCarousel.appendChild(adjEl);
     });
 
-    setTimeout(nextWord, transitionDelay);
+    prepareNextWord();
 }
