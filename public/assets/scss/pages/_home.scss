@@ -1,11 +1,11 @@
 .h1-sm {
-    font-size: .5em;
+    font-size: 0.5em;
     line-height: 1.25;
-    opacity: .5;
-    margin-bottom: -.5em;
+    opacity: 0.5;
+    margin-bottom: -0.5em;
 
     @include media-breakpoint-up(md) {
-        font-size: .4em;
+        font-size: 0.4em;
     }
 }
 
@@ -17,6 +17,65 @@
         margin-left: -4em;
     }
     .home-hero-text-row3 {
-        font-size: .3em;
+        font-size: 0.3em;
+    }
+}
+
+.adjective-carousel {
+    &.active {
+        border-bottom: 3px solid $link-color-light;
+        display: inline-grid;
+        vertical-align: baseline;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        overflow: hidden;
+    }
+    .carousel-item {
+        display: block;
+        font-weight: 500;
+        padding: 0 0.25em;
+        grid-row: 1;
+        grid-column: 1;
+        transform: rotate3d(0, 0, 1, 90deg);
+        transform-origin: right bottom;
+
+        &.entering {
+            animation: rotate-bounce-in 0.4s;
+        }
+
+        &.in {
+            transform: rotate3d(0, 0, 1, 0);
+
+            &.leaving {
+                transition: transform ease-in-out 0.2s;
+                transform: rotate3d(0, 0, 1, -90deg);
+            }
+        }
+    }
+}
+
+@keyframes rotate-bounce-in {
+    0% {
+        transform: rotate3d(0, 0, 1, 90deg);
+    }
+
+    36% {
+        transform: rotate3d(0, 0, 1, 0deg);
+    }
+
+    54% {
+        transform: rotate3d(0, 0, 1, 6deg);
+    }
+
+    74% {
+        transform: rotate3d(0, 0, 1, 0deg);
+    }
+
+    82% {
+        transform: rotate3d(0, 0, 1, 2deg);
+    }
+
+    100% {
+        transform: rotate3d(0, 0, 1, 0deg);
     }
 }
