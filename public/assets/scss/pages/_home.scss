@@ -98,15 +98,22 @@
     }
 }
 
+
+
 .home-section-2 {
     background-image: linear-gradient(to top,
-        #A2A7C1,
-        #A2A7C1 30px,
-        #BBBED2 30px,
-        #BBBED2 60px,
-        #DADAE6 60px,
-        #DADAE6 90px,
-        #FFFFFF 90px);
+        lighten($brand-1-light,31%),
+        lighten($brand-1-light,31%) 3.8vh,
+        lighten($brand-1-light,39%) 3.8vh,
+        lighten($brand-1-light,39%) 7.6vh,
+        lighten($brand-1-light,47%) 7.6vh,
+        lighten($brand-1-light,47%) 11.4vh,
+        #ffffff 11.4vh);
+}
+
+.home-feature-thumb {
+    box-shadow: 3px 4px 0 #fff, 25px 10px 0 $brand-1, 22px 10px 0 #fff, 0 4px 0 #fff, 0 10px 0 $brand-2;
+    display: inline-block;
 }
 
 @keyframes rotate-bounce-in {

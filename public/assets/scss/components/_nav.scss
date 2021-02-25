@@ -1,5 +1,5 @@
 .main-nav {
-    font-size: .75rem;
+    font-size: 0.8em;
 
     .nav-brand {
         width: 224px;
@@ -16,7 +16,7 @@
 
         &:hover,
         &:focus-within {
-            box-shadow: 0 2px 4px rgb(0, 0, 0, .3);
+            box-shadow: 0 2px 4px rgb(0, 0, 0, 0.3);
         }
     }
 
@@ -25,13 +25,12 @@
         padding: $button-padding;
         color: #fff;
         text-decoration: none;
-        transition: all ease-in-out .2s;
+        transition: all ease-in-out 0.2s;
         font-weight: 500;
-
 
         &::after {
             display: block;
-            content: "";
+            content: '';
             position: absolute;
             top: 0;
             left: 50%;
@@ -41,14 +40,14 @@
             background: #fff;
             transform: skewX(40deg) translate3d(-50%, 0, 0) scale3d(0, 1, 1);
             transform-origin: center;
-            transition: all ease-in-out .25s;
+            transition: all ease-in-out 0.25s;
             z-index: -1;
         }
 
         &:hover::after,
         &:focus::after {
-            opacity: .2;
-            transform: skewX(40deg) translate3d(-50%, 0, 0)  scale3d(1.5, 1.5, 1);
+            opacity: 0.2;
+            transform: skewX(40deg) translate3d(-50%, 0, 0) scale3d(1.5, 1.5, 1);
         }
     }
 }

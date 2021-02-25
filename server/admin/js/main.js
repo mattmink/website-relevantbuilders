@@ -65,12 +65,17 @@
         el: '#app',
         data() {
             return {
-                activePage: '',
+                activePageId: '',
                 pages: [],
                 imagePreviews: {},
                 showPagesDropdown: false,
                 showCollapseMenu: false,
             };
+        },
+        computed: {
+            activePage() {
+                return this.pages.find(({ id }) => id === this.activePageId);
+            },
         },
         methods: {
             closeImageUpload(imageId) {
@@ -209,7 +214,7 @@
                     document.removeEventListener('click', this.clickOutsideHandler);
                 }
             },
-            activePage() {
+            activePageId() {
                 this.showPagesDropdown = false;
             }
         },
@@ -223,7 +228,7 @@
                     return obj;
                 }, {});
                 this.pages = content.pages;
-                this.activePage = this.pages[0].id;
+                this.activePageId = this.pages[0].id;
             } catch (error) {
                 this.alertError('An error occurred while loading website content.');
             }

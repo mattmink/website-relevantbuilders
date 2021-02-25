@@ -29,7 +29,7 @@ router.get(admin('/auth/return'), authenticate({ failureRedirect: adminRoot }), 
 
 router.get(admin(), (req, res) => {
     if (req.user) {
-        res.render('index', { title: 'Relevant Builders Website Admin', publicRoot });
+        res.render('index', { title: 'Relevant Builders Website Admin', publicRoot, content });
     } else {
         res.render('login', { title: 'Sign In: Relevant Builders Website Admin' });
     }
