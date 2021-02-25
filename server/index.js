@@ -14,6 +14,7 @@ const app = express();
 const { PORT } = process.env;
 
 copySync(path.resolve(__dirname, '../public/assets/images'), path.resolve(__dirname, './uploads/images'), { recursive: true, overwrite: false });
+copySync(path.resolve(__dirname, '../public/content'), path.resolve(__dirname, './content'), { recursive: true, overwrite: false });
 
 app.use(require('cookie-parser')());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -41,6 +42,7 @@ app.use('/s/admin/vendor/feather-icons', express.static(path.resolve(__dirname, 
 app.use('/s/admin/vendor/bootstrap', express.static(path.resolve(__dirname, '../node_modules/bootstrap/dist/css')));
 app.use('/s/admin/vendor/vue-toasted', express.static(path.resolve(__dirname, '../node_modules/vue-toasted/dist')));
 app.use('/s/admin/vendor/vue-loading', express.static(path.resolve(__dirname, '../node_modules/vue-loading-overlay/dist')));
+app.use('/s/admin/vendor/vue-tinymce', express.static(path.resolve(__dirname, '../node_modules/@tinymce/tinymce-vue/lib/browser')));
 
 // Logging
 app.use(require('morgan')('combined'));

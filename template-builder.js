@@ -4,12 +4,13 @@ const htmlMinifier = require('html-minifier-terser');
 const feather = require('feather-icons');
 const path = require('path');
 
-
 const iconRegex = /<icon (?:class=\\?"([\w\s-]+)\\?" )?name=\\?"([\w-]+)\\?"(?: class=\\?"([\w\s-]+)\\?")? ?\/?>/g;
 const includeRegex = /<include file=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
-const includeRoot = path.resolve('./public');
 
-const pagesPath = path.resolve('./public/pages');
+const publicRootByMode = {
+    production: path.resolve(__dirname, './public-tmp'),
+    development: path.resolve(__dirname, './public'),
+};
 const templateMap = {};
 const imageRegex = /[-_@\.\/\~\\\w\d]+\.(?:jpe?g|png|gif)/g;
 const imageSrcMap = {};
@@ -23,11 +24,6 @@ const convertIcons = (str, { escapeQuotes } = {}) => str.replace(iconRegex, (_, 
     return replacement;
 });
 
-const getTemplateName = (filePath) => {
-    if (filePath.slice(-5) !== '.html' || filePath.indexOf(pagesPath) !== 0) return null;
-    return filePath.replace(`${pagesPath}/`, '');
-};
-
 const minifyHtml = (html = '') => htmlMinifier.minify(html, {
     collapseWhitespace: true,
     removeComments: true,
@@ -37,8 +33,8 @@ const minifyHtml = (html = '') => htmlMinifier.minify(html, {
     useShortDoctype: true
 });
 
-const injectIncludes = (str, { escapeQuotes, minify } = {}) => str.replace(includeRegex, (_, file) => {
-    let replacement = readFileSync(path.resolve(includeRoot, file), 'utf8');
+const injectIncludes = (str, { escapeQuotes, minify, mode = 'development' } = {}) => str.replace(includeRegex, (_, file) => {
+    let replacement = readFileSync(path.resolve(publicRootByMode[mode], file), 'utf8');
 
     if (includeRegex.test(replacement)) {
         replacement = injectIncludes(replacement);
@@ -61,7 +57,14 @@ class TemplateBuilderPlugin {
     }
 
     apply(compiler) {
-        const isDev = this.mode = 'development';
+        const isDev = this.mode === 'development';
+        const pagesPath = path.join(publicRootByMode[this.mode], '/pages');
+
+        const getTemplateName = (filePath) => {
+            if (filePath.slice(-5) !== '.html' || filePath.indexOf(pagesPath) !== 0) return null;
+            return filePath.replace(`${pagesPath}/`, '');
+        };
+
         if (isDev) {
             compiler.hooks.watchRun.tap('TemplateBuilderPlugin', (comp) => {
                 updated = Object.keys(comp.watchFileSystem.watcher.mtimes)
@@ -81,12 +84,12 @@ class TemplateBuilderPlugin {
                     let template = templateMap[outputName];
 
                     if (!isDev || !template || updated.includes(outputName)) {
-                        template = convertIcons(injectIncludes(readFileSync(`${pagesPath}/${outputName}`, 'utf8')))
+                        template = convertIcons(injectIncludes(readFileSync(`${pagesPath}/${outputName}`, 'utf8'), { mode: this.mode }))
                             .replace(imageRegex, match => imageSrcMap[match]);
                         templateMap[outputName] = template;
                     }
 
-                    data.html = minifyHtml(convertIcons(injectIncludes(data.html.replace(/<page ?\/>/, template))));
+                    data.html = minifyHtml(convertIcons(injectIncludes(data.html.replace(/<page ?\/>/, template), { mode: this.mode })));
                     cb(null, data);
                 }
             )
@@ -103,7 +106,7 @@ module.exports = function (source, map) {
             });
         });
     const escapeQuotes = true;
-    const content = convertIcons(injectIncludes(source, { escapeQuotes, minify: true }), { escapeQuotes });
+    const content = convertIcons(injectIncludes(source, { escapeQuotes, minify: true, mode: this.mode }), { escapeQuotes });
     this.callback(null, content, map);
 };
 

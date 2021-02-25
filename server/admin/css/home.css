@@ -32,6 +32,22 @@ span.navbar-toggler-icon {
     height: 1.25em;
 }
 
+.tox-notifications-container {
+    display: none !important;
+}
+
+
+@media (min-width: 992px) {
+    .content-columns {
+        margin-right: -6vh;
+        margin-left: -6vh;
+    }
+    .content-column {
+        padding-right: 6vh;
+        padding-left: 6vh;
+    }
+}
+
 @media (max-width: 767px) {
     :root {
         --mobile-menu-width: 250px;

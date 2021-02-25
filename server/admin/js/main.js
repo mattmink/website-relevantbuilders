@@ -60,22 +60,62 @@
 
     Vue.use(VueLoading);
     Vue.use(Toasted);
+    Vue.component('Editor', Editor);
+
+    const editorConfig = {
+        menubar: false,
+        plugins: [
+            'lists link image charmap preview anchor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media paste code'
+        ],
+        toolbar:
+            'undo redo | formatselect | bold italic | link unlink | \
+            alignleft aligncenter alignright alignjustify | \
+            bullist numlist outdent indent | removeformat',
+        anchor_top: false,
+        anchor_bottom: false,
+        target_list: false,
+        link_title: false,
+        link_list: [],
+        relative_urls : false,
+        remove_script_host : true,
+        document_base_url : '',
+    };
 
     new Vue({
         el: '#app',
         data() {
             return {
+                contentHTML: {},
+                imageRequirements: {},
                 activePageId: '',
                 pages: [],
                 imagePreviews: {},
                 showPagesDropdown: false,
+                showPagesDropdownInline: false,
                 showCollapseMenu: false,
+                hasUnsavedChanges: false,
+                editorConfig,
             };
         },
         computed: {
+            isEmptyPageImages() {
+                return !this.activePage.images || this.activePage.images.length === 0;
+            },
+            isEmptyPageHTML() {
+                return !this.activePage.html || this.activePage.html.length === 0;
+            },
+            hasPageContent() {
+                return !this.isEmptyPageImages || !this.isEmptyPageHTML;
+            },
             activePage() {
+                if (!this.activePageId) return { images: [] };
                 return this.pages.find(({ id }) => id === this.activePageId);
             },
+            notActivePages() {
+                return this.pages.filter(({ id }) => id !== this.activePageId);
+            }
         },
         methods: {
             closeImageUpload(imageId) {
@@ -95,6 +135,23 @@
                     this.alertSuccess('Your changes have been published!');
                 } catch (error) {
                     this.alertError('An error occurred while publishing your changes.');
+                }
+                loading.hide();
+            },
+            async save() {
+                const loading = this.loading('Saving your changes...');
+                try {
+                    await fetch('/s/api/save', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(this.contentHTML),
+                    });
+                    this.alertSuccess('Your changes have been saved!');
+                } catch (error) {
+                    this.alertError('An error occurred while saving your changes.');
                 }
                 loading.hide();
             },
@@ -179,7 +236,7 @@
             loading(message) {
                 const props = !message ? null : { before: this.$createElement('h3', { class: 'text-center mb-3' }, message) };
                 return this.$loading.show({ isFullPage: true }, props);
-            }
+            },
         },
         watch: {
             showCollapseMenu(showCollapseMenu) {
@@ -214,21 +271,36 @@
                     document.removeEventListener('click', this.clickOutsideHandler);
                 }
             },
+            showPagesDropdownInline(showPagesDropdownInline) {
+                if (showPagesDropdownInline) {
+                    this.clickOutsideHandlerInline = (event) => {
+                        if (isClickOutside(event, this.$refs.pagesDropdownInline)) {
+                            this.showPagesDropdownInline = false;
+                        }
+                    };
+                    document.addEventListener('click', this.clickOutsideHandlerInline);
+                } else {
+                    document.removeEventListener('click', this.clickOutsideHandlerInline);
+                }
+            },
             activePageId() {
                 this.showPagesDropdown = false;
-            }
+                this.showPagesDropdownInline = false;
+            },
         },
         async mounted() {
             const loading = this.loading();
             try {
                 const content = await fetchJson('/s/api/content');
                 this.imageRequirements = { ...content.images };
+                this.contentHTML = { ...content.html };
                 this.imagePreviews = Object.keys(content.images).reduce((obj, key) => {
                     obj[key] = null;
                     return obj;
                 }, {});
                 this.pages = content.pages;
                 this.activePageId = this.pages[0].id;
+                this.editorConfig.link_list = content.pages.map(({ name, path }) => ({ title: name, value: path }));
             } catch (error) {
                 this.alertError('An error occurred while loading website content.');
             }

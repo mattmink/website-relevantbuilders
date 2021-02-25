@@ -1,3 +1,5 @@
+doctype html
+
 html
 
     head
@@ -40,6 +42,10 @@ html
                                 )
                                     |{{ page.name }}
 
+                button.btn.btn-primary.d-none.d-md-inline-block(@click="save")
+                    |Save
+                button.btn.btn-primary.btn-sm.d-md-none(@click="save")
+                    |Save
                 button.btn.btn-primary.d-none.d-md-inline-block(@click="publish")
                     |Publish
                 button.btn.btn-primary.btn-sm.d-md-none(@click="publish")
@@ -47,48 +53,70 @@ html
 
             .container-fluid.pt-3
                 h2.mb-4
-                    icon(name="home").mr-2
-                    |Home
+                    span.mr-3
+                        |{{ activePage.name }} page
+                    div(:class="['dropdown d-inline-block', { show: showPagesDropdownInline }]" ref="pagesDropdownInline")
+                        button.btn.btn-sm.btn-secondary.dropdown-toggle(@click="showPagesDropdownInline = !showPagesDropdownInline")
+                            |switch page
+                        div(:class="['dropdown-menu', { show: showPagesDropdownInline }]")
+                            a.dropdown-item(v-for="page in notActivePages"
+                                :key="page.id"
+                                href="javascript:void(0)"
+                                @click.prevent="activePageId = page.id"
+                            )
+                                |{{ page.name }}
 
+                .alert.alert-info(v-if="!hasPageContent")
+                    |This page has no editable content
 
-                div(v-for="pageImage in activePage.images" :key="pageImage.id" class="mb-5")
-                    h3
-                        |{{ imageRequirements[pageImage].title }}
-                    div(v-show="!imagePreviews[pageImage]")
-                        button.btn.btn-secondary(@click="imagePreviews[pageImage] = {}")
-                            icon(name="edit").mr-1
-                            |Edit
-                        .mt-2.row
-                            .col-lg-6
-                                img.img-fluid(
-                                    :srcset="`/s/admin/uploads/images/${pageImage}.jpg, /s/admin/uploads/images/${pageImage}@2x.jpg 2x`"
-                                    :src="`/s/admin/uploads/images/${pageImage}.jpg`"
-                                    :ref="pageImage"
+                .row.content-columns(v-else)
+                    .col-md-6.content-column(v-if="!isEmptyPageHTML")
+                        h3.bg-info.text-white.p-3.mb-3
+                            |Content
+                        div(v-for="htmlId in activePage.html" :key="htmlId")
+                            h4
+                                |{{ contentHTML[htmlId].title }}
+                            editor(api-key="no-api-key" :init="editorConfig" v-model="contentHTML[htmlId].html")
+                            hr.m-5
+                    .col-md-6.content-column(v-if="!isEmptyPageImages")
+                        h3.bg-info.text-white.p-3.mb-3
+                            |Images
+                        div(v-for="pageImage in activePage.images" :key="pageImage.id" class="mb-5")
+                            h4
+                                |{{ imageRequirements[pageImage].title }}
+                            div(v-show="!imagePreviews[pageImage]")
+                                button.btn.btn-secondary(@click="imagePreviews[pageImage] = {}")
+                                    icon(name="edit").mr-1
+                                    |Edit
+                                .mt-2.row
+                                    .col-lg-6
+                                        img.img-fluid(
+                                            :srcset="`/s/admin/uploads/images/${pageImage}.jpg, /s/admin/uploads/images/${pageImage}@2x.jpg 2x`"
+                                            :src="`/s/admin/uploads/images/${pageImage}.jpg`"
+                                            :ref="pageImage"
+                                        )
+
+                            div(v-show="!!imagePreviews[pageImage]")
+                                button.btn.btn-primary(
+                                    v-show="imagePreviews[pageImage] && imagePreviews[pageImage].img"
+                                    @click="uploadCropped(pageImage)"
                                 )
-
-                    div(v-show="!!imagePreviews[pageImage]")
-                        button.btn.btn-primary(
-                            v-show="imagePreviews[pageImage] && imagePreviews[pageImage].img"
-                            @click="uploadCropped(pageImage)"
-                        )
-                            icon(name="check-circle").mr-1
-                            |Done
-                        button.btn.btn-outline-danger(@click="closeImageUpload(pageImage)")
-                            icon(name="x-circle").mr-1
-                            |Cancel
-                        .mt-2.row
-                            .col-lg-6
-                                file-upload(
-                                    v-show="!imagePreviews[pageImage] || !imagePreviews[pageImage].img"
-                                    name="file"
-                                    description="Drop a file here, or click 'Browse'"
-                                    @change="handleImageChange($event, pageImage)"
-                                )
-                                div(v-show="imagePreviews[pageImage] && imagePreviews[pageImage].img")
-                                    canvas(:ref="`${pageImage}-preview`").img-fluid
-
-
-
+                                    icon(name="check-circle").mr-1
+                                    |Done
+                                button.btn.btn-outline-danger(@click="closeImageUpload(pageImage)")
+                                    icon(name="x-circle").mr-1
+                                    |Cancel
+                                .mt-2.row
+                                    .col-lg-6
+                                        file-upload(
+                                            v-show="!imagePreviews[pageImage] || !imagePreviews[pageImage].img"
+                                            name="file"
+                                            description="Drop a file here, or click 'Browse'"
+                                            @change="handleImageChange($event, pageImage)"
+                                        )
+                                        div(v-show="imagePreviews[pageImage] && imagePreviews[pageImage].img")
+                                            canvas(:ref="`${pageImage}-preview`").img-fluid
+                            hr.m-5
 
         //- Components
         include ../components/icon/icon
