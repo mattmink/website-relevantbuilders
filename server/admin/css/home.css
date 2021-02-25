@@ -32,10 +32,10 @@ span.navbar-toggler-icon {
     height: 1.25em;
 }
 
+.tox-statusbar__branding,
 .tox-notifications-container {
     display: none !important;
 }
-
 
 @media (min-width: 992px) {
     .content-columns {

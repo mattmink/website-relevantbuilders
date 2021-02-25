@@ -42,10 +42,6 @@ html
                                 )
                                     |{{ page.name }}
 
-                button.btn.btn-primary.d-none.d-md-inline-block(@click="save")
-                    |Save
-                button.btn.btn-primary.btn-sm.d-md-none(@click="save")
-                    |Save
                 button.btn.btn-primary.d-none.d-md-inline-block(@click="publish")
                     |Publish
                 button.btn.btn-primary.btn-sm.d-md-none(@click="publish")
@@ -65,6 +61,9 @@ html
                                 @click.prevent="activePageId = page.id"
                             )
                                 |{{ page.name }}
+                    button.btn.btn-sm.btn-success.ml-2(@click="save()" v-show="unsavedContent.length > 0")
+                        icon.mr-1(name="save")
+                        |save all changes
 
                 .alert.alert-info(v-if="!hasPageContent")
                     |This page has no editable content
@@ -76,7 +75,15 @@ html
                         div(v-for="htmlId in activePage.html" :key="htmlId")
                             h4
                                 |{{ contentHTML[htmlId].title }}
-                            editor(api-key="no-api-key" :init="editorConfig" v-model="contentHTML[htmlId].html")
+                                button.ml-2.btn.btn-success.btn-sm(v-show="contentHTML[htmlId].html !== contentHTMLOld[htmlId].html"
+                                        @click="save(htmlId)")
+                                    icon.mr-1(name="save")
+                                    |Save
+                            editor(:id="`editor_${htmlId}`"
+                                    api-key="no-api-key"
+                                    :init="editorConfig"
+                                    v-model="contentHTML[htmlId].html"
+                                    :ref="`editor${htmlId}`")
                             hr.m-5
                     .col-md-6.content-column(v-if="!isEmptyPageImages")
                         h3.bg-info.text-white.p-3.mb-3

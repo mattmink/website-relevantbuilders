@@ -58,35 +58,26 @@
         return !isInsideAnyContainer;
     };
 
+    const captureSaveKey = (e) => {
+        const { metaKey, key } = e;
+        const isSaveKey = key === 's' && metaKey;
+
+        if (!isSaveKey) return false;
+
+        e.preventDefault();
+
+        return true;
+    };
+
     Vue.use(VueLoading);
     Vue.use(Toasted);
     Vue.component('Editor', Editor);
-
-    const editorConfig = {
-        menubar: false,
-        plugins: [
-            'lists link image charmap preview anchor',
-            'searchreplace visualblocks code fullscreen',
-            'insertdatetime media paste code'
-        ],
-        toolbar:
-            'undo redo | formatselect | bold italic | link unlink | \
-            alignleft aligncenter alignright alignjustify | \
-            bullist numlist outdent indent | removeformat',
-        anchor_top: false,
-        anchor_bottom: false,
-        target_list: false,
-        link_title: false,
-        link_list: [],
-        relative_urls : false,
-        remove_script_host : true,
-        document_base_url : '',
-    };
 
     new Vue({
         el: '#app',
         data() {
             return {
+                contentHTMLOld: {},
                 contentHTML: {},
                 imageRequirements: {},
                 activePageId: '',
@@ -96,7 +87,35 @@
                 showPagesDropdownInline: false,
                 showCollapseMenu: false,
                 hasUnsavedChanges: false,
-                editorConfig,
+                editorConfig: {
+                    menubar: false,
+                    plugins: [
+                        'lists link image charmap preview anchor',
+                        'searchreplace visualblocks code fullscreen',
+                        'insertdatetime media paste code'
+                    ],
+                    toolbar:
+                        'undo redo | formatselect | bold italic | link unlink | \
+                        alignleft aligncenter alignright alignjustify | \
+                        bullist numlist outdent indent | removeformat',
+                    anchor_top: false,
+                    anchor_bottom: false,
+                    target_list: false,
+                    link_title: false,
+                    link_list: [],
+                    relative_urls : false,
+                    remove_script_host : true,
+                    document_base_url : '',
+                    setup: (editor) => {
+                        editor.on('keydown', (e) => {
+                            const htmlId = editor.id.replace('editor_', '');
+
+                            if (!captureSaveKey(e) || !this.unsavedContent.includes(htmlId)) return;
+
+                            this.save(htmlId);
+                        })
+                    },
+                },
             };
         },
         computed: {
@@ -115,6 +134,9 @@
             },
             notActivePages() {
                 return this.pages.filter(({ id }) => id !== this.activePageId);
+            },
+            unsavedContent() {
+                return Object.keys(this.contentHTML).filter(key => this.contentHTML[key].html !== this.contentHTMLOld[key].html);
             }
         },
         methods: {
@@ -138,8 +160,10 @@
                 }
                 loading.hide();
             },
-            async save() {
-                const loading = this.loading('Saving your changes...');
+            async save(htmlId) {
+                const loadingMessage = !htmlId ? 'Saving your changes...' : `Saving changes to ${this.contentHTML[htmlId].title}...`;
+                const loading = this.loading(loadingMessage);
+                const data = !htmlId ? this.contentHTML : { [htmlId]: this.contentHTML[htmlId] };
                 try {
                     await fetch('/s/api/save', {
                         method: 'POST',
@@ -147,9 +171,16 @@
                             'Accept': 'application/json',
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(this.contentHTML),
+                        body: JSON.stringify(data),
                     });
-                    this.alertSuccess('Your changes have been saved!');
+                    if (htmlId) {
+                        this.contentHTMLOld[htmlId] = JSON.parse(JSON.stringify(data[htmlId]));
+                    } else {
+                        this.contentHTMLOld = JSON.parse(JSON.stringify(data));
+                    }
+
+                    const successMessage = !htmlId ? 'Your changes have been saved!' : `${this.contentHTML[htmlId].title} has been updated!`;
+                    this.alertSuccess(successMessage);
                 } catch (error) {
                     this.alertError('An error occurred while saving your changes.');
                 }
@@ -293,6 +324,7 @@
             try {
                 const content = await fetchJson('/s/api/content');
                 this.imageRequirements = { ...content.images };
+                this.contentHTMLOld = JSON.parse(JSON.stringify(content.html));
                 this.contentHTML = { ...content.html };
                 this.imagePreviews = Object.keys(content.images).reduce((obj, key) => {
                     obj[key] = null;
@@ -304,6 +336,10 @@
             } catch (error) {
                 this.alertError('An error occurred while loading website content.');
             }
+            document.addEventListener('keydown', (e) => {
+                if (!captureSaveKey(e) || this.unsavedContent.length === 0) return;
+                this.save();
+            });
             loading.hide();
         }
     });
