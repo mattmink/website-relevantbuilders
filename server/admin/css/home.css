@@ -38,13 +38,17 @@ span.navbar-toggler-icon {
 }
 
 @media (min-width: 992px) {
+    .container-fluid {
+        overflow: hidden;
+    }
     .content-columns {
-        margin-right: -6vh;
-        margin-left: -6vh;
+        margin-right: -4vw;
+        margin-left: -4vw;
+        overflow: hidden;
     }
     .content-column {
-        padding-right: 6vh;
-        padding-left: 6vh;
+        padding-right: 4vw;
+        padding-left: 4vw;
     }
 }
 
