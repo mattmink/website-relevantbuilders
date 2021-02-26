@@ -18,20 +18,36 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     line-height: 1.5;
+    background-image:
+        linear-gradient(39deg, rgba($brand-1-light,1) 30%, rgba($brand-1-light,0) 30%, rgba($brand-1-light,0) 100%),
+        linear-gradient(-39deg, rgba($brand-1-light,1) 30%, rgba($brand-1-light,0) 30%, rgba($brand-1-light,0) 100%);
+    background-attachment: fixed;
 
-    &::before {
-        display: block;
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        padding-top: 100%;
-        background: #fff;
-        opacity: .1;
-        transform-origin: top right;
-        transform: rotate(38deg) translate(-12vw, 45vw);
-        z-index: -1;
+    @include media-breakpoint-up(md) {
+        background: none transparent;
+
+        &::before {
+            display: block;
+            content: "";
+            position: absolute;
+            width: 100vw;
+            min-width: 100vh;
+            height: 100vw;
+            min-height: 100vh;
+            background: #fff;
+            opacity: .1;
+            transform-origin: top right;
+            top: 46%;
+            z-index: -1;
+            right: 10%;
+            transform: rotate(39deg) translate3d(-10%, -8%, 0);
+        }
+    }
+    @include media-breakpoint-up(lg) {
+        &::before {
+            right: 37%;
+            transform: rotate(39deg);
+        }
     }
 }
 
@@ -63,7 +79,8 @@ p {
 }
 
 .wrapper {
-    max-width: 1140px;
+    max-width: 1200px;
+    padding: 0 1rem;
 }
 
 .wrapper-800 {

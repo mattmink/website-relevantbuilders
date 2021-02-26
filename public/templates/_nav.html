@@ -1,8 +1,12 @@
-<nav class="main-nav d-flex py-2 wrapper">
+<nav id="mainNav" class="main-nav d-flex align-items-center py-2 wrapper">
     <a href="/" class="nav-brand">
         <include file="assets/images/logo.svg" />
     </a>
-    <div class="d-lg-flex ml-auto align-items-center">
+    <button id="menuToggle" class="menu-toggle-btn ml-auto">
+        <icon name="menu" class="icon menu-toggle-open" />
+        <icon name="x" class="icon menu-toggle-close" />
+    </button>
+    <div class="nav-items ml-auto align-items-center">
         <div class="nav-item">
             <a class="nav-link" href="/process">Our process</a>
         </div>

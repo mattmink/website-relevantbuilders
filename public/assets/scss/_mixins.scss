@@ -22,8 +22,23 @@
     }
 }
 
+@mixin media-breakpoint-down($name) {
+    $max: map-get($breakpoints, $name);
+    @if $max != map-get($breakpoints, xxl) {
+        @media (max-width: $max - 1) {
+            @content;
+        }
+    } @else {
+        @content;
+    }
+}
+
 @mixin flex-font-size($font-size, $breakpoint: lg) {
-    font-size: strip-unit($font-size) * 3vw;
+    $n: strip-unit($font-size);
+    font-size: $n * 3.5vw;
+    @include media-breakpoint-up($breakpoint) {
+        font-size: $n * 3vw;
+    }
     @include media-breakpoint-up($breakpoint) {
         font-size: $font-size;
     }

@@ -2,15 +2,15 @@
     font-size: 0.5em;
     line-height: 1.25;
     opacity: 0.5;
-    margin-bottom: -0.5em;
+    margin-bottom: -0.25em;
 
     @include media-breakpoint-up(md) {
+        margin-bottom: -0.5em;
         font-size: 0.4em;
     }
 }
 
 .home-hero {
-    min-height: 500px;
     height: calc(100vh - 103px);
     overflow: hidden;
 }
@@ -20,21 +20,40 @@
     align-items: center;
     justify-content: center;
     padding-bottom: 20vh;
+    padding-right: 1rem;
+    padding-left: 1rem;
 
     h1 {
-        @include flex-font-size(5rem, md);
+        @media (min-width: map-get($breakpoints, md)) {
+            font-size: 12vw;
+        }
+        @include flex-font-size(5rem, lg);
     }
     .home-hero-text-row1 {
         margin-left: -4em;
     }
     .home-hero-text-row3 {
-        font-size: 0.3em;
+        font-size: 0.4em;
+    }
+    @include media-breakpoint-up(md) {
+        .home-hero-text-row3 {
+            font-size: 0.3em;
+        }
     }
 }
 
-.home-hero-text,
-.home-hero-image-wrapper {
-    width: 50%;
+@include media-breakpoint-up(md) {
+    .home-hero {
+        display: flex;
+    }
+
+    .home-hero-text,
+    .home-hero-image-wrapper {
+        width: 50%;
+    }
+    .home-hero-text {
+        padding-right: calc(40px + 1rem);
+    }
 }
 
 .home-hero-image-wrapper {
@@ -43,7 +62,7 @@
     &::before,
     &::after {
         display: block;
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         right: 0;
@@ -77,6 +96,20 @@
 
     @include media2x {
         background-image: url('/public/assets/images/home-main@2x.jpg');
+    }
+}
+
+@media (min-width: map-get($breakpoints, md)) and (max-width: map-get($breakpoints, lg) - 1) {
+    .home-hero {
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .home-hero-text {
+        padding-bottom: 10vh;
+    }
+    .home-hero-image {
+        height: 50vh;
+        margin-bottom: 70px;
     }
 }
 
@@ -114,14 +147,16 @@
 }
 
 .home-section-2 {
-    $section-2-bottom-bg: linear-gradient(to top,
-        lighten($brand-1-light,31%),
-        lighten($brand-1-light,31%) 3.8vh,
-        lighten($brand-1-light,39%) 3.8vh,
-        lighten($brand-1-light,39%) 7.6vh,
-        lighten($brand-1-light,47%) 7.6vh,
-        lighten($brand-1-light,47%) 11.4vh,
-        #ffffff 11.4vh);
+    $section-2-bottom-bg: linear-gradient(
+        to top,
+        lighten($brand-1-light, 31%),
+        lighten($brand-1-light, 31%) 3.8vh,
+        lighten($brand-1-light, 39%) 3.8vh,
+        lighten($brand-1-light, 39%) 7.6vh,
+        lighten($brand-1-light, 47%) 7.6vh,
+        lighten($brand-1-light, 47%) 11.4vh,
+        #ffffff 11.4vh
+    );
     background-image: url('/public/assets/images/cedar-shingle.jpg'), $section-2-bottom-bg;
     background-repeat: repeat-x, repeat-x;
     padding-bottom: 12vh;
@@ -140,22 +175,38 @@
 }
 
 .home-feature-thumb {
-    box-shadow: 3px 4px 0 #fff, 25px 10px 0 $brand-1, 22px 10px 0 #fff, 0 4px 0 #fff, 0 10px 0 $brand-2;
-    display: inline-block;
-    transition: box-shadow ease-in-out .2s;
+    img {
+        box-shadow: 3px 4px 0 #fff, 25px 10px 0 $brand-1, 22px 10px 0 #fff, 0 4px 0 #fff, 0 10px 0 $brand-2;
+        display: inline-block;
+        transition: box-shadow ease-in-out 0.2s, transform ease-in-out 0.2s;
+        margin-right: 25px;
+    }
 
-    &:hover {
+    &:hover img {
         box-shadow: 3px 4px 0 #fff, 29px 14px 0 $brand-1, 26px 14px 0 #fff, 0 4px 0 #fff, 4px 14px 0 $brand-2;
+        transform: scale3d(1.05, 1.05, 1) translate3d(-2px, -8px, 0);
     }
 }
 
 @keyframes rotate-bounce-in {
-    0% { transform: rotate3d(0, 0, 1, 90deg); }
-    36% { transform: rotate3d(0, 0, 1, 0deg); }
-    54% { transform: rotate3d(0, 0, 1, 6deg); }
-    74% { transform: rotate3d(0, 0, 1, 0deg); }
-    82% { transform: rotate3d(0, 0, 1, 2deg); }
-    100% { transform: rotate3d(0, 0, 1, 0deg); }
+    0% {
+        transform: rotate3d(0, 0, 1, 90deg);
+    }
+    36% {
+        transform: rotate3d(0, 0, 1, 0deg);
+    }
+    54% {
+        transform: rotate3d(0, 0, 1, 6deg);
+    }
+    74% {
+        transform: rotate3d(0, 0, 1, 0deg);
+    }
+    82% {
+        transform: rotate3d(0, 0, 1, 2deg);
+    }
+    100% {
+        transform: rotate3d(0, 0, 1, 0deg);
+    }
 }
 
 @keyframes slide-left-fade-in {
