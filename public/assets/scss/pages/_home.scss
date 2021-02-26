@@ -142,6 +142,11 @@
 .home-feature-thumb {
     box-shadow: 3px 4px 0 #fff, 25px 10px 0 $brand-1, 22px 10px 0 #fff, 0 4px 0 #fff, 0 10px 0 $brand-2;
     display: inline-block;
+    transition: box-shadow ease-in-out .2s;
+
+    &:hover {
+        box-shadow: 3px 4px 0 #fff, 29px 14px 0 $brand-1, 26px 14px 0 #fff, 0 4px 0 #fff, 4px 14px 0 $brand-2;
+    }
 }
 
 @keyframes rotate-bounce-in {
