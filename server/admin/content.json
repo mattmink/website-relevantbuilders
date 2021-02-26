@@ -22,7 +22,7 @@
     "images": {
         "home-main": {
             "title": "Main Image",
-            "minWidth": 1520,
+            "minWidth": 1500,
             "minHeight": 1280
         },
         "home-feature-thumb-1": {

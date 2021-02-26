@@ -70,16 +70,6 @@ p {
     max-width: 800px;
 }
 
-.featured-section {
-    min-height: 100vh;
-}
-.featured-section-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 20vh;
-}
-
 .img-responsive {
     max-width: 100%;
     height: auto;
@@ -103,6 +93,16 @@ p {
 
     a:not(.btn) {
         color: $link-color-light;
+    }
+}
+
+a.text-white {
+    text-decoration: underline;
+    transition: opacity linear .1s;
+
+    &:hover,
+    &:focus {
+        opacity: .75;
     }
 }
 

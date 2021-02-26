@@ -11,8 +11,15 @@
 
 .home-hero {
     min-height: 500px;
-    height: calc(100vh - 107px);
+    height: calc(100vh - 103px);
     overflow: hidden;
+}
+
+.home-hero-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 20vh;
 
     h1 {
         @include flex-font-size(5rem, md);
@@ -23,45 +30,53 @@
     .home-hero-text-row3 {
         font-size: 0.3em;
     }
-    .featured-section-image {
-        position: relative;
+}
 
-        &::before,
-        &::after {
-            display: block;
-            content: "";
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
-        &::before {
-            bottom: 0;
-            left: 0;
-            border-top: 6px solid #fff;
-            border-bottom: 16px solid #fff;
-            animation: slide-left-fade-in ease-in-out 4s;
-        }
-        &::after {
-            bottom: 30px;
-            left: -20px;
-            border-bottom: 12px solid $brand-2;
-            animation: slide-left-fade-in ease-in-out 2.5s;
-        }
-    }
-    .home-hero-image-wrapper {
-        overflow: hidden;
-        width: calc(100% + 40px);
-        height: calc(100% - 52px);
-        padding-top: 18px;
-        margin-left: -40px;
-        animation: slide-left-fade-in ease-out 1.25s;
-    }
-    .home-hero-image {
+.home-hero-text,
+.home-hero-image-wrapper {
+    width: 50%;
+}
+
+.home-hero-image-wrapper {
+    position: relative;
+
+    &::before,
+    &::after {
         display: block;
-        width: auto;
-        height: auto;
-        min-width: 100%;
-        min-height: 100%;
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    &::before {
+        bottom: 0;
+        left: 0;
+        border-top: 6px solid #fff;
+        border-bottom: 16px solid #fff;
+        animation: slide-left-fade-in ease-in-out 4s;
+    }
+    &::after {
+        bottom: 30px;
+        left: -20px;
+        border-bottom: 12px solid $brand-2;
+        animation: slide-left-fade-in ease-in-out 2.5s;
+    }
+}
+
+.home-hero-image {
+    width: calc(100% + 40px);
+    height: calc(100% - 70px);
+    margin-top: 18px;
+    margin-left: -40px;
+    animation: slide-left-fade-in ease-out 1.25s;
+    background-image: url('/public/assets/images/home-main.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: transparent;
+
+    @include media2x {
+        background-image: url('/public/assets/images/home-main@2x.jpg');
     }
 }
 
@@ -98,10 +113,8 @@
     }
 }
 
-
-
 .home-section-2 {
-    background-image: linear-gradient(to top,
+    $section-2-bottom-bg: linear-gradient(to top,
         lighten($brand-1-light,31%),
         lighten($brand-1-light,31%) 3.8vh,
         lighten($brand-1-light,39%) 3.8vh,
@@ -109,6 +122,21 @@
         lighten($brand-1-light,47%) 7.6vh,
         lighten($brand-1-light,47%) 11.4vh,
         #ffffff 11.4vh);
+    background-image: url('/public/assets/images/cedar-shingle.jpg'), $section-2-bottom-bg;
+    background-repeat: repeat-x, repeat-x;
+    padding-bottom: 12vh;
+    background-size: 3.5em, 11.4vh;
+
+    @include media2x {
+        background-image: url('/public/assets/images/cedar-shingle@2x.jpg'), $section-2-bottom-bg;
+    }
+}
+
+.home-section-3 .featured-section-image {
+    background-image: url('/public/assets/images/home-floor-plans.jpg');
+    @include media2x {
+        background-image: url('/public/assets/images/home-floor-plans@2x.jpg');
+    }
 }
 
 .home-feature-thumb {
