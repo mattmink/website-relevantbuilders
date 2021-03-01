@@ -22,4 +22,10 @@ footer {
     .copyright {
         font-size: 0.625rem;
     }
+
+    @include media-breakpoint-down(md) {
+        .footer-links {
+            margin: map-get($spacers, 5) 0;
+        }
+    }
 }

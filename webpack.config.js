@@ -165,6 +165,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
         stats: 'errors-warnings',
         devServer: {
             contentBase: './dist',
+            historyApiFallback: true,
             proxy: {
                 '/s/api': 'http://localhost:3000',
             },

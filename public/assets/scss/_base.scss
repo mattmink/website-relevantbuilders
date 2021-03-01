@@ -109,6 +109,10 @@ p {
     animation-timing-function: linear;
 }
 
+body:not(.page-home) .page-content {
+    background: #fff;
+}
+
 .page-content .dark-section {
     color: #fff;
 
