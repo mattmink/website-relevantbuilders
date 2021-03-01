@@ -33,6 +33,14 @@
     }
 }
 
+@mixin media-breakpoint-between($min: xs, $max: xxl) {
+    @include media-breakpoint-up($min) {
+        @include media-breakpoint-down($max) {
+            @content;
+        }
+    }
+}
+
 @mixin flex-font-size($font-size, $breakpoint: lg) {
     $n: strip-unit($font-size);
     font-size: $n * 3.5vw;

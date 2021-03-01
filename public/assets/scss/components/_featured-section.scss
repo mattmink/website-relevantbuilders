@@ -3,7 +3,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: map-get($spacers, 5) 10vh;
+        padding: map-get($spacers, 5) 1rem;
     }
 
     .featured-section-image {
@@ -20,6 +20,11 @@
         .featured-section-text,
         .featured-section-image {
             width: 50%;
+        }
+
+        .featured-section-text {
+            padding-left: 10vh;
+            padding-right: 10vh;
         }
     }
 }

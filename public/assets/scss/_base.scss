@@ -20,16 +20,17 @@ body {
     line-height: 1.5;
     background-image:
         linear-gradient(39deg,
-            rgba($brand-1-light,1) 30%,
-            rgba($brand-1-light,0) 30%,
+            rgba($brand-1-light,1) 54vh,
+            rgba($brand-1-light,0) 54vh,
             rgba($brand-1-light,0) 100%),
         linear-gradient(-39deg,
-            rgba($brand-1-light,1) 30%,
-            rgba($brand-1-light,0) 30%,
+            rgba($brand-1-light,1) 54vh,
+            rgba($brand-1-light,0) 54vh,
             rgba($brand-1-light,0) 100%);
-        
+    background-attachment: fixed;
+
     @include media-breakpoint-up(md) {
-        background-image: 
+        background-image:
             linear-gradient(-51deg,
                 $brand-1 38%,
                 rgba($brand-1, 0) calc(38% + 1px),
@@ -38,9 +39,11 @@ body {
                 $brand-1-light 74%,
                 $brand-1 calc(74% + 1px),
                 $brand-1 100%);
+        background-attachment: scroll;
     }
+
     @include media-breakpoint-up(lg) {
-        background-image: 
+        background-image:
             linear-gradient(-51deg,
                 $brand-1 44%,
                 rgba($brand-1, 0) calc(44% + 1px),
@@ -77,11 +80,11 @@ p {
 .wrapper,
 .wrapper-800 {
     margin: 0 auto;
+    padding: 0 1rem;
 }
 
 .wrapper {
     max-width: 1200px;
-    padding: 0 1rem;
 }
 
 .wrapper-800 {
