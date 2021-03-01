@@ -1,14 +1,94 @@
-.wrapper {
-    max-width: 800px;
-    margin: 0 auto;
+* {
+    box-sizing: border-box;
 }
 
-.logo {
-    fill: #fff;
-    width: 75%;
-    height: auto;
-    max-width: 400px;
-    margin-bottom: 1rem;
+html {
+    height: 100%;
+    font-size: 20px;
+
+    @include media-breakpoint-up(md) {
+        font-size: 22px;
+    }
+}
+
+body {
+    height: 100%;
+    background-color: $brand-1;
+    color: $brand-1-dark;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    line-height: 1.5;
+    background-image:
+        linear-gradient(39deg,
+            rgba($brand-1-light,1) 54vh,
+            rgba($brand-1-light,0) 54vh,
+            rgba($brand-1-light,0) 100%),
+        linear-gradient(-39deg,
+            rgba($brand-1-light,1) 54vh,
+            rgba($brand-1-light,0) 54vh,
+            rgba($brand-1-light,0) 100%);
+    background-attachment: fixed;
+
+    @include media-breakpoint-up(md) {
+        background-image:
+            linear-gradient(-51deg,
+                $brand-1 38%,
+                rgba($brand-1, 0) calc(38% + 1px),
+                rgba($brand-1, 0) 100%),
+            linear-gradient(39deg,
+                $brand-1-light 74%,
+                $brand-1 calc(74% + 1px),
+                $brand-1 100%);
+        background-attachment: scroll;
+    }
+
+    @include media-breakpoint-up(lg) {
+        background-image:
+            linear-gradient(-51deg,
+                $brand-1 44%,
+                rgba($brand-1, 0) calc(44% + 1px),
+                rgba($brand-1, 0) 100%),
+            linear-gradient(39deg,
+                $brand-1-light 59%,
+                $brand-1 calc(59% + 1px),
+                $brand-1 100%);
+    }
+}
+
+h1 {
+    margin-top: 0;
+    margin-bottom: .4em;
+    font-weight: 200;
+    line-height: 1em;
+    @include flex-font-size($h1-size);
+}
+
+a {
+    color: $link-color;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        text-decoration: underline;
+    }
+}
+
+p {
+    margin: 1em 0;
+}
+
+.wrapper,
+.wrapper-800 {
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.wrapper {
+    max-width: 1200px;
+}
+
+.wrapper-800 {
+    max-width: 800px;
 }
 
 .img-responsive {
@@ -19,6 +99,7 @@
 .icon {
     display: inline-block;
     vertical-align: middle;
+    stroke: currentColor;
 }
 
 .spinner {
@@ -26,6 +107,24 @@
     animation-duration: 1500ms;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
+}
+
+.page-content .dark-section {
+    color: #fff;
+
+    a:not(.btn) {
+        color: $link-color-light;
+    }
+}
+
+a.text-white {
+    text-decoration: underline;
+    transition: opacity linear .1s;
+
+    &:hover,
+    &:focus {
+        opacity: .75;
+    }
 }
 
 @keyframes spin {

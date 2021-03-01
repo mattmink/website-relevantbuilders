@@ -1,0 +1,73 @@
+.btn {
+    border: 1px solid rgba(255, 255, 255, .1);
+    background-color: $link-color;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, .05), rgba(0, 0, 0, .08));
+    font-weight: 300;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 3px;
+    line-height: 1;
+    padding: $button-padding;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    @include control-transition;
+
+    &.btn-small {
+        font-size: 0.875rem;
+    }
+
+    &.btn-large {
+        font-size: 1.25rem;
+    }
+
+    &:hover,
+    &:focus {
+        color: #fff;
+        background-color: darken($link-color, 5%);
+        border-color: darken($link-color, 7%);
+        text-decoration: none;
+        box-shadow: 0 .125em .25em .125em rgba(0, 0, 0, .1);
+    }
+
+    &:focus {
+        box-shadow: 0 .125em .25em .125em rgba(0, 0, 0, .1), focus-shadow($link-color);
+        outline: 0 none;
+    }
+
+    &:active {
+        color: #fff;
+        background-color: darken($link-color, 7%);
+        border-color: darken($link-color, 9%);
+    }
+
+    &:disabled {
+        background: #aaa;
+        border-color: #aaa;
+        opacity: 0.75;
+        cursor: default;
+    }
+
+
+    &.btn-secondary {
+        background-color: $gray-100;
+        border-color: rgba(0, 0, 0, .1);
+        color: $brand-1-dark;
+
+        &:hover,
+        &:focus {
+            background-color: darken($gray-100, 4%);
+            border-color: darken($gray-100, 6%);
+        }
+
+        &:focus {
+            box-shadow: 0 .125em .25em .125em rgba(0, 0, 0, .1), focus-shadow($gray-100);
+        }
+
+        &:active {
+            color: $brand-1-dark;
+            background-color: darken($gray-100, 6%);
+            border-color: darken($gray-100, 8%);
+        }
+    }
+}

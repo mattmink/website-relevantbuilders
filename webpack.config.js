@@ -28,6 +28,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
     if (!isDev) {
         copySync(path.resolve('./public'), publicRoot, { recursive: true });
         copySync(path.resolve('./server/uploads/images'), path.join(publicRoot, '/assets/images'), { recursive: true });
+        copySync(path.resolve('./server/content'), path.join(publicRoot, '/content'), { recursive: true });
     }
 
     const pages = getDirectories(pagesRoot).map((dir) => dir.replace(`${pagesRoot}/`, ''));
@@ -35,9 +36,6 @@ module.exports = (_, { mode = 'development', analyze }) => {
         chunksSortMode: 'manual',
         template: path.join(publicRoot, '/templates/index.html'),
         favicon: path.join(publicRoot, '/assets/favicon.ico'),
-        templateParameters: {
-            include: filePath => readFileSync(path.join(publicRoot, '/templates', filePath), 'utf8'),
-        },
     };
 
     const config = {
@@ -64,7 +62,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
                     }
                 },
                 {
-                    test: /\.svg(\?.*)?$/,
+                    test: /icons\/.*\.svg(\?.*)?$/,
                     oneOf: [
                         {
                             resourceQuery: /fill=/,
@@ -79,6 +77,23 @@ module.exports = (_, { mode = 'development', analyze }) => {
                                     loader: path.resolve('./svg-icon-loader.js'),
                                 },
                                 'html-loader'
+                            ]
+                        }
+                    ]
+                },
+                {
+                    test: /public\/assets\/.*\.svg(\?.*)?$/,
+                    oneOf: [
+                        {
+                            resourceQuery: /fill=/,
+                            use: [
+                                'svg-url-loader',
+                                'svg-transform-loader'
+                            ]
+                        },
+                        {
+                            use: [
+                                'file-loader'
                             ]
                         }
                     ]

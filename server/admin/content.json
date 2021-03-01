@@ -6,7 +6,8 @@
             "name": "Home",
             "title": "Custom Home Builders",
             "description": "Relevant Builders brings a personal approach to home construction in the Chippewa Valley. We'll build a custom home to fit the needs of your family.",
-            "images": ["home-main"]
+            "images": ["home-main", "home-feature-thumb-1", "home-feature-thumb-2", "home-feature-thumb-3"],
+            "html": ["home-main", "home-2"]
         },
         {
             "path": "/thank-you",
@@ -14,13 +15,40 @@
             "name": "Thank You",
             "title": "Thank You",
             "description": "Relevant Builders brings a personal approach to home construction in the Chippewa Valley. We'll build a custom home to fit the needs of your family.",
-            "images": []
+            "images": [],
+            "html": []
         }
     ],
     "images": {
         "home-main": {
-            "minWidth": 1600,
-            "minHeight": 1000
+            "title": "Main Image",
+            "minWidth": 1500,
+            "minHeight": 1280
+        },
+        "home-feature-thumb-1": {
+            "title": "Services Thumb 1",
+            "minWidth": 376,
+            "minHeight": 376
+        },
+        "home-feature-thumb-2": {
+            "title": "Services Thumb 2",
+            "minWidth": 376,
+            "minHeight": 376
+        },
+        "home-feature-thumb-3": {
+            "title": "Services Thumb 3",
+            "minWidth": 376,
+            "minHeight": 376
+        }
+    },
+    "html": {
+        "home-main": {
+            "title": "Main Content",
+            "html": ""
+        },
+        "home-2": {
+            "title": "Floor Plans",
+            "html": ""
         }
     }
 }

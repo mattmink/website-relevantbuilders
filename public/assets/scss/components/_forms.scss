@@ -49,6 +49,11 @@
     }
 }
 
+// email is a honeypot field to catch most spam
+.contact-email {
+    display: none;
+}
+
 textarea.form-control {
     min-height: 6em;
 }

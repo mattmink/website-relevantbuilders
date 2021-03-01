@@ -5,18 +5,22 @@
 
 // Reset & Global Elements
 @import '~normalize.css';
-@import 'elements';
 
 // Base Styles
 @import 'base';
 
 // Components
-@import 'forms';
-@import 'buttons';
-@import 'toast';
+@import 'components/forms';
+@import 'components/buttons';
+@import 'components/toast';
+@import 'components/nav';
+@import 'components/featured-section';
+@import 'components/footer';
 
 // Utilities
 @import 'utils/whitespace';
+@import 'utils/background';
+@import 'utils/display';
 @import 'utils/flex';
 @import 'utils/text';
 

@@ -1,0 +1,12 @@
+@each $breakpoint-name in map-keys($breakpoints) {
+    $breakpoint-value: map-get($breakpoints, $breakpoint-name);
+    $breakpoint-modifier: if($breakpoint-value != 0, "-#{$breakpoint-name}", "");
+
+    @include media-breakpoint-up($breakpoint-name) {
+        @each $display in $displays {
+            .d#{$breakpoint-modifier}-#{$display} {
+                display: $display;
+            }
+        }
+    }
+}

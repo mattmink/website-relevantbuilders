@@ -10,6 +10,7 @@
         "server": "PORT=3000 node server"
     },
     "dependencies": {
+        "@tinymce/tinymce-vue": "^3.2.8",
         "body-parser": "^1.19.0",
         "bootstrap": "^4.5.3",
         "connect-ensure-login": "^0.1.1",

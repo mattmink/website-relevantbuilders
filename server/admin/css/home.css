@@ -32,6 +32,26 @@ span.navbar-toggler-icon {
     height: 1.25em;
 }
 
+.tox-statusbar__branding,
+.tox-notifications-container {
+    display: none !important;
+}
+
+@media (min-width: 992px) {
+    .container-fluid {
+        overflow: hidden;
+    }
+    .content-columns {
+        margin-right: -4vw;
+        margin-left: -4vw;
+        overflow: hidden;
+    }
+    .content-column {
+        padding-right: 4vw;
+        padding-left: 4vw;
+    }
+}
+
 @media (max-width: 767px) {
     :root {
         --mobile-menu-width: 250px;
