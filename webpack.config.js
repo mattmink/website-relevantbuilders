@@ -62,7 +62,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
                     }
                 },
                 {
-                    test: /\.svg(\?.*)?$/,
+                    test: /icons\/.*\.svg(\?.*)?$/,
                     oneOf: [
                         {
                             resourceQuery: /fill=/,
@@ -77,6 +77,23 @@ module.exports = (_, { mode = 'development', analyze }) => {
                                     loader: path.resolve('./svg-icon-loader.js'),
                                 },
                                 'html-loader'
+                            ]
+                        }
+                    ]
+                },
+                {
+                    test: /public\/assets\/.*\.svg(\?.*)?$/,
+                    oneOf: [
+                        {
+                            resourceQuery: /fill=/,
+                            use: [
+                                'svg-url-loader',
+                                'svg-transform-loader'
+                            ]
+                        },
+                        {
+                            use: [
+                                'file-loader'
                             ]
                         }
                     ]
