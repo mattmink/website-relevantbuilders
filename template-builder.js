@@ -58,6 +58,7 @@ class TemplateBuilderPlugin {
 
     apply(compiler) {
         const isDev = this.mode === 'development';
+        // TODO: Find a way to refresh on change to includes from other directories
         const pagesPath = path.join(publicRootByMode[this.mode], '/pages');
 
         const getTemplateName = (filePath) => {

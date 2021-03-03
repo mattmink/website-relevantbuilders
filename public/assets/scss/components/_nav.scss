@@ -162,7 +162,7 @@ $nav-brand-width: 224px;
             transition: all .5s ease-out;
             font-weight: 200;
 
-            @for $var from 1 to 4 {
+            @for $var from 1 to 5 {
                 &:nth-child(#{$var + 1}) {
                     transition-delay: #{$var * .2}s;
                 }

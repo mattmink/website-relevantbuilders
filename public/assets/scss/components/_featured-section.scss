@@ -14,13 +14,21 @@
         background-color: transparent;
     }
     @include media-breakpoint-up(md) {
-        min-height: 100vh;
+        min-height: 75vh;
         display: flex;
 
         .featured-section-text,
         .featured-section-image {
             width: 50%;
         }
+
+        .featured-section-text {
+            padding-left: 6vh;
+            padding-right: 6vh;
+        }
+    }
+    @include media-breakpoint-up(lg) {
+        min-height: 100vh;
 
         .featured-section-text {
             padding-left: 10vh;

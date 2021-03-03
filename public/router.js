@@ -1,13 +1,49 @@
-import Home from './pages/home.js';
+import Home from './pages/home';
 import homeTemplate from './pages/index.html';
+import Construction from './pages/construction/construction';
+import constructionTemplate from './pages/construction/index.html';
+import Design from './pages/construction/design/design';
+import designTemplate from './pages/construction/design/index.html';
+import Contracting from './pages/construction/contracting/contracting';
+import contractingTemplate from './pages/construction/contracting/index.html';
+import Process from './pages/process/process';
+import processTemplate from './pages/process/index.html';
+import Remodeling from './pages/remodeling/remodeling';
+import remodelingTemplate from './pages/remodeling/index.html';
 
+const getBodyClassFromPath = path => `page-${path === '/' ? 'home' : path.slice(1).split('/').join('-')}`;
 const routerView = document.querySelector('#content');
 const routes = [
     {
         path: '/',
         component: Home,
         template: homeTemplate,
-    }
+    },
+    {
+        path: '/construction',
+        component: Construction,
+        template: constructionTemplate,
+    },
+    {
+        path: '/construction/design',
+        component: Design,
+        template: designTemplate
+    },
+    {
+        path: '/construction/contracting',
+        component: Contracting,
+        template: contractingTemplate
+    },
+    {
+        path: '/process',
+        component: Process,
+        template: processTemplate
+    },
+    {
+        path: '/remodeling',
+        component: Remodeling,
+        template: remodelingTemplate
+    },
 ];
 
 export function goTo(path) {
@@ -19,10 +55,15 @@ export function goTo(path) {
 
     routerView.innerHTML = template;
 
+    document.body.classList.remove(getBodyClassFromPath(location.pathname));
+    document.body.classList.add(getBodyClassFromPath(path));
+
     history.pushState(null, null, path);
+    document.body.scrollIntoView();
     component();
 }
 
+// FIXME: Need to find a way to close the menu when navigating or scrolling to a hash
 const handleLinkClick = function handleLinkClick(e, link) {
     const { pathname, hash } = link;
 
@@ -41,8 +82,12 @@ const handleLinkClick = function handleLinkClick(e, link) {
 
     if (pathname === location.pathname) return;
 
+    link.blur();
     goTo(pathname);
 }
+
+// FIXME: This results in loading components twice. Find a way to keep track of the current route and do this dynamically.
+goTo(location.pathname);
 
 document.addEventListener('click', (e) => {
     const { target } = e;
