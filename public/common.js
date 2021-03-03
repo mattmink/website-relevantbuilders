@@ -115,6 +115,7 @@ const getScrollbarWidth = () => {
     return scrollbarWidth;
 }
 
+const $menuToggle = document.querySelector('#menuToggle');
 const isMenuOpen = () => document.body.classList.contains('menu-open');
 const openNavMenu = () => {
     const scrollBarWidth = getScrollbarWidth();
@@ -123,6 +124,7 @@ const openNavMenu = () => {
     }
     document.body.classList.remove('menu-closing');
     document.body.classList.add('menu-open');
+    $menuToggle.setAttribute('aria-label', 'Close Menu');
 }
 const closeNavMenu = () => {
     document.body.classList.add('menu-closing');
@@ -130,6 +132,7 @@ const closeNavMenu = () => {
     document.body.style.paddingRight = null;
     setTimeout(() => {
         document.body.classList.remove('menu-closing');
+        $menuToggle.setAttribute('aria-label', 'Open Menu');
     }, 2500);
 };
 const toggleNavMenu = () => {
@@ -137,7 +140,7 @@ const toggleNavMenu = () => {
     else openNavMenu();
 };
 
-document.querySelector('#menuToggle').addEventListener('click', toggleNavMenu);
+$menuToggle.addEventListener('click', toggleNavMenu);
 document.querySelector('#mainNav').addEventListener('click', ({ target: { id, href } }) => {
     if ((id === 'mainNav' || href === '#contact') && isMenuOpen()) closeNavMenu();
 });

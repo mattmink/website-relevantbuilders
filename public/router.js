@@ -8,8 +8,8 @@ import Contracting from './pages/construction/contracting/contracting';
 import contractingTemplate from './pages/construction/contracting/index.html';
 import Process from './pages/process/process';
 import processTemplate from './pages/process/index.html';
-import Remodeling from './pages/remodeling/remodeling';
-import remodelingTemplate from './pages/remodeling/index.html';
+import Additions from './pages/additions/additions';
+import additionsTemplate from './pages/additions/index.html';
 
 const getBodyClassFromPath = path => `page-${path === '/' ? 'home' : path.slice(1).split('/').join('-')}`;
 const routerView = document.querySelector('#content');
@@ -40,9 +40,9 @@ const routes = [
         template: processTemplate
     },
     {
-        path: '/remodeling',
-        component: Remodeling,
-        template: remodelingTemplate
+        path: '/additions',
+        component: Additions,
+        template: additionsTemplate
     },
 ];
 
