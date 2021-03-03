@@ -63,6 +63,14 @@ h1 {
     @include flex-font-size($h1-size);
 }
 
+h2 {
+    margin-top: 0;
+    margin-bottom: .4em;
+    font-weight: 200;
+    line-height: 1em;
+    @include flex-font-size($h2-size);
+}
+
 a {
     color: $link-color;
     text-decoration: none;

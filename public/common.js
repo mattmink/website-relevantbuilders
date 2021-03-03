@@ -1,3 +1,4 @@
+// TODO: Check cross browser JS
 import './polyfills';
 import './router';
 import './assets/scss/style.scss';

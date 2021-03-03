@@ -59,10 +59,11 @@ export function goTo(path) {
     document.body.classList.add(getBodyClassFromPath(path));
 
     history.pushState(null, null, path);
-    document.body.scrollIntoView({ behavior: 'smooth' });
+    document.body.scrollIntoView();
     component();
 }
 
+// FIXME: Need to find a way to close the menu when navigating or scrolling to a hash
 const handleLinkClick = function handleLinkClick(e, link) {
     const { pathname, hash } = link;
 
