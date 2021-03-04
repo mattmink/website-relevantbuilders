@@ -1,3 +1,1 @@
-import page from "./process";
-
-page();
+// Nothing to see here

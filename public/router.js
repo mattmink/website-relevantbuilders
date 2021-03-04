@@ -8,8 +8,8 @@ import Contracting from './pages/construction/contracting/contracting';
 import contractingTemplate from './pages/construction/contracting/index.html';
 import Process from './pages/process/process';
 import processTemplate from './pages/process/index.html';
-import Remodeling from './pages/remodeling/remodeling';
-import remodelingTemplate from './pages/remodeling/index.html';
+import Additions from './pages/additions/additions';
+import additionsTemplate from './pages/additions/index.html';
 
 const getBodyClassFromPath = path => `page-${path === '/' ? 'home' : path.slice(1).split('/').join('-')}`;
 const routerView = document.querySelector('#content');
@@ -40,27 +40,36 @@ const routes = [
         template: processTemplate
     },
     {
-        path: '/remodeling',
-        component: Remodeling,
-        template: remodelingTemplate
+        path: '/additions',
+        component: Additions,
+        template: additionsTemplate
     },
 ];
 
-export function goTo(path) {
-    const route = routes.find(route => route.path === path);
+function getRoute(path) {
+    return routes.find(route => route.path === path);
+}
 
+function goToRoute(route) {
     if (!route) return;
 
-    const { template, component } = route;
+    const { template, component, path } = route;
 
     routerView.innerHTML = template;
 
     document.body.classList.remove(getBodyClassFromPath(location.pathname));
     document.body.classList.add(getBodyClassFromPath(path));
 
+    // TODO: Update title tag and meta description
+
+    // FIXME: Handle back/forward navigation from browser controls
     history.pushState(null, null, path);
     document.body.scrollIntoView();
     component();
+}
+
+export function goTo(path) {
+    goToRoute(getRoute(path));
 }
 
 // FIXME: Need to find a way to close the menu when navigating or scrolling to a hash
@@ -77,6 +86,10 @@ const handleLinkClick = function handleLinkClick(e, link) {
     }
 
     if (!pathname) return;
+
+    const route = getRoute(pathname);
+
+    if (!route) return;
 
     e.preventDefault();
 

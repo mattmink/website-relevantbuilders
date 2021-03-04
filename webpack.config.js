@@ -3,6 +3,8 @@ const { lstatSync, readdirSync, readFileSync, copySync, remove } = require('fs-e
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { TemplateBuilderPlugin } = require('./template-builder');
 const WatchFilesPlugin = require('webpack-watch-files-plugin').default;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -50,7 +52,8 @@ module.exports = (_, { mode = 'development', analyze }) => {
         resolve: {
             alias: {
                 icons: path.resolve(__dirname, './node_modules/feather-icons/dist/icons/'),
-            }
+                images: path.resolve(__dirname, './public/assets/images/'),
+            },
         },
         module: {
             rules: [
@@ -146,7 +149,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
                 ...content.pages.filter(({ id }) => id === 'home').map(({ title, description }) => ({ title, description })).pop(),
                 chunks: ['home', 'common'],
             }),
-            ...content.pages.filter(({ id }) => id !== 'home').map(({ id, title, description}) => new HtmlWebpackPlugin({
+            ...content.pages.filter(({ id }) => id !== 'home').map(({ id, title, description }) => new HtmlWebpackPlugin({
                 ...templateConfig,
                 title,
                 description,
@@ -177,6 +180,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
                 files: ['./public/**/*.html'],
             })
         );
+        config.devtool = 'cheap-eval-source-map';
     } else {
         config.plugins.push(
             {
@@ -187,6 +191,13 @@ module.exports = (_, { mode = 'development', analyze }) => {
                 }
             }
         )
+        config.optimization = {
+            minimize: true,
+            minimizer: [
+                new TerserPlugin(),
+                new OptimizeCSSAssetsPlugin({})
+            ],
+        }
     }
     if (analyze) {
         config.plugins.push(new BundleAnalyzerPlugin());

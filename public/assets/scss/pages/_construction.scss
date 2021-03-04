@@ -1,0 +1,14 @@
+.construction-content {
+    background-image: url('/public/assets/images/construction-bg.jpg');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+
+@include media-breakpoint-up(md) {
+    @include media2x {
+        .construction-content {
+            background-image: url('/public/assets/images/construction-bg@2x.jpg');
+        }
+    }
+}

@@ -1,4 +1,4 @@
-// TODO: Do these images get loaded on 2x devices? Probably so. I think I need a 1x media query as well
+// FIXME: Do these images get loaded on 2x devices? Probably so. I think I need a 1x media query as well
 .process-content {
     background-image: url('/public/assets/images/process-bg.jpg');
     background-size: cover;
@@ -52,7 +52,6 @@
             flex-direction: column-reverse;
         }
     }
-
 }
 
 @include media-breakpoint-up(md) {

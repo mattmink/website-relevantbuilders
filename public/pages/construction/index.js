@@ -1,3 +1,1 @@
-import page from "./construction";
-
-page();
+// Nothing to see here
