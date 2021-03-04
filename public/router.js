@@ -46,12 +46,14 @@ const routes = [
     },
 ];
 
-export function goTo(path) {
-    const route = routes.find(route => route.path === path);
+function getRoute(path) {
+    return routes.find(route => route.path === path);
+}
 
+function goToRoute(route) {
     if (!route) return;
 
-    const { template, component } = route;
+    const { template, component, path } = route;
 
     routerView.innerHTML = template;
 
@@ -61,6 +63,10 @@ export function goTo(path) {
     history.pushState(null, null, path);
     document.body.scrollIntoView();
     component();
+}
+
+export function goTo(path) {
+    goToRoute(getRoute(path));
 }
 
 // FIXME: Need to find a way to close the menu when navigating or scrolling to a hash
@@ -77,6 +83,10 @@ const handleLinkClick = function handleLinkClick(e, link) {
     }
 
     if (!pathname) return;
+
+    const route = getRoute(pathname);
+
+    if (!route) return;
 
     e.preventDefault();
 
