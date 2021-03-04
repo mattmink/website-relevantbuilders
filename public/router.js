@@ -60,6 +60,9 @@ function goToRoute(route) {
     document.body.classList.remove(getBodyClassFromPath(location.pathname));
     document.body.classList.add(getBodyClassFromPath(path));
 
+    // TODO: Update title tag and meta description
+
+    // FIXME: Handle back/forward navigation from browser controls
     history.pushState(null, null, path);
     document.body.scrollIntoView();
     component();

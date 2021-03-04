@@ -1,11 +1,11 @@
 .gallery {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 -.5rem;
+    margin: 0 -0.5rem;
 
     .gallery-item {
         flex: 1 1 25%;
-        padding: .5rem;
+        padding: 0.5rem;
 
         img {
             display: block;
@@ -14,5 +14,104 @@
             min-width: 150px;
             height: auto;
         }
+    }
+}
+
+.gallery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity ease .2s;
+    z-index: 200;
+    padding: 1.5rem;
+
+    .gallery-modal-content {
+        width: auto;
+        max-width: 1200px;
+        position: relative;
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+            transform: scale(0);
+            opacity: 0;
+            transition: ease-out 0.3s all;
+        }
+    }
+
+    .gallery-modal-loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 2.6rem;
+        transform: translate3d(-50%, -50%, 0);
+        color: #fff;
+        opacity: 0.2;
+
+        .icon {
+            width: 1em;
+            height: 1em;
+        }
+    }
+    .gallery-modal-close {
+        background: none transparent;
+        border: 0 none;
+        color: #fff;
+        font-size: 2rem;
+        opacity: 0;
+        transition: all ease 0.2s;
+        cursor: pointer;
+        right: -.75em;
+        top: -1em;
+        position: absolute;
+        z-index: 1;
+
+        .icon {
+            width: 1em;
+            height: 1em;
+        }
+    }
+
+    &.gallery-modal-loaded {
+        img {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .gallery-modal-close {
+            opacity: 0.7;
+
+            &:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    &.leaving {
+        opacity: 0;
+    }
+}
+
+
+
+body.gallery-modal-open {
+    overflow-y: hidden;
+}
+
+@include media-breakpoint-up(md) {
+    .gallery-modal {
+        padding: 2.6rem;
+    }
+
+    .gallery-modal-close {
+        font-size: 2.6rem;
     }
 }

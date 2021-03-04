@@ -3,4 +3,5 @@ import './polyfills';
 import './router';
 import './form';
 import './menu';
+import './gallery';
 import './assets/scss/style.scss';
