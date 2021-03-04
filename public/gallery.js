@@ -2,6 +2,7 @@ import icons from './icons';
 import { getScrollbarWidth } from './utils';
 
 // TODO: make sure any event listeners get garbage collected
+// TODO: add previous/next navigation within gallery modal
 document.addEventListener('click', (e) => {
     const galleryItem = e.target.closest('.gallery-item');
 
