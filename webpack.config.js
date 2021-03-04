@@ -50,7 +50,8 @@ module.exports = (_, { mode = 'development', analyze }) => {
         resolve: {
             alias: {
                 icons: path.resolve(__dirname, './node_modules/feather-icons/dist/icons/'),
-            }
+                images: path.resolve(__dirname, './public/assets/images/'),
+            },
         },
         module: {
             rules: [
