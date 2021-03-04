@@ -1,0 +1,18 @@
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -.5rem;
+
+    .gallery-item {
+        flex: 1 1 25%;
+        padding: .5rem;
+
+        img {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            min-width: 150px;
+            height: auto;
+        }
+    }
+}
