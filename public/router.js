@@ -1,14 +1,11 @@
 import Home from './pages/home';
 import homeTemplate from './pages/index.html';
-import Construction from './pages/construction/construction';
 import constructionTemplate from './pages/construction/index.html';
 import Design from './pages/construction/design/design';
 import designTemplate from './pages/construction/design/index.html';
 import Contracting from './pages/construction/contracting/contracting';
 import contractingTemplate from './pages/construction/contracting/index.html';
-import Process from './pages/process/process';
 import processTemplate from './pages/process/index.html';
-import Additions from './pages/additions/additions';
 import additionsTemplate from './pages/additions/index.html';
 
 const getBodyClassFromPath = path => `page-${path === '/' ? 'home' : path.slice(1).split('/').join('-')}`;
@@ -21,7 +18,6 @@ const routes = [
     },
     {
         path: '/construction',
-        component: Construction,
         template: constructionTemplate,
     },
     {
@@ -36,12 +32,10 @@ const routes = [
     },
     {
         path: '/process',
-        component: Process,
         template: processTemplate
     },
     {
         path: '/additions',
-        component: Additions,
         template: additionsTemplate
     },
 ];
@@ -53,7 +47,7 @@ function getRoute(path) {
 function goToRoute(route) {
     if (!route) return;
 
-    const { template, component, path } = route;
+    const { template, component = () => {}, path } = route;
 
     routerView.innerHTML = template;
 

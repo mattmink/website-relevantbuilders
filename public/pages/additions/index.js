@@ -1,3 +1,1 @@
-import page from "./additions";
-
-page();
+// Nothing to see here

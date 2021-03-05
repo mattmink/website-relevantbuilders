@@ -86,7 +86,7 @@
 @include media-breakpoint-up(md) {
     .home-hero {
         display: flex;
-        height: calc(100vh - 112px);
+        min-height: calc(100vh - 112px);
     }
     .home-hero-image-wrapper {
         height: auto;
@@ -105,7 +105,7 @@
     }
     .home-hero-text {
         padding-right: calc(40px + 1rem);
-        padding-bottom: 20vh;
+        padding-bottom: 10vh;
     }
     .home-hero-image {
         width: calc(100% + 40px);
@@ -119,9 +119,6 @@
     .home-hero {
         align-items: center;
         flex-wrap: wrap;
-    }
-    .home-hero-text {
-        padding-bottom: 10vh;
     }
     .home-hero-image {
         height: 50vh;
