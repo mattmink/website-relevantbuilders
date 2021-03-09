@@ -6,7 +6,7 @@
     <meta name="description" content="<%= htmlWebpackPlugin.options.description %>">
     <title><%= htmlWebpackPlugin.options.title %> | Relevant Builders | Eau Claire, WI</title>
 </head>
-<body>
+<body class="<%= htmlWebpackPlugin.options.pageClass %>">
     <include file="templates/_nav.html" />
     <div id="content" class="page-content"><page /></div>
     <include file="templates/_footer.html" />

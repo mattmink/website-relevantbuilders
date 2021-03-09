@@ -1,3 +1,7 @@
+// TODO: Figure out a better pattern for components and the router, to allow a "hooks" approach
+//      * This would solve the problem where event listeners persist after being called the first time
+//      * This would also keep the router logic clean and focused, allowing other components to "subscribe" to router events and do custom things
+import { closeNavMenu } from "./menu";
 import Home from './pages/home';
 import homeTemplate from './pages/index.html';
 import constructionTemplate from './pages/construction/index.html';
@@ -39,34 +43,41 @@ const routes = [
         template: additionsTemplate
     },
 ];
+let currentRoute;
 
 function getRoute(path) {
     return routes.find(route => route.path === path);
 }
 
-function goToRoute(route) {
+function loadRoute(route) {
     if (!route) return;
 
-    const { template, component = () => {}, path } = route;
+    const previousRoute = currentRoute;
+    currentRoute = route;
 
+    const { template, component = () => { }, path } = route;
+
+    closeNavMenu();
+
+    // TODO: Investigate whether a functional approach could improve performance with the help of caching route elements
     routerView.innerHTML = template;
 
-    document.body.classList.remove(getBodyClassFromPath(location.pathname));
+    if (previousRoute) {
+        document.body.classList.remove(getBodyClassFromPath(previousRoute.path));
+    }
     document.body.classList.add(getBodyClassFromPath(path));
 
-    // TODO: Update title tag and meta description
-
-    // FIXME: Handle back/forward navigation from browser controls
-    history.pushState(null, null, path);
     document.body.scrollIntoView();
     component();
 }
 
 export function goTo(path) {
-    goToRoute(getRoute(path));
+    // TODO: Update title tag and meta description
+    const route = getRoute(path);
+    history.pushState(null, null, path);
+    loadRoute(route);
 }
 
-// FIXME: Need to find a way to close the menu when navigating or scrolling to a hash
 const handleLinkClick = function handleLinkClick(e, link) {
     const { pathname, hash } = link;
 
@@ -74,6 +85,7 @@ const handleLinkClick = function handleLinkClick(e, link) {
         e.preventDefault();
         const scrollTo = document.querySelector(hash);
         if (scrollTo) {
+            closeNavMenu();
             scrollTo.scrollIntoView({ behavior: 'smooth' });
         }
         return;
@@ -93,9 +105,6 @@ const handleLinkClick = function handleLinkClick(e, link) {
     goTo(pathname);
 }
 
-// FIXME: This results in loading components twice. Find a way to keep track of the current route and do this dynamically.
-goTo(location.pathname);
-
 document.addEventListener('click', (e) => {
     const { target } = e;
     const link = target.tagName.toLowerCase() === 'A' ? target : target.closest('a');
@@ -104,3 +113,9 @@ document.addEventListener('click', (e) => {
 
     handleLinkClick(e, link);
 });
+
+window.addEventListener('popstate', () => {
+    loadRoute(getRoute(location.pathname));
+});
+
+currentRoute = getRoute(location.pathname);

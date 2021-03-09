@@ -6,7 +6,7 @@ const $toaster = document.createElement('div');
 $toaster.classList.add('toaster');
 document.body.appendChild($toaster);
 
-const toastTemplate = (message, messageType) => `<div class="toast-message toast-${messageType} d-flex mb-3 py-2">
+const toastTemplate = (message, messageType) => `<div class="toast-message toast-${messageType} d-flex mb-3 py-2" role="alert">
     <div class="px-3 py-1 flex-fill">${message}</div>
     <div>
         <button class="close-toast px-2 py-2 js-close-toast" type="button">${icons.x()}</button>

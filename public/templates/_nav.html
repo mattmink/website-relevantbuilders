@@ -2,25 +2,30 @@
     <a href="/" class="nav-brand">
         <include file="assets/images/logo.svg" />
     </a>
-    <button id="menuToggle" class="menu-toggle-btn ml-auto" aria-label="Open Menu">
+    <button id="menuToggle"
+            class="menu-toggle-btn ml-auto"
+            aria-label="Open Menu"
+            aria-controls="mainNavItems"
+            aria-haspopup="true"
+            aria-expanded="false">
         <icon name="menu" class="icon menu-toggle-open" />
         <icon name="x" class="icon menu-toggle-close" />
     </button>
-    <div class="nav-items ml-auto align-items-center">
+    <div class="nav-items ml-auto align-items-center" id="mainNavItems" role="menu">
         <div class="nav-item d-lg-none">
-            <a class="nav-link" href="/">Home</a>
+            <a role="menuitem" class="nav-link" href="/">Home</a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="/process">Our process</a>
+            <a role="menuitem" class="nav-link" href="/process">Our process</a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="/construction">Building New</a>
+            <a role="menuitem" class="nav-link" href="/construction">Building New</a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="/additions">Adding On</a>
+            <a role="menuitem" class="nav-link" href="/additions">Adding On</a>
         </div>
         <div class="nav-item">
-            <a class="btn btn-small" href="#contact">Get in touch</a>
+            <a role="menuitem" class="btn btn-small" href="#contact">Get in touch</a>
         </div>
     </div>
 </nav>
