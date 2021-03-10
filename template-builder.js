@@ -42,7 +42,7 @@ const minifyHtml = (html = '') => htmlMinifier.minify(html, {
     useShortDoctype: true
 });
 
-const makeGalleryItem = ({ thumb, full }) => `<div class="gallery-item"><a href="${full}" class="gallery-thumb"><img src="${thumb}" /></a></div>`;
+const makeGalleryItem = ({ thumb, full }) => `<div class="gallery-item"><a href="${full}" class="gallery-thumb"><img src="${thumb}" alt="" /></a></div>`;
 
 const injectGalleries = (str, { escapeQuotes } = {}) => str.replace(galleryRegex, (_, galleryName) => {
     const galleryImages = galleries[galleryName];
@@ -50,7 +50,7 @@ const injectGalleries = (str, { escapeQuotes } = {}) => str.replace(galleryRegex
     if (!galleryImages || Object.keys(galleryImages).length === 0) return '';
 
     const mappedImages = Object.values(galleryImages).reduce((galleryHtml, img) => `${galleryHtml}${makeGalleryItem(img)}`, '');
-    let replacement = `<div class="gallery">${mappedImages}</div>`;
+    let replacement = `<div class="gallery" aria-hidden="true">${mappedImages}</div>`;
 
     if (escapeQuotes) {
         replacement = replacement
