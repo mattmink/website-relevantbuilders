@@ -77,6 +77,7 @@
         el: '#app',
         data() {
             return {
+                galleryImageForRemove: null,
                 galleryImagesById: {},
                 contentHTMLOld: {},
                 contentHTML: {},
@@ -104,9 +105,9 @@
                     target_list: false,
                     link_title: false,
                     link_list: [],
-                    relative_urls : false,
-                    remove_script_host : true,
-                    document_base_url : '',
+                    relative_urls: false,
+                    remove_script_host: true,
+                    document_base_url: '',
                     setup: (editor) => {
                         editor.on('keydown', (e) => {
                             const htmlId = editor.id.replace('editor_', '');
@@ -138,7 +139,7 @@
             },
             unsavedContent() {
                 return Object.keys(this.contentHTML).filter(key => this.contentHTML[key].html !== this.contentHTMLOld[key].html);
-            }
+            },
         },
         methods: {
             closeImageUpload(imageId) {
@@ -252,6 +253,38 @@
                 });
 
                 this.$set(this.imagePreviews[imageId], 'cropper', cropper);
+            },
+            confirmRemoveGalleryImage(galleryImage) {
+                this.galleryImageForRemove = galleryImage;
+            },
+            removeGalleryImage({ fileName }) {
+                const { gallery } = this.activePage;
+                const loading = this.loading('Removing gallery image...');
+                const index = this.galleryImagesById[gallery].findIndex(item => item.fileName === fileName);
+
+                this.galleryImageForRemove = null;
+
+                return fetch('/s/api/gallery/image/delete', {
+                    method: 'POST',
+                    body: JSON.stringify({ gallery, fileName }),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
+                        this.galleryImagesById[gallery].splice(index, 1);
+                        this.alertSuccess('The gallery image was successfully removed.');
+                    })
+                    .catch(() => {
+                        this.alertError('An error occurred while removing the gallery image. Please try again.');
+                    })
+                    .finally(() => {
+                        loading.hide();
+                    });
             },
             alertSuccess(message) {
                 this.$toasted.show(message, {

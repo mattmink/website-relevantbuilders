@@ -127,19 +127,34 @@ html
                     .col-md-6.content-column(v-if="activePage.gallery")
                         h3.bg-info.text-white.p-3.mb-3
                             |Gallery
-                        file-upload(
+                        file-upload.mb-3(
                             name="file"
                             description="Drop a file here, or click 'Browse'"
                             @change="handleGalleryImageUpload($event, activePage.gallery)"
                         )
                         .row
                             .col-lg-4.mb-3(v-for="galleryImage in galleryImagesById[activePage.gallery]" :key="galleryImage.thumb")
-                                img.img-fluid(
-                                    :src="galleryImage.thumb"
-                                )
+                                .gallery-thumb
+                                    button.btn.btn-sm.btn-danger(@click="confirmRemoveGalleryImage(galleryImage)")
+                                        icon(name="trash")
+                                    img.img-fluid(:src="galleryImage.thumb")
+
+            modal(v-if="galleryImageForRemove" header-class="bg-danger text-white" @close="galleryImageForRemove = null")
+                div(slot="title")
+                    |Remove gallery image?
+                p
+                    |Are you sure you want to remove this gallery image?
+                img.img-fluid(:src="galleryImageForRemove.thumb")
+                div(slot="footer")
+                    button.btn.btn-outline-secondary.mr-2(type="button" @click="galleryImageForRemove = null")
+                        |Cancel
+                    button.btn.btn-danger(type="button" @click="removeGalleryImage(galleryImageForRemove)")
+                        |Yes, remove this image
+
 
         //- Components
         include ../components/icon/icon
         include ../components/file-upload/file-upload
+        include ../components/modal/modal
 
         script(src="/s/admin/js/main.js")

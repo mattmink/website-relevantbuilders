@@ -37,6 +37,32 @@ span.navbar-toggler-icon {
     display: none !important;
 }
 
+.gallery-thumb {
+    position: relative;
+}
+
+.gallery-thumb .btn {
+    position: absolute;
+    top: -.25rem;
+    right: -.25rem;
+    z-index: 1;
+}
+
+.gallery-thumb img {
+    transition: opacity linear .1s;
+    position: relative;
+    z-index: 0;
+}
+
+.gallery-thumb .btn:hover + img {
+    opacity: .3;
+}
+
+button.close,
+button.close:hover {
+    color: inherit;
+}
+
 @media (min-width: 992px) {
     .container-fluid {
         overflow: hidden;

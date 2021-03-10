@@ -7,8 +7,7 @@ const { images } = fs.readJsonSync(path.resolve(__dirname, '../admin/content.jso
 const uploadsDir = path.join(__dirname, '../uploads');
 const uploadsImagesDir = path.join(uploadsDir, 'images');
 
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
-if (!fs.existsSync(uploadsImagesDir)) fs.mkdirSync(uploadsImagesDir);
+fs.ensureDirSync(uploadsImagesDir);
 
 const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {
@@ -75,7 +74,35 @@ const resizeImage = async ({ file, query: { imageId, cropData } }, res, next) =>
     }
 };
 
+const removeAsync = (file) => new Promise((resolve, reject) => {
+    fs.remove(file, (err) => {
+        if (err) reject(err);
+        else resolve();
+    });
+});
+
+const removeGalleryImage = async ({ body: { gallery, fileName }}, res, next) => {
+    console.log({ gallery, fileName });
+    const galleryDir = path.join(uploadsImagesDir, 'galleries', gallery);
+    const full = path.join(galleryDir, 'full', fileName);
+    const thumb = path.join(galleryDir, 'thumbs', fileName);
+
+    if (!fs.existsSync(full) || !fs.existsSync(thumb)) {
+        res.sendStatus(204);
+        return;
+    }
+
+    try {
+        await Promise.all([removeAsync(full), removeAsync(thumb)]);
+        res.sendStatus(204);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error.message);
+    }
+};
+
 module.exports = {
     uploadImage,
     resizeImage,
+    removeGalleryImage,
 };
