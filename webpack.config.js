@@ -30,7 +30,12 @@ module.exports = (_, { mode = 'development', analyze }) => {
     const componentsRoot = path.join(publicRoot, '/components');
 
     if (!isDev) {
-        copySync(path.resolve('./public'), publicRoot, { recursive: true });
+        copySync(path.resolve('./public'), publicRoot, {
+            recursive: true,
+            filter(src) {
+                return !src.includes('galleries');
+            },
+        });
         copySync(path.resolve('./server/uploads/images'), path.join(publicRoot, '/assets/images'), { recursive: true });
         copySync(path.resolve('./server/content'), path.join(publicRoot, '/content'), { recursive: true });
     }
