@@ -73,6 +73,49 @@
     Vue.use(Toasted);
     Vue.component('Editor', Editor);
 
+    const camelize = text => text
+        .trim()
+        .split(/\W/)
+        .map((part, i) => (i === 0 ? part.toLowerCase() : `${part.slice(0, 1).toUpperCase()}${part.slice(1).toLowerCase()}`))
+        .join('');
+
+    const formatLinkDialog = () => {
+        const dialog = document.querySelector('.tox-dialog');
+        const form = dialog.querySelector('.tox-form');
+        const formGroupsById = Array.from(dialog.querySelectorAll('.tox-form__group'))
+            .reduce((mapped, formGroup) => {
+                const label = formGroup.querySelector('.tox-label');
+                const id = camelize(label.innerText);
+                mapped[id] = { formGroup, label };
+                return mapped;
+            }, {});
+        const linkListHelp = document.createElement('div');
+        const urlHelp = document.createElement('div');
+
+        linkListHelp.innerHTML = 'or <a href="#">use a custom URL</a> instead';
+        urlHelp.innerHTML = 'or <a href="#">select a page from your site</a> instead';
+
+        linkListHelp.querySelector('a').addEventListener('click', (e) => {
+            e.preventDefault();
+            formGroupsById.url.formGroup.style.display = 'block';
+            formGroupsById.linkList.formGroup.style.display = 'none';
+            formGroupsById.url.formGroup.querySelector('.tox-textfield').focus();
+        });
+        urlHelp.querySelector('a').addEventListener('click', (e) => {
+            e.preventDefault();
+            formGroupsById.url.formGroup.style.display = 'none';
+            formGroupsById.linkList.formGroup.style.display = 'block';
+            formGroupsById.linkList.formGroup.querySelector('button.tox-listbox').click();
+        });
+
+        dialog.classList.add('link-dialog');
+        form.appendChild(formGroupsById.url.formGroup);
+        formGroupsById.linkList.formGroup.appendChild(linkListHelp);
+        formGroupsById.linkList.label.innerText = 'Select a Page';
+        formGroupsById.url.formGroup.appendChild(urlHelp);
+        formGroupsById.url.formGroup.style.display = 'none';
+    };
+
     new Vue({
         el: '#app',
         data() {
@@ -98,24 +141,29 @@
                     ],
                     toolbar:
                         'undo redo | formatselect | bold italic | link unlink | \
-                        alignleft aligncenter alignright alignjustify | \
                         bullist numlist outdent indent | removeformat',
                     anchor_top: false,
                     anchor_bottom: false,
                     target_list: false,
                     link_title: false,
-                    link_list: [],
+                    link_list: [{ title: 'Contact Us', value: '#contact' }],
                     relative_urls: false,
                     remove_script_host: true,
                     document_base_url: '',
-                    setup: (editor) => {
+                    setup: (editor, ...args) => {
                         editor.on('keydown', (e) => {
                             const htmlId = editor.id.replace('editor_', '');
 
                             if (!captureSaveKey(e) || !this.unsavedContent.includes(htmlId)) return;
 
                             this.save(htmlId);
-                        })
+                        });
+
+                        editor.on('OpenWindow', ({ dialog }) => {
+                            const data = dialog.getData();
+                            if (data.url === undefined) return;
+                            formatLinkDialog();
+                        });
                     },
                 },
             };
@@ -365,9 +413,9 @@
                     obj[key] = null;
                     return obj;
                 }, {});
-                this.pages = content.pages;
+                this.pages = content.pages.filter(({ gallery, images, html }) => images.length > 0 || html.length > 0 || !!gallery);
                 this.activePageId = this.pages[0].id;
-                this.editorConfig.link_list = content.pages.map(({ name, path }) => ({ title: name, value: path }));
+                this.editorConfig.link_list.push(...this.pages.map(({ name, path }) => ({ title: name, value: path })));
             } catch (error) {
                 this.alertError('An error occurred while loading website content.');
             }
