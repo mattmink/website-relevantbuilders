@@ -77,6 +77,7 @@
         el: '#app',
         data() {
             return {
+                galleryImagesById: {},
                 contentHTMLOld: {},
                 contentHTML: {},
                 imageRequirements: {},
@@ -326,6 +327,7 @@
                 this.imageRequirements = { ...content.images };
                 this.contentHTMLOld = JSON.parse(JSON.stringify(content.html));
                 this.contentHTML = { ...content.html };
+                this.galleryImagesById = content.galleryImagesById;
                 this.imagePreviews = Object.keys(content.images).reduce((obj, key) => {
                     obj[key] = null;
                     return obj;

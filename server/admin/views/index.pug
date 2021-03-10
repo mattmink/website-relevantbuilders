@@ -124,6 +124,19 @@ html
                                         div(v-show="imagePreviews[pageImage] && imagePreviews[pageImage].img")
                                             canvas(:ref="`${pageImage}-preview`").img-fluid
                             hr.m-5
+                    .col-md-6.content-column(v-if="activePage.gallery")
+                        h3.bg-info.text-white.p-3.mb-3
+                            |Gallery
+                        file-upload(
+                            name="file"
+                            description="Drop a file here, or click 'Browse'"
+                            @change="handleGalleryImageUpload($event, activePage.gallery)"
+                        )
+                        .row
+                            .col-lg-4.mb-3(v-for="galleryImage in galleryImagesById[activePage.gallery]" :key="galleryImage.thumb")
+                                img.img-fluid(
+                                    :src="galleryImage.thumb"
+                                )
 
         //- Components
         include ../components/icon/icon

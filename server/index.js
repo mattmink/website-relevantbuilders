@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { copySync } = require('fs-extra');
+const { glob } = require('glob');
 
 const auth = require('./auth');
 const routes = require('./routes');
@@ -13,7 +14,26 @@ const { appRoot } = require('./config');
 const app = express();
 const { PORT } = process.env;
 
-copySync(path.resolve(__dirname, '../public/assets/images'), path.resolve(__dirname, './uploads/images'), { recursive: true, overwrite: false });
+const galleriesPath = path.resolve(__dirname, './uploads/images/galleries');
+const galleries = glob.sync(path.join(galleriesPath, '*'));
+const getGalleryNameFromPath = (filePath) => {
+    if (!filePath.includes(galleriesPath) || filePath === galleriesPath) return null;
+    return filePath.slice(galleriesPath.length + 1).split('/').shift();
+}
+const galleryNames = galleries.map(getGalleryNameFromPath)
+
+copySync(path.resolve(__dirname, '../public/assets/images'), path.resolve(__dirname, './uploads/images'), {
+    recursive: true,
+    overwrite: false,
+    filter(src, dest) {
+        const ignores = ['.DS_Store'];
+
+        if (ignores.some(ignore => src.indexOf(ignore) !== -1)) return false;
+
+        const galleryName = getGalleryNameFromPath(dest);
+        return !galleryName || !galleryNames.includes(galleryName);
+    },
+});
 copySync(path.resolve(__dirname, '../public/content'), path.resolve(__dirname, './content'), { recursive: true, overwrite: false });
 
 app.use(require('cookie-parser')());
