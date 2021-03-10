@@ -8,9 +8,11 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { TemplateBuilderPlugin } = require('./template-builder');
 const WatchFilesPlugin = require('webpack-watch-files-plugin').default;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { glob } = require('glob');
 
 const content = JSON.parse(readFileSync(path.resolve(__dirname, './server/admin/content.json'), 'utf8'));
 
+const getBodyClassFromPath = pathStr => `page-${pathStr === '/' ? 'home' : pathStr.slice(1).split('/').join('-')}`;
 const isDirectory = (source) => lstatSync(source).isDirectory();
 const getDirectories = (source) => readdirSync(source)
     .map((name) => path.join(source, name))
@@ -146,13 +148,17 @@ module.exports = (_, { mode = 'development', analyze }) => {
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
                 ...templateConfig,
-                ...content.pages.filter(({ id }) => id === 'home').map(({ title, description }) => ({ title, description })).pop(),
+                ...content.pages
+                    .filter(({ id }) => id === 'home')
+                    .map(({ title, description, path: pathStr }) => ({ title, description, pageClass: getBodyClassFromPath(pathStr) }))
+                    .pop(),
                 chunks: ['home', 'common'],
             }),
-            ...content.pages.filter(({ id }) => id !== 'home').map(({ id, title, description }) => new HtmlWebpackPlugin({
+            ...content.pages.filter(({ id }) => id !== 'home').map(({ id, title, description, path: pathStr }) => new HtmlWebpackPlugin({
                 ...templateConfig,
                 title,
                 description,
+                pageClass: getBodyClassFromPath(pathStr),
                 filename: `${id}/index.html`,
                 chunks: [id, 'common'],
             })),
@@ -168,7 +174,6 @@ module.exports = (_, { mode = 'development', analyze }) => {
         stats: 'errors-warnings',
         devServer: {
             contentBase: './dist',
-            historyApiFallback: true,
             proxy: {
                 '/s/api': 'http://localhost:3000',
             },
