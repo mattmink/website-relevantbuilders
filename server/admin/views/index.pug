@@ -133,7 +133,11 @@ html
                             @change="uploadGalleryImage($event, activePage.gallery)"
                         )
                         .row
-                            .col-lg-4.mb-3(v-for="galleryImage in galleryImagesById[activePage.gallery]" :key="galleryImage.thumb")
+                            .col-lg-4.mb-3.gallery-item(v-for="galleryImage in galleryImagesById[activePage.gallery]" :key="galleryImage.thumb"
+                                            draggable="true"
+                                            @dragstart="handleGalleryDragstart($event, galleryImage)"
+                                            @dragend="handleGalleryDragend"
+                                            @dragover="handleGalleryDragover($event, galleryImage)")
                                 .gallery-thumb
                                     button.btn.btn-sm.btn-danger(@click="confirmRemoveGalleryImage(galleryImage)")
                                         icon(name="trash")

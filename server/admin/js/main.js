@@ -355,6 +355,34 @@
                         loading.hide();
                     });
             },
+            handleGalleryDragover(event, galleryImage) {
+                const gallery = this.galleryImagesById[this.activePage.gallery];
+                const index = gallery.indexOf(galleryImage);
+                const { index: draggingIndex } = this.dragging;
+
+                if (index === draggingIndex) return;
+
+                const { layerX, target: { offsetWidth } } = event;
+                const percentX = layerX / offsetWidth;
+                const isJustToTheLeft = index === draggingIndex - 1 && percentX >= .5;
+                const isJustToTheRight = index === draggingIndex + 1 && percentX < .5;
+
+                if (isJustToTheLeft || isJustToTheRight) return;
+
+                gallery.splice(index, 0, gallery.splice(draggingIndex, 1)[0]);
+
+                this.dragging.index = index;
+            },
+            handleGalleryDragstart(event, galleryImage) {
+                const index = this.galleryImagesById[this.activePage.gallery].indexOf(galleryImage);
+                this.dragging = { event, galleryImage, index };
+                event.target.classList.add('dragging');
+            },
+            handleGalleryDragend(event, galleryImage) {
+                this.dragging.event.target.classList.remove('dragging');
+                this.dragging = null;
+                // FIXME: Hit an endpoint here to update the sort order!
+            },
             alertSuccess(message) {
                 this.$toasted.show(message, {
                     ...toastConfig,
