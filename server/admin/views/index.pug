@@ -130,7 +130,7 @@ html
                         file-upload.mb-3(
                             name="file"
                             description="Drop a file here, or click 'Browse'"
-                            @change="handleGalleryImageUpload($event, activePage.gallery)"
+                            @change="uploadGalleryImage($event, activePage.gallery)"
                         )
                         .row
                             .col-lg-4.mb-3(v-for="galleryImage in galleryImagesById[activePage.gallery]" :key="galleryImage.thumb")

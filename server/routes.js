@@ -5,7 +5,7 @@ const { glob } = require('glob');
 const { readJsonSync, readFileSync } = require('fs-extra');
 const { authenticate, ensureIsLoggedIn } = require('./auth.js');
 const { sendMessage } = require('./controllers/mailController.js');
-const { uploadImage, resizeImage, removeGalleryImage } = require('./controllers/photosController.js');
+const { uploadImage, resizeImage, removeGalleryImage, saveGalleryImage, mapGalleryImage } = require('./controllers/photosController.js');
 const { publish, save } = require('./controllers/contentController.js');
 const { appRoot, publicRoot } = require('./config.js');
 const content = readJsonSync(path.resolve(__dirname, './admin/content.json'));
@@ -33,14 +33,7 @@ const getHTMLById = () => content.pages.reduce((map, { id, html = [] }) => {
 const getGalleryImagesById = () => content.pages.reduce((mapped, { gallery }) => {
     if (!gallery) return mapped;
     mapped[gallery] = glob.sync(path.join(serverPath, `./uploads/images/galleries/${gallery}/thumbs/*`))
-        .map((thumbPath) => {
-            const thumb = thumbPath.replace(serverPath, adminRoot);
-            return {
-                thumb,
-                fileName: path.basename(thumb),
-                full: thumb.replace(`${gallery}/thumbs`, `${gallery}/full`),
-            };
-        });
+        .map(mapGalleryImage);
     return mapped;
 }, {});
 
@@ -52,6 +45,8 @@ const admin = (route = '') => `/admin${route}`;
 router.post(api('/message/send'), sendMessage);
 
 router.post(api('/image/upload'), ensureIsLoggedIn(), uploadImage, resizeImage);
+
+router.post(api('/gallery/image/upload'), ensureIsLoggedIn(), uploadImage, saveGalleryImage);
 
 router.post(api('/gallery/image/delete'), ensureIsLoggedIn(), removeGalleryImage);
 

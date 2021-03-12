@@ -2,10 +2,12 @@ const path = require('path');
 const multer = require('multer');
 const jimp = require("jimp");
 const fs = require('fs-extra');
+const { appRoot } = require('../config.js');
 const { images } = fs.readJsonSync(path.resolve(__dirname, '../admin/content.json'));
 
 const uploadsDir = path.join(__dirname, '../uploads');
 const uploadsImagesDir = path.join(uploadsDir, 'images');
+const uploadsGalleriesDir = path.join(uploadsImagesDir, 'galleries');
 
 fs.ensureDirSync(uploadsImagesDir);
 
@@ -26,6 +28,14 @@ const cropKeys = {
     width: 'width',
     height: 'height',
 };
+const mapGalleryImage = (imagePath) => {
+    const correctedPath = imagePath.replace(uploadsGalleriesDir, `${appRoot}/admin/uploads/images/galleries`);
+    return {
+        fileName: path.basename(correctedPath),
+        thumb: correctedPath.replace('/full/', '/thumbs/'),
+        full: correctedPath.replace('/thumbs/', '/full/'),
+    };
+}
 
 const uploadImage = (req, res, next) => {
     try {
@@ -81,8 +91,41 @@ const removeAsync = (file) => new Promise((resolve, reject) => {
     });
 });
 
-const removeGalleryImage = async ({ body: { gallery, fileName }}, res, next) => {
-    console.log({ gallery, fileName });
+const getId = () => `${(new Date()).getTime().toString(36)}${Math.random().toString(36).slice(2)}`;
+
+const saveGalleryImage = async ({ file, query: { gallery } }, res) => {
+    if (!file || !file.buffer) return res.sendStatus(500);
+
+    try {
+        const fileName = `${getId()}.jpg`
+        const image = (await jimp.read(file.buffer));
+        const width = image.getWidth();
+        const height = image.getHeight();
+        const isLandscape = width > height;
+        const minDimension = Math.min(width, height);
+        const x = isLandscape ? (width / 2) - (minDimension / 2) : 0;
+        const y = isLandscape ? 0 : (height / 2) - (minDimension / 2);
+        const thumb = image.clone().crop(x, y, minDimension, minDimension);
+        const fullPath = path.join(uploadsGalleriesDir, gallery, 'full', fileName);
+        const thumbPath = path.join(uploadsGalleriesDir, gallery, 'thumbs', fileName);
+
+        image
+            .resize(1200, 1200)
+            .quality(70)
+            .write(fullPath);
+        thumb
+            .resize(300, 300)
+            .quality(70)
+            .write(thumbPath);
+
+        res.status(200).json(mapGalleryImage(thumbPath));
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error.message);
+    }
+};
+
+const removeGalleryImage = async ({ body: { gallery, fileName } }, res, next) => {
     const galleryDir = path.join(uploadsImagesDir, 'galleries', gallery);
     const full = path.join(galleryDir, 'full', fileName);
     const thumb = path.join(galleryDir, 'thumbs', fileName);
@@ -102,7 +145,9 @@ const removeGalleryImage = async ({ body: { gallery, fileName }}, res, next) => 
 };
 
 module.exports = {
+    mapGalleryImage,
     uploadImage,
     resizeImage,
+    saveGalleryImage,
     removeGalleryImage,
 };

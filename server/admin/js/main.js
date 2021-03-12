@@ -259,6 +259,27 @@
                         loading.hide();
                     });
             },
+            async uploadGalleryImage({ formData }, gallery) {
+                const loading = this.loading(`Uploading ${gallery} gallery image...`);
+                return fetch(`/s/api/gallery/image/upload?gallery=${gallery}`, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors',
+                })
+                    .then(async (response) => {
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
+                        this.galleryImagesById[gallery].push(await response.json());
+                        this.alertSuccess('The image was updated successfully. You will need to publish your changes');
+                    })
+                    .catch(() => {
+                        this.alertError('An error occurred while uploading the image. Please try again.');
+                    })
+                    .finally(() => {
+                        loading.hide();
+                    });
+            },
             uploadCropped(imageId) {
                 const { formData, cropper } = this.imagePreviews[imageId];
                 const { x, y, width, height } = cropper.getData();
