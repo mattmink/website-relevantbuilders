@@ -378,10 +378,33 @@
                 this.dragging = { event, galleryImage, index };
                 event.target.classList.add('dragging');
             },
-            handleGalleryDragend(event, galleryImage) {
+            handleGalleryDragend() {
                 this.dragging.event.target.classList.remove('dragging');
                 this.dragging = null;
-                // FIXME: Hit an endpoint here to update the sort order!
+                const gallery = this.activePage.gallery;
+                const images = this.galleryImagesById[gallery].map(({ fileName }) => fileName);
+                const loading = this.loading('Updating gallery sort order...');
+
+                fetch('/s/api/gallery/sort', {
+                    method: 'POST',
+                    body: JSON.stringify({ gallery, images }),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
+                        this.alertSuccess('The gallery sort order was updated successfully.');
+                    })
+                    .catch(() => {
+                        this.alertError('An error occurred while updating the gallery sort order. Please refresh the page and try again.');
+                    })
+                    .finally(() => {
+                        loading.hide();
+                    });
             },
             alertSuccess(message) {
                 this.$toasted.show(message, {

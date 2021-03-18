@@ -1,5 +1,5 @@
 const path = require('path');
-const { lstatSync, readdirSync, readFileSync, copySync, remove } = require('fs-extra');
+const { lstatSync, readdirSync, readFileSync, copySync, remove, removeSync } = require('fs-extra');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -30,6 +30,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
     const componentsRoot = path.join(publicRoot, '/components');
 
     if (!isDev) {
+        removeSync(publicRoot);
         copySync(path.resolve('./public'), publicRoot, {
             recursive: true,
             filter(src) {
@@ -59,7 +60,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
         resolve: {
             alias: {
                 icons: path.resolve(__dirname, './node_modules/feather-icons/dist/icons/'),
-                images: path.resolve(__dirname, './public/assets/images/'),
+                images: path.join(publicRoot, 'assets/images/'),
             },
         },
         module: {
@@ -195,7 +196,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
         config.plugins.push(
             {
                 apply: (compiler) => {
-                    compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {
+                    compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => {
                         remove(publicRoot);
                     });
                 }

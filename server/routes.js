@@ -2,10 +2,10 @@ const express = require('express');
 const path = require('path');
 const { glob } = require('glob');
 
-const { readJsonSync, readFileSync } = require('fs-extra');
+const { readJsonSync, readFileSync, existsSync } = require('fs-extra');
 const { authenticate, ensureIsLoggedIn } = require('./auth.js');
 const { sendMessage } = require('./controllers/mailController.js');
-const { uploadImage, resizeImage, removeGalleryImage, saveGalleryImage, mapGalleryImage } = require('./controllers/photosController.js');
+const { uploadImage, resizeImage, removeGalleryImage, saveGalleryImage, mapGalleryImage, sortGallery, makeGalleryImage } = require('./controllers/photosController.js');
 const { publish, save } = require('./controllers/contentController.js');
 const { appRoot, publicRoot } = require('./config.js');
 const content = readJsonSync(path.resolve(__dirname, './admin/content.json'));
@@ -31,9 +31,10 @@ const getHTMLById = () => content.pages.reduce((map, { id, html = [] }) => {
 }, {});
 
 const getGalleryImagesById = () => content.pages.reduce((mapped, { gallery }) => {
-    if (!gallery) return mapped;
-    mapped[gallery] = glob.sync(path.join(serverPath, `./uploads/images/galleries/${gallery}/thumbs/*`))
-        .map(mapGalleryImage);
+    const manifestPath = path.join(serverPath, `./uploads/images/galleries/${gallery}/manifest.json`);
+    if (!gallery || !existsSync(manifestPath)) return mapped;
+    const galleryManifest = readJsonSync(manifestPath);
+    mapped[gallery] = galleryManifest.map(fileName => makeGalleryImage(gallery, fileName));
     return mapped;
 }, {});
 
@@ -49,6 +50,8 @@ router.post(api('/image/upload'), ensureIsLoggedIn(), uploadImage, resizeImage);
 router.post(api('/gallery/image/upload'), ensureIsLoggedIn(), uploadImage, saveGalleryImage);
 
 router.post(api('/gallery/image/delete'), ensureIsLoggedIn(), removeGalleryImage);
+
+router.post(api('/gallery/sort'), ensureIsLoggedIn(), sortGallery);
 
 router.post(api('/publish'), ensureIsLoggedIn(), publish);
 

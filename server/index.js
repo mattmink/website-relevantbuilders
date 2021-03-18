@@ -3,7 +3,7 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-const { copySync } = require('fs-extra');
+const { copySync, writeFileSync } = require('fs-extra');
 const { glob } = require('glob');
 
 const auth = require('./auth');
@@ -20,7 +20,8 @@ const getGalleryNameFromPath = (filePath) => {
     if (!filePath.includes(galleriesPath) || filePath === galleriesPath) return null;
     return filePath.slice(galleriesPath.length + 1).split('/').shift();
 }
-const galleryNames = galleries.map(getGalleryNameFromPath)
+const galleryNames = galleries.map(getGalleryNameFromPath);
+const galleriesWithoutManifest = new Set();
 
 copySync(path.resolve(__dirname, '../public/assets/images'), path.resolve(__dirname, './uploads/images'), {
     recursive: true,
@@ -31,10 +32,25 @@ copySync(path.resolve(__dirname, '../public/assets/images'), path.resolve(__dirn
         if (ignores.some(ignore => src.indexOf(ignore) !== -1)) return false;
 
         const galleryName = getGalleryNameFromPath(dest);
-        return !galleryName || !galleryNames.includes(galleryName);
+        const shouldCopyGallery = !galleryNames.includes(galleryName);
+
+        if (galleryName && shouldCopyGallery) galleriesWithoutManifest.add(galleryName);
+
+        return !galleryName || shouldCopyGallery;
     },
 });
 copySync(path.resolve(__dirname, '../public/content'), path.resolve(__dirname, './content'), { recursive: true, overwrite: false });
+
+Array.from(galleriesWithoutManifest)
+    .forEach((galleryName) => {
+        const galleryPath = path.join(galleriesPath, galleryName);
+        const images = glob.sync(path.join(galleryPath, 'full/*.{jpeg,jpg,png}'))
+            .map(imagePath => path.basename(imagePath));
+
+        if (images.length === 0) return;
+
+        writeFileSync(path.join(galleryPath, 'manifest.json'), JSON.stringify(images));
+    });
 
 app.use(require('cookie-parser')());
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -28,14 +28,19 @@ const cropKeys = {
     width: 'width',
     height: 'height',
 };
-const mapGalleryImage = (imagePath) => {
-    const correctedPath = imagePath.replace(uploadsGalleriesDir, `${appRoot}/admin/uploads/images/galleries`);
+const makeGalleryImage = (gallery, fileName) => {
+    const galleryPath = `${appRoot}/admin/uploads/images/galleries/${gallery}`;
     return {
-        fileName: path.basename(correctedPath),
-        thumb: correctedPath.replace('/full/', '/thumbs/'),
-        full: correctedPath.replace('/thumbs/', '/full/'),
+        fileName,
+        thumb: `${galleryPath}/thumbs/${fileName}`,
+        full: `${galleryPath}/full/${fileName}`,
     };
 }
+const getGalleryManifest = (galleryName) => fs.readJsonSync(path.join(uploadsGalleriesDir, galleryName, 'manifest.json'));
+const updateGalleryManifest = (galleryName, galleryManifest) => {
+    const manifestPath = path.join(uploadsGalleriesDir, galleryName, 'manifest.json');
+    fs.writeFileSync(manifestPath, JSON.stringify(galleryManifest));
+};
 
 const uploadImage = (req, res, next) => {
     try {
@@ -118,7 +123,12 @@ const saveGalleryImage = async ({ file, query: { gallery } }, res) => {
             .quality(70)
             .write(thumbPath);
 
-        res.status(200).json(mapGalleryImage(thumbPath));
+
+        const galleryManifest = getGalleryManifest(gallery);
+        galleryManifest.push(fileName);
+        updateGalleryManifest(gallery, galleryManifest);
+
+        res.status(200).json(makeGalleryImage(gallery, fileName));
     } catch (error) {
         console.error(error);
         res.status(500).send(error.message);
@@ -137,6 +147,9 @@ const removeGalleryImage = async ({ body: { gallery, fileName } }, res, next) =>
 
     try {
         await Promise.all([removeAsync(full), removeAsync(thumb)]);
+        const galleryManifest = getGalleryManifest(gallery);
+        galleryManifest.splice(galleryManifest.indexOf(fileName), 1);
+        updateGalleryManifest(gallery, galleryManifest);
         res.sendStatus(204);
     } catch (error) {
         console.error(error);
@@ -144,8 +157,14 @@ const removeGalleryImage = async ({ body: { gallery, fileName } }, res, next) =>
     }
 };
 
+const sortGallery = async ({ body: { gallery, images } }, res, next) => {
+    updateGalleryManifest(gallery, images);
+    res.sendStatus(200);
+};
+
 module.exports = {
-    mapGalleryImage,
+    sortGallery,
+    makeGalleryImage,
     uploadImage,
     resizeImage,
     saveGalleryImage,
