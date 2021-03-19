@@ -74,11 +74,11 @@ const resizeImage = async ({ file, query: { imageId, cropData } }, res, next) =>
         const fileName1x = `${imageId}.jpg`;
 
         cropped
-            .resize(minWidth, minHeight)
+            .scaleToFit(minWidth, minHeight)
             .quality(70)
             .write(`${uploadsImagesDir}/${fileName2x}`);
         croppedSmall
-            .resize(minWidth / 2, minHeight / 2)
+            .scaleToFit(minWidth / 2, minHeight / 2)
             .quality(70)
             .write(`${uploadsImagesDir}/${fileName1x}`);
 
@@ -115,7 +115,7 @@ const saveGalleryImage = async ({ file, query: { gallery } }, res) => {
         const thumbPath = path.join(uploadsGalleriesDir, gallery, 'thumbs', fileName);
 
         image
-            .resize(1200, 1200)
+            .scaleToFit(1200, 1200)
             .quality(70)
             .write(fullPath);
         thumb
