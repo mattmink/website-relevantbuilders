@@ -72,14 +72,14 @@
     width: 100%;
     height: calc(100% - 55px);
     animation: slide-left-fade-in ease-out 1.25s;
-    background-image: url('/public/assets/images/home-main.jpg');
+    background-image: url('images/home-main.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     background-color: transparent;
 
     @include media2x {
-        background-image: url('/public/assets/images/home-main@2x.jpg');
+        background-image: url('images/home-main@2x.jpg');
     }
 }
 
@@ -170,20 +170,20 @@
         lighten($brand-1-light, 47%) 11.4vh,
         #ffffff 11.4vh
     );
-    background-image: url('/public/assets/images/cedar-shingle.jpg'), $section-2-bottom-bg;
+    background-image: url('images/cedar-shingle.jpg'), $section-2-bottom-bg;
     background-repeat: repeat-x, repeat-x;
     padding-bottom: 12vh;
     background-size: 3.5em, 11.4vh;
 
     @include media2x {
-        background-image: url('/public/assets/images/cedar-shingle@2x.jpg'), $section-2-bottom-bg;
+        background-image: url('images/cedar-shingle@2x.jpg'), $section-2-bottom-bg;
     }
 }
 
 .home-section-3 .featured-section-image {
-    background-image: url('/public/assets/images/home-floor-plans.jpg');
+    background-image: url('images/home-floor-plans.jpg');
     @include media2x {
-        background-image: url('/public/assets/images/home-floor-plans@2x.jpg');
+        background-image: url('images/home-floor-plans@2x.jpg');
     }
 }
 
