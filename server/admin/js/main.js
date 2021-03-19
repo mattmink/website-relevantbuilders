@@ -248,7 +248,7 @@
                         if (!response.ok) {
                             throw Error(response.statusText);
                         }
-                        refreshImage(this.$refs[imageId]);
+                        refreshImage(this.$refs[imageId][0]);
                         this.closeImageUpload(imageId);
                         this.alertSuccess('The image was updated successfully. You will need to publish your changes');
                     })
@@ -308,7 +308,7 @@
 
                 await this.$nextTick();
 
-                const canvas = this.$refs[`${imageId}-preview`];
+                const canvas = this.$refs[`${imageId}-preview`][0];
                 canvas.width = width;
                 canvas.height = height;
                 canvas.getContext('2d').drawImage(img, 0, 0);
