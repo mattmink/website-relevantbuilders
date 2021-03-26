@@ -136,6 +136,7 @@ $nav-brand-width: 250px;
             transition: opacity 0.2s ease-out;
         }
         .nav-items {
+            // FIXME: Needs to scroll when content overflows
             position: fixed;
             top: 0;
             right: 0;
