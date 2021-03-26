@@ -136,7 +136,6 @@ $nav-brand-width: 250px;
             transition: opacity 0.2s ease-out;
         }
         .nav-items {
-            // FIXME: Needs to scroll when content overflows
             position: fixed;
             top: 0;
             right: 0;
@@ -149,6 +148,8 @@ $nav-brand-width: 250px;
             font-size: 4vw;
             padding: 80px 5vw 1rem;
             min-width: calc(100vw - #{$nav-brand-width} - 2rem);
+            -webkit-overflow-scrolling: touch;
+            overflow: scroll;
         }
 
         .btn-small {
