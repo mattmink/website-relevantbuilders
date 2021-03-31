@@ -99,9 +99,10 @@ const handleLinkClick = function handleLinkClick(e, link) {
 
     e.preventDefault();
 
+    link.blur();
+
     if (pathname === location.pathname) return;
 
-    link.blur();
     goTo(pathname);
 }
 

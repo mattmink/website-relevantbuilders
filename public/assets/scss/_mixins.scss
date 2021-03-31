@@ -57,3 +57,8 @@
         @content;
     }
 }
+
+@mixin focus-outline() {
+    outline: 2px dashed currentColor;
+    outline-offset: 2px;
+}

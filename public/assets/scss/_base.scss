@@ -49,13 +49,22 @@ body {
     @include media-breakpoint-up(lg) {
         background-image:
             linear-gradient(128deg,
-                rgba($brand-1, 0) 74vw,
-                $brand-1 calc(74vw + 1px),
+                rgba($brand-1, 0) 64vw,
+                $brand-1 calc(64vw + 1px),
                 $brand-1 100%),
             linear-gradient(218deg,
-                $brand-1 52vw,
-                $brand-1-light calc(52vw + 1px),
+                $brand-1 42vw,
+                $brand-1-light calc(42vw + 1px),
                 $brand-1-light 100%);
+        // background-image:
+        //     linear-gradient(128deg,
+        //         rgba($brand-1, 0) 74vw,
+        //         $brand-1 calc(74vw + 1px),
+        //         $brand-1 100%),
+        //     linear-gradient(218deg,
+        //         $brand-1 52vw,
+        //         $brand-1-light calc(52vw + 1px),
+        //         $brand-1-light 100%);
     }
 }
 
@@ -83,7 +92,13 @@ a {
     &:focus {
         text-decoration: underline;
     }
+    &:not(.btn):focus {
+        @include focus-outline;
+    }
 }
+
+
+
 
 p {
     margin: 1em 0;

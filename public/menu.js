@@ -13,6 +13,7 @@ const openNavMenu = () => {
     $menuToggle.setAttribute('aria-expanded', true);
 }
 const closeNavMenu = () => {
+    if (!isMenuOpen()) return;
     document.body.classList.add('menu-closing');
     document.body.classList.remove('menu-open');
     document.body.style.paddingRight = null;
