@@ -1,0 +1,23 @@
+{
+    "baseTitle": " | Relevant Builders, Eau Claire, WI",
+    "defaultDescription": "Relevant Builders brings a personal approach to home construction in the Chippewa Valley. We'll build a custom home to fit the needs of your family.",
+    "defaultTitle": "Custom Home Builders",
+    "pages": {
+        "/process": {
+            "title": "Our Process",
+            "description": "Relevant Builders brings a personal approach to home construction in the Chippewa Valley. We'll build a custom home to fit the needs of your family."
+        },
+        "/construction": {
+            "title": "Construction",
+            "description": "Relevant Builders brings a personal approach to home construction in the Chippewa Valley. We'll build a custom home to fit the needs of your family."
+        },
+        "/additions": {
+            "title": "Additions",
+            "description": "Relevant Builders brings a personal approach to home construction in the Chippewa Valley. We'll build a custom home to fit the needs of your family."
+        },
+        "/thank-you": {
+            "title": "Thank You",
+            "description": "Relevant Builders brings a personal approach to home construction in the Chippewa Valley. We'll build a custom home to fit the needs of your family."
+        }
+    }
+}

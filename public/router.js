@@ -2,6 +2,7 @@
 //      * This would solve the problem where event listeners persist after being called the first time
 //      * This would also keep the router logic clean and focused, allowing other components to "subscribe" to router events and do custom things
 import { closeNavMenu } from "./menu";
+import seo from './data/seo.json';
 import Home from './pages/home';
 import homeTemplate from './pages/index.html';
 import constructionTemplate from './pages/construction/index.html';
@@ -12,6 +13,20 @@ import contractingTemplate from './pages/construction/contracting/index.html';
 import processTemplate from './pages/process/index.html';
 import additionsTemplate from './pages/additions/index.html';
 
+const addRouteMeta = (route) => {
+    const {
+        title = seo.defaultTitle,
+        description = seo.defaultDescription
+    } = seo.pages[route.path] || {};
+
+    return {
+        ...route,
+        meta: {
+            title: `${title}${seo.baseTitle}`,
+            description
+        }
+    };
+}
 const getBodyClassFromPath = path => `page-${path === '/' ? 'home' : path.slice(1).split('/').join('-')}`;
 const routerView = document.querySelector('#content');
 const routes = [
@@ -42,8 +57,10 @@ const routes = [
         path: '/additions',
         template: additionsTemplate
     },
-];
+].map(addRouteMeta);
 let currentRoute;
+
+console.log(routes);
 
 function getRoute(path) {
     return routes.find(route => route.path === path);
@@ -59,6 +76,9 @@ function loadRoute(route) {
 
     closeNavMenu();
 
+    document.title = route.meta.title;
+    document.querySelector('meta[name="description"]').setAttribute("content", route.meta.description);
+
     // TODO: Investigate whether a functional approach could improve performance with the help of caching route elements
     routerView.innerHTML = template;
 
@@ -72,7 +92,6 @@ function loadRoute(route) {
 }
 
 export function goTo(path) {
-    // TODO: Update title tag and meta description
     const route = getRoute(path);
     history.pushState(null, null, path);
     loadRoute(route);

@@ -8,11 +8,15 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { TemplateBuilderPlugin } = require('./template-builder');
 const WatchFilesPlugin = require('webpack-watch-files-plugin').default;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const { glob } = require('glob');
 
-const content = JSON.parse(readFileSync(path.resolve(__dirname, './server/admin/content.json'), 'utf8'));
+const {
+    defaultTitle,
+    defaultDescription,
+    baseTitle,
+    pages: seoPages
+} = JSON.parse(readFileSync(path.resolve(__dirname, './public/data/seo.json'), 'utf8'));
 
-const getBodyClassFromPath = pathStr => `page-${pathStr === '/' ? 'home' : pathStr.slice(1).split('/').join('-')}`;
+const getBodyClassFromPath = (pathStr = '/') => `page-${pathStr === '/' ? 'home' : pathStr.slice(1).split('/').join('-')}`;
 const isDirectory = (source) => lstatSync(source).isDirectory();
 const getDirectories = (source) => readdirSync(source)
     .map((name) => path.join(source, name))
@@ -154,20 +158,27 @@ module.exports = (_, { mode = 'development', analyze }) => {
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
                 ...templateConfig,
-                ...content.pages
-                    .filter(({ id }) => id === 'home')
-                    .map(({ title, description, path: pathStr }) => ({ title, description, pageClass: getBodyClassFromPath(pathStr) }))
-                    .pop(),
+                title: `${defaultTitle}${baseTitle}`,
+                description: defaultDescription,
+                pageClass: getBodyClassFromPath('/'),
                 chunks: ['home', 'common'],
             }),
-            ...content.pages.filter(({ id }) => id !== 'home').map(({ id, title, description, path: pathStr }) => new HtmlWebpackPlugin({
-                ...templateConfig,
-                title,
-                description,
-                pageClass: getBodyClassFromPath(pathStr),
-                filename: `${id}/index.html`,
-                chunks: [id, 'common'],
-            })),
+            ...pages.map((id) => {
+                const pathStr = `/${id}`;
+                const {
+                    title = defaultTitle,
+                    description = defaultDescription
+                } = seoPages[pathStr] || {};
+
+                return new HtmlWebpackPlugin({
+                    ...templateConfig,
+                    title: `${title}${baseTitle}`,
+                    description,
+                    pageClass: getBodyClassFromPath(pathStr),
+                    filename: `${id}/index.html`,
+                    chunks: [id, 'common'],
+                });
+            }),
             new TemplateBuilderPlugin({ mode }),
             new MiniCssExtractPlugin({
                 filename: '[name].[hash].css',
