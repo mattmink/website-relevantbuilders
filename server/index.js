@@ -39,7 +39,7 @@ copySync(path.resolve(__dirname, '../public/assets/images'), path.resolve(__dirn
         return !galleryName || shouldCopyGallery;
     },
 });
-copySync(path.resolve(__dirname, '../public/content'), path.resolve(__dirname, './content'), { recursive: true, overwrite: false });
+copySync(path.resolve(__dirname, '../public/includes/content'), path.resolve(__dirname, './content'), { recursive: true, overwrite: false });
 
 Array.from(galleriesWithoutManifest)
     .forEach((galleryName) => {

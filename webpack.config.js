@@ -38,13 +38,13 @@ module.exports = (_, { mode = 'development', analyze }) => {
             },
         });
         copySync(path.resolve('./server/uploads/images'), path.join(publicRoot, '/assets/images'), { recursive: true });
-        copySync(path.resolve('./server/content'), path.join(publicRoot, '/content'), { recursive: true });
+        copySync(path.resolve('./server/content'), path.join(publicRoot, '/includes/content'), { recursive: true });
     }
 
     const pages = getDirectories(pagesRoot).map((dir) => dir.replace(`${pagesRoot}/`, ''));
     const templateConfig = {
         chunksSortMode: 'manual',
-        template: path.join(publicRoot, '/templates/index.html'),
+        template: path.join(publicRoot, '/includes/template.html'),
         favicon: path.join(publicRoot, '/assets/favicon.ico'),
     };
 
