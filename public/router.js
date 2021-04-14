@@ -60,8 +60,6 @@ const routes = [
 ].map(addRouteMeta);
 let currentRoute;
 
-console.log(routes);
-
 function getRoute(path) {
     return routes.find(route => route.path === path);
 }
