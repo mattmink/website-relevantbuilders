@@ -18,6 +18,10 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     line-height: 1.5;
+}
+
+.wrapper {
+    min-height: 100%;
     background-image:
         linear-gradient(39deg,
             rgba($brand-1-light,1) 54vh,
@@ -31,27 +35,36 @@ body {
 
     @include media-breakpoint-up(md) {
         background-image:
-            linear-gradient(-51deg,
-                $brand-1 38%,
-                rgba($brand-1, 0) calc(38% + 1px),
-                rgba($brand-1, 0) 100%),
-            linear-gradient(39deg,
-                $brand-1-light 74%,
-                $brand-1 calc(74% + 1px),
-                $brand-1 100%);
+            linear-gradient(128deg,
+                rgba($brand-1, 0) 110vw,
+                $brand-1 calc(110vw + 1px),
+                $brand-1 100%),
+            linear-gradient(218deg,
+                $brand-1 67vw,
+                $brand-1-light calc(67vw + 1px),
+                $brand-1-light 100%);
         background-attachment: scroll;
     }
 
     @include media-breakpoint-up(lg) {
         background-image:
-            linear-gradient(-51deg,
-                $brand-1 44%,
-                rgba($brand-1, 0) calc(44% + 1px),
-                rgba($brand-1, 0) 100%),
-            linear-gradient(39deg,
-                $brand-1-light 59%,
-                $brand-1 calc(59% + 1px),
-                $brand-1 100%);
+            linear-gradient(128deg,
+                rgba($brand-1, 0) 64vw,
+                $brand-1 calc(64vw + 1px),
+                $brand-1 100%),
+            linear-gradient(218deg,
+                $brand-1 42vw,
+                $brand-1-light calc(42vw + 1px),
+                $brand-1-light 100%);
+        // background-image:
+        //     linear-gradient(128deg,
+        //         rgba($brand-1, 0) 74vw,
+        //         $brand-1 calc(74vw + 1px),
+        //         $brand-1 100%),
+        //     linear-gradient(218deg,
+        //         $brand-1 52vw,
+        //         $brand-1-light calc(52vw + 1px),
+        //         $brand-1-light 100%);
     }
 }
 
@@ -79,23 +92,29 @@ a {
     &:focus {
         text-decoration: underline;
     }
+    &:not(.btn):focus {
+        @include focus-outline;
+    }
 }
+
+
+
 
 p {
     margin: 1em 0;
 }
 
-.wrapper,
-.wrapper-800 {
+.container,
+.container-800 {
     margin: 0 auto;
     padding: 0 1rem;
 }
 
-.wrapper {
+.container {
     max-width: 1200px;
 }
 
-.wrapper-800 {
+.container-800 {
     max-width: 800px;
 }
 

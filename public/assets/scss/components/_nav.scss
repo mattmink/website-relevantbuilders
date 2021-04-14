@@ -5,10 +5,15 @@ $nav-brand-width: 250px;
 
     .nav-brand {
         width: $nav-brand-width;
+        color: #fff;
     }
 
     .logo {
         fill: #fff;
+    }
+
+    .nav-item {
+        color: #fff;
     }
 
     .nav-link {
@@ -78,20 +83,14 @@ $nav-brand-width: 250px;
             display: flex;
         }
 
+        .nav-item,
+        .nav-item-button {
+            margin-left: 2.3vw;
+        }
+
         .nav-item {
             position: relative;
             overflow: hidden;
-            margin-left: 2.3vw;
-
-            &:hover,
-            &:focus-within {
-                box-shadow: 0 2px 4px rgb(0, 0, 0, 0.3);
-            }
-        }
-
-        .nav-link {
-            font-weight: 500;
-            text-decoration: none;
             transition: all ease-in-out 0.2s;
 
             &::after {
@@ -107,13 +106,32 @@ $nav-brand-width: 250px;
                 transform: skewX(40deg) translate3d(-50%, 0, 0) scale3d(0, 1, 1);
                 transform-origin: center;
                 transition: all ease-in-out 0.25s;
-                z-index: -1;
+                z-index: 0;
             }
 
-            &:hover::after,
-            &:focus::after {
-                opacity: 0.2;
-                transform: skewX(40deg) translate3d(-50%, 0, 0) scale3d(1.5, 1.5, 1);
+            &:hover,
+            &:focus-within {
+                box-shadow: 0 2px 4px rgb(0, 0, 0, 0.3);
+
+                &::after {
+                    opacity: 0.2;
+                    transform: skewX(40deg) translate3d(-50%, 0, 0) scale3d(1.5, 1.5, 1);
+                }
+            }
+
+            &:focus-within {
+                @include focus-outline;
+            }
+        }
+
+        .nav-link {
+            font-weight: 500;
+            text-decoration: none;
+            position: relative;
+            z-index: 1;
+
+            &:focus {
+                outline: none;
             }
         }
     }
@@ -148,6 +166,8 @@ $nav-brand-width: 250px;
             font-size: 4vw;
             padding: 80px 5vw 1rem;
             min-width: calc(100vw - #{$nav-brand-width} - 2rem);
+            -webkit-overflow-scrolling: touch;
+            overflow: scroll;
         }
 
         .btn-small {

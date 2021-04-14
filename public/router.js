@@ -1,16 +1,32 @@
+// TODO: Figure out a better pattern for components and the router, to allow a "hooks" approach
+//      * This would solve the problem where event listeners persist after being called the first time
+//      * This would also keep the router logic clean and focused, allowing other components to "subscribe" to router events and do custom things
+import { closeNavMenu } from "./menu";
+import seo from './data/seo.json';
 import Home from './pages/home';
 import homeTemplate from './pages/index.html';
-import Construction from './pages/construction/construction';
 import constructionTemplate from './pages/construction/index.html';
 import Design from './pages/construction/design/design';
 import designTemplate from './pages/construction/design/index.html';
 import Contracting from './pages/construction/contracting/contracting';
 import contractingTemplate from './pages/construction/contracting/index.html';
-import Process from './pages/process/process';
 import processTemplate from './pages/process/index.html';
-import Additions from './pages/additions/additions';
 import additionsTemplate from './pages/additions/index.html';
 
+const addRouteMeta = (route) => {
+    const {
+        title = seo.defaultTitle,
+        description = seo.defaultDescription
+    } = seo.pages[route.path] || {};
+
+    return {
+        ...route,
+        meta: {
+            title: `${title}${seo.baseTitle}`,
+            description
+        }
+    };
+}
 const getBodyClassFromPath = path => `page-${path === '/' ? 'home' : path.slice(1).split('/').join('-')}`;
 const routerView = document.querySelector('#content');
 const routes = [
@@ -21,7 +37,6 @@ const routes = [
     },
     {
         path: '/construction',
-        component: Construction,
         template: constructionTemplate,
     },
     {
@@ -36,43 +51,50 @@ const routes = [
     },
     {
         path: '/process',
-        component: Process,
         template: processTemplate
     },
     {
         path: '/additions',
-        component: Additions,
         template: additionsTemplate
     },
-];
+].map(addRouteMeta);
+let currentRoute;
 
 function getRoute(path) {
     return routes.find(route => route.path === path);
 }
 
-function goToRoute(route) {
+function loadRoute(route) {
     if (!route) return;
 
-    const { template, component, path } = route;
+    const previousRoute = currentRoute;
+    currentRoute = route;
 
+    const { template, component = () => { }, path } = route;
+
+    closeNavMenu();
+
+    document.title = route.meta.title;
+    document.querySelector('meta[name="description"]').setAttribute("content", route.meta.description);
+
+    // TODO: Investigate whether a functional approach could improve performance with the help of caching route elements
     routerView.innerHTML = template;
 
-    document.body.classList.remove(getBodyClassFromPath(location.pathname));
+    if (previousRoute) {
+        document.body.classList.remove(getBodyClassFromPath(previousRoute.path));
+    }
     document.body.classList.add(getBodyClassFromPath(path));
 
-    // TODO: Update title tag and meta description
-
-    // FIXME: Handle back/forward navigation from browser controls
-    history.pushState(null, null, path);
     document.body.scrollIntoView();
     component();
 }
 
 export function goTo(path) {
-    goToRoute(getRoute(path));
+    const route = getRoute(path);
+    history.pushState(null, null, path);
+    loadRoute(route);
 }
 
-// FIXME: Need to find a way to close the menu when navigating or scrolling to a hash
 const handleLinkClick = function handleLinkClick(e, link) {
     const { pathname, hash } = link;
 
@@ -80,6 +102,7 @@ const handleLinkClick = function handleLinkClick(e, link) {
         e.preventDefault();
         const scrollTo = document.querySelector(hash);
         if (scrollTo) {
+            closeNavMenu();
             scrollTo.scrollIntoView({ behavior: 'smooth' });
         }
         return;
@@ -93,14 +116,12 @@ const handleLinkClick = function handleLinkClick(e, link) {
 
     e.preventDefault();
 
+    link.blur();
+
     if (pathname === location.pathname) return;
 
-    link.blur();
     goTo(pathname);
 }
-
-// FIXME: This results in loading components twice. Find a way to keep track of the current route and do this dynamically.
-goTo(location.pathname);
 
 document.addEventListener('click', (e) => {
     const { target } = e;
@@ -110,3 +131,9 @@ document.addEventListener('click', (e) => {
 
     handleLinkClick(e, link);
 });
+
+window.addEventListener('popstate', () => {
+    loadRoute(getRoute(location.pathname));
+});
+
+currentRoute = getRoute(location.pathname);

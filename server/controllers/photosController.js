@@ -2,13 +2,14 @@ const path = require('path');
 const multer = require('multer');
 const jimp = require("jimp");
 const fs = require('fs-extra');
+const { appRoot } = require('../config.js');
 const { images } = fs.readJsonSync(path.resolve(__dirname, '../admin/content.json'));
 
 const uploadsDir = path.join(__dirname, '../uploads');
 const uploadsImagesDir = path.join(uploadsDir, 'images');
+const uploadsGalleriesDir = path.join(uploadsImagesDir, 'galleries');
 
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
-if (!fs.existsSync(uploadsImagesDir)) fs.mkdirSync(uploadsImagesDir);
+fs.ensureDirSync(uploadsImagesDir);
 
 const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {
@@ -26,6 +27,19 @@ const cropKeys = {
     y: 'top',
     width: 'width',
     height: 'height',
+};
+const makeGalleryImage = (gallery, fileName) => {
+    const galleryPath = `${appRoot}/admin/uploads/images/galleries/${gallery}`;
+    return {
+        fileName,
+        thumb: `${galleryPath}/thumbs/${fileName}`,
+        full: `${galleryPath}/full/${fileName}`,
+    };
+}
+const getGalleryManifest = (galleryName) => fs.readJsonSync(path.join(uploadsGalleriesDir, galleryName, 'manifest.json'));
+const updateGalleryManifest = (galleryName, galleryManifest) => {
+    const manifestPath = path.join(uploadsGalleriesDir, galleryName, 'manifest.json');
+    fs.writeFileSync(manifestPath, JSON.stringify(galleryManifest));
 };
 
 const uploadImage = (req, res, next) => {
@@ -60,11 +74,11 @@ const resizeImage = async ({ file, query: { imageId, cropData } }, res, next) =>
         const fileName1x = `${imageId}.jpg`;
 
         cropped
-            .resize(minWidth, minHeight)
+            .scaleToFit(minWidth, minHeight)
             .quality(70)
             .write(`${uploadsImagesDir}/${fileName2x}`);
         croppedSmall
-            .resize(minWidth / 2, minHeight / 2)
+            .scaleToFit(minWidth / 2, minHeight / 2)
             .quality(70)
             .write(`${uploadsImagesDir}/${fileName1x}`);
 
@@ -75,7 +89,84 @@ const resizeImage = async ({ file, query: { imageId, cropData } }, res, next) =>
     }
 };
 
+const removeAsync = (file) => new Promise((resolve, reject) => {
+    fs.remove(file, (err) => {
+        if (err) reject(err);
+        else resolve();
+    });
+});
+
+const getId = () => `${(new Date()).getTime().toString(36)}${Math.random().toString(36).slice(2)}`;
+
+const saveGalleryImage = async ({ file, query: { gallery } }, res) => {
+    if (!file || !file.buffer) return res.sendStatus(500);
+
+    try {
+        const fileName = `${getId()}.jpg`
+        const image = (await jimp.read(file.buffer));
+        const width = image.getWidth();
+        const height = image.getHeight();
+        const isLandscape = width > height;
+        const minDimension = Math.min(width, height);
+        const x = isLandscape ? (width / 2) - (minDimension / 2) : 0;
+        const y = isLandscape ? 0 : (height / 2) - (minDimension / 2);
+        const thumb = image.clone().crop(x, y, minDimension, minDimension);
+        const fullPath = path.join(uploadsGalleriesDir, gallery, 'full', fileName);
+        const thumbPath = path.join(uploadsGalleriesDir, gallery, 'thumbs', fileName);
+
+        image
+            .scaleToFit(1200, 1200)
+            .quality(70)
+            .write(fullPath);
+        thumb
+            .resize(300, 300)
+            .quality(70)
+            .write(thumbPath);
+
+
+        const galleryManifest = getGalleryManifest(gallery);
+        galleryManifest.push(fileName);
+        updateGalleryManifest(gallery, galleryManifest);
+
+        res.status(200).json(makeGalleryImage(gallery, fileName));
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error.message);
+    }
+};
+
+const removeGalleryImage = async ({ body: { gallery, fileName } }, res, next) => {
+    const galleryDir = path.join(uploadsImagesDir, 'galleries', gallery);
+    const full = path.join(galleryDir, 'full', fileName);
+    const thumb = path.join(galleryDir, 'thumbs', fileName);
+
+    if (!fs.existsSync(full) || !fs.existsSync(thumb)) {
+        res.sendStatus(204);
+        return;
+    }
+
+    try {
+        await Promise.all([removeAsync(full), removeAsync(thumb)]);
+        const galleryManifest = getGalleryManifest(gallery);
+        galleryManifest.splice(galleryManifest.indexOf(fileName), 1);
+        updateGalleryManifest(gallery, galleryManifest);
+        res.sendStatus(204);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error.message);
+    }
+};
+
+const sortGallery = async ({ body: { gallery, images } }, res, next) => {
+    updateGalleryManifest(gallery, images);
+    res.sendStatus(200);
+};
+
 module.exports = {
+    sortGallery,
+    makeGalleryImage,
     uploadImage,
     resizeImage,
+    saveGalleryImage,
+    removeGalleryImage,
 };

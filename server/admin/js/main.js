@@ -73,10 +73,55 @@
     Vue.use(Toasted);
     Vue.component('Editor', Editor);
 
+    const camelize = text => text
+        .trim()
+        .split(/\W/)
+        .map((part, i) => (i === 0 ? part.toLowerCase() : `${part.slice(0, 1).toUpperCase()}${part.slice(1).toLowerCase()}`))
+        .join('');
+
+    const formatLinkDialog = () => {
+        const dialog = document.querySelector('.tox-dialog');
+        const form = dialog.querySelector('.tox-form');
+        const formGroupsById = Array.from(dialog.querySelectorAll('.tox-form__group'))
+            .reduce((mapped, formGroup) => {
+                const label = formGroup.querySelector('.tox-label');
+                const id = camelize(label.innerText);
+                mapped[id] = { formGroup, label };
+                return mapped;
+            }, {});
+        const linkListHelp = document.createElement('div');
+        const urlHelp = document.createElement('div');
+
+        linkListHelp.innerHTML = 'or <a href="#">use a custom URL</a> instead';
+        urlHelp.innerHTML = 'or <a href="#">select a page from your site</a> instead';
+
+        linkListHelp.querySelector('a').addEventListener('click', (e) => {
+            e.preventDefault();
+            formGroupsById.url.formGroup.style.display = 'block';
+            formGroupsById.linkList.formGroup.style.display = 'none';
+            formGroupsById.url.formGroup.querySelector('.tox-textfield').focus();
+        });
+        urlHelp.querySelector('a').addEventListener('click', (e) => {
+            e.preventDefault();
+            formGroupsById.url.formGroup.style.display = 'none';
+            formGroupsById.linkList.formGroup.style.display = 'block';
+            formGroupsById.linkList.formGroup.querySelector('button.tox-listbox').click();
+        });
+
+        dialog.classList.add('link-dialog');
+        form.appendChild(formGroupsById.url.formGroup);
+        formGroupsById.linkList.formGroup.appendChild(linkListHelp);
+        formGroupsById.linkList.label.innerText = 'Select a Page';
+        formGroupsById.url.formGroup.appendChild(urlHelp);
+        formGroupsById.url.formGroup.style.display = 'none';
+    };
+
     new Vue({
         el: '#app',
         data() {
             return {
+                galleryImageForRemove: null,
+                galleryImagesById: {},
                 contentHTMLOld: {},
                 contentHTML: {},
                 imageRequirements: {},
@@ -96,24 +141,29 @@
                     ],
                     toolbar:
                         'undo redo | formatselect | bold italic | link unlink | \
-                        alignleft aligncenter alignright alignjustify | \
                         bullist numlist outdent indent | removeformat',
                     anchor_top: false,
                     anchor_bottom: false,
                     target_list: false,
                     link_title: false,
-                    link_list: [],
-                    relative_urls : false,
-                    remove_script_host : true,
-                    document_base_url : '',
-                    setup: (editor) => {
+                    link_list: [{ title: 'Contact Us', value: '#contact' }],
+                    relative_urls: false,
+                    remove_script_host: true,
+                    document_base_url: '',
+                    setup: (editor, ...args) => {
                         editor.on('keydown', (e) => {
                             const htmlId = editor.id.replace('editor_', '');
 
                             if (!captureSaveKey(e) || !this.unsavedContent.includes(htmlId)) return;
 
                             this.save(htmlId);
-                        })
+                        });
+
+                        editor.on('OpenWindow', ({ dialog }) => {
+                            const data = dialog.getData();
+                            if (data.url === undefined) return;
+                            formatLinkDialog();
+                        });
                     },
                 },
             };
@@ -137,7 +187,7 @@
             },
             unsavedContent() {
                 return Object.keys(this.contentHTML).filter(key => this.contentHTML[key].html !== this.contentHTMLOld[key].html);
-            }
+            },
         },
         methods: {
             closeImageUpload(imageId) {
@@ -198,8 +248,29 @@
                         if (!response.ok) {
                             throw Error(response.statusText);
                         }
-                        refreshImage(this.$refs[imageId]);
+                        refreshImage(this.$refs[imageId][0]);
                         this.closeImageUpload(imageId);
+                        this.alertSuccess('The image was updated successfully. You will need to publish your changes');
+                    })
+                    .catch(() => {
+                        this.alertError('An error occurred while uploading the image. Please try again.');
+                    })
+                    .finally(() => {
+                        loading.hide();
+                    });
+            },
+            async uploadGalleryImage({ formData }, gallery) {
+                const loading = this.loading(`Uploading ${gallery} gallery image...`);
+                return fetch(`/s/api/gallery/image/upload?gallery=${gallery}`, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors',
+                })
+                    .then(async (response) => {
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
+                        this.galleryImagesById[gallery].push(await response.json());
                         this.alertSuccess('The image was updated successfully. You will need to publish your changes');
                     })
                     .catch(() => {
@@ -237,7 +308,7 @@
 
                 await this.$nextTick();
 
-                const canvas = this.$refs[`${imageId}-preview`];
+                const canvas = this.$refs[`${imageId}-preview`][0];
                 canvas.width = width;
                 canvas.height = height;
                 canvas.getContext('2d').drawImage(img, 0, 0);
@@ -251,6 +322,89 @@
                 });
 
                 this.$set(this.imagePreviews[imageId], 'cropper', cropper);
+            },
+            confirmRemoveGalleryImage(galleryImage) {
+                this.galleryImageForRemove = galleryImage;
+            },
+            removeGalleryImage({ fileName }) {
+                const { gallery } = this.activePage;
+                const loading = this.loading('Removing gallery image...');
+                const index = this.galleryImagesById[gallery].findIndex(item => item.fileName === fileName);
+
+                this.galleryImageForRemove = null;
+
+                return fetch('/s/api/gallery/image/delete', {
+                    method: 'POST',
+                    body: JSON.stringify({ gallery, fileName }),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
+                        this.galleryImagesById[gallery].splice(index, 1);
+                        this.alertSuccess('The gallery image was successfully removed.');
+                    })
+                    .catch(() => {
+                        this.alertError('An error occurred while removing the gallery image. Please try again.');
+                    })
+                    .finally(() => {
+                        loading.hide();
+                    });
+            },
+            handleGalleryDragover(event, galleryImage) {
+                const gallery = this.galleryImagesById[this.activePage.gallery];
+                const index = gallery.indexOf(galleryImage);
+                const { index: draggingIndex } = this.dragging;
+
+                if (index === draggingIndex) return;
+
+                const { layerX, target: { offsetWidth } } = event;
+                const percentX = layerX / offsetWidth;
+                const isJustToTheLeft = index === draggingIndex - 1 && percentX >= .5;
+                const isJustToTheRight = index === draggingIndex + 1 && percentX < .5;
+
+                if (isJustToTheLeft || isJustToTheRight) return;
+
+                gallery.splice(index, 0, gallery.splice(draggingIndex, 1)[0]);
+
+                this.dragging.index = index;
+            },
+            handleGalleryDragstart(event, galleryImage) {
+                const index = this.galleryImagesById[this.activePage.gallery].indexOf(galleryImage);
+                this.dragging = { event, galleryImage, index };
+                event.target.classList.add('dragging');
+            },
+            handleGalleryDragend() {
+                this.dragging.event.target.classList.remove('dragging');
+                this.dragging = null;
+                const gallery = this.activePage.gallery;
+                const images = this.galleryImagesById[gallery].map(({ fileName }) => fileName);
+                const loading = this.loading('Updating gallery sort order...');
+
+                fetch('/s/api/gallery/sort', {
+                    method: 'POST',
+                    body: JSON.stringify({ gallery, images }),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw Error(response.statusText);
+                        }
+                        this.alertSuccess('The gallery sort order was updated successfully.');
+                    })
+                    .catch(() => {
+                        this.alertError('An error occurred while updating the gallery sort order. Please refresh the page and try again.');
+                    })
+                    .finally(() => {
+                        loading.hide();
+                    });
             },
             alertSuccess(message) {
                 this.$toasted.show(message, {
@@ -326,13 +480,14 @@
                 this.imageRequirements = { ...content.images };
                 this.contentHTMLOld = JSON.parse(JSON.stringify(content.html));
                 this.contentHTML = { ...content.html };
+                this.galleryImagesById = content.galleryImagesById;
                 this.imagePreviews = Object.keys(content.images).reduce((obj, key) => {
                     obj[key] = null;
                     return obj;
                 }, {});
-                this.pages = content.pages;
+                this.pages = content.pages.filter(({ gallery, images, html }) => images.length > 0 || html.length > 0 || !!gallery);
                 this.activePageId = this.pages[0].id;
-                this.editorConfig.link_list = content.pages.map(({ name, path }) => ({ title: name, value: path }));
+                this.editorConfig.link_list.push(...this.pages.map(({ name, path }) => ({ title: name, value: path })));
             } catch (error) {
                 this.alertError('An error occurred while loading website content.');
             }

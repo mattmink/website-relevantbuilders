@@ -45,9 +45,6 @@
     $n: strip-unit($font-size);
     font-size: $n * 3.5vw;
     @include media-breakpoint-up($breakpoint) {
-        font-size: $n * 3vw;
-    }
-    @include media-breakpoint-up($breakpoint) {
         font-size: $font-size;
     }
 }
@@ -59,4 +56,9 @@
     only screen and (min-resolution: 2dppx) {
         @content;
     }
+}
+
+@mixin focus-outline() {
+    outline: 2px dashed currentColor;
+    outline-offset: 2px;
 }

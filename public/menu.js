@@ -10,14 +10,17 @@ const openNavMenu = () => {
     document.body.classList.remove('menu-closing');
     document.body.classList.add('menu-open');
     $menuToggle.setAttribute('aria-label', 'Close Menu');
+    $menuToggle.setAttribute('aria-expanded', true);
 }
 const closeNavMenu = () => {
+    if (!isMenuOpen()) return;
     document.body.classList.add('menu-closing');
     document.body.classList.remove('menu-open');
     document.body.style.paddingRight = null;
     setTimeout(() => {
         document.body.classList.remove('menu-closing');
         $menuToggle.setAttribute('aria-label', 'Open Menu');
+        $menuToggle.setAttribute('aria-expanded', false);
     }, 2500);
 };
 const toggleNavMenu = () => {
@@ -29,3 +32,5 @@ $menuToggle.addEventListener('click', toggleNavMenu);
 document.querySelector('#mainNav').addEventListener('click', ({ target: { id, href } }) => {
     if ((id === 'mainNav' || href === '#contact') && isMenuOpen()) closeNavMenu();
 });
+
+export { closeNavMenu };

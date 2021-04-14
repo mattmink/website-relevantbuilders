@@ -72,21 +72,21 @@
     width: 100%;
     height: calc(100% - 55px);
     animation: slide-left-fade-in ease-out 1.25s;
-    background-image: url('/public/assets/images/home-main.jpg');
+    background-image: url('images/home-main.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     background-color: transparent;
 
     @include media2x {
-        background-image: url('/public/assets/images/home-main@2x.jpg');
+        background-image: url('images/home-main@2x.jpg');
     }
 }
 
 @include media-breakpoint-up(md) {
     .home-hero {
         display: flex;
-        height: calc(100vh - 112px);
+        min-height: calc(100vh - 112px);
     }
     .home-hero-image-wrapper {
         height: auto;
@@ -105,7 +105,7 @@
     }
     .home-hero-text {
         padding-right: calc(40px + 1rem);
-        padding-bottom: 20vh;
+        padding-bottom: 10vh;
     }
     .home-hero-image {
         width: calc(100% + 40px);
@@ -120,11 +120,9 @@
         align-items: center;
         flex-wrap: wrap;
     }
-    .home-hero-text {
-        padding-bottom: 10vh;
-    }
     .home-hero-image {
         height: 50vh;
+        min-height: 300px;
         margin-bottom: 70px;
     }
 }
@@ -173,20 +171,20 @@
         lighten($brand-1-light, 47%) 11.4vh,
         #ffffff 11.4vh
     );
-    background-image: url('/public/assets/images/cedar-shingle.jpg'), $section-2-bottom-bg;
+    background-image: url('images/cedar-shingle.jpg'), $section-2-bottom-bg;
     background-repeat: repeat-x, repeat-x;
     padding-bottom: 12vh;
     background-size: 3.5em, 11.4vh;
 
     @include media2x {
-        background-image: url('/public/assets/images/cedar-shingle@2x.jpg'), $section-2-bottom-bg;
+        background-image: url('images/cedar-shingle@2x.jpg'), $section-2-bottom-bg;
     }
 }
 
 .home-section-3 .featured-section-image {
-    background-image: url('/public/assets/images/home-floor-plans.jpg');
+    background-image: url('images/home-floor-plans.jpg');
     @include media2x {
-        background-image: url('/public/assets/images/home-floor-plans@2x.jpg');
+        background-image: url('images/home-floor-plans@2x.jpg');
     }
 }
 

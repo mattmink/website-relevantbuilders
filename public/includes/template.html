@@ -1,0 +1,16 @@
+<!-- TODO: Review site accessibility -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <include file="includes/_head.html" />
+    <meta name="description" content="<%= htmlWebpackPlugin.options.description %>">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body class="<%= htmlWebpackPlugin.options.pageClass %>">
+    <div class="wrapper">
+        <include file="includes/_nav.html" />
+        <div id="content" class="page-content"><page /></div>
+        <include file="includes/_footer.html" />
+    </div>
+</body>
+</html>
