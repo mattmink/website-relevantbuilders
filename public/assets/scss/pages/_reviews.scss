@@ -20,19 +20,19 @@
         }
 
         &:nth-child(5n + 1) {
-            background-color: $brand-1;
-        }
-
-        &:nth-child(5n + 2) {
-            background-color: $brand-1-dark;
-        }
-
-        &:nth-child(5n + 3) {
             background-color: $brand-2;
         }
 
-        &:nth-child(5n + 4) {
+        &:nth-child(5n + 2) {
+            background-color: $brand-1;
+        }
+
+        &:nth-child(5n + 3) {
             background-color: $brand-1-light;
+        }
+
+        &:nth-child(5n + 4) {
+            background-color: $brand-1-dark;
         }
 
         &:nth-child(5n + 5) {

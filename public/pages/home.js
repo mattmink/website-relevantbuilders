@@ -1,5 +1,5 @@
 const makeCarouselElement = function mapStringToCarouselElement(string, i) {
-    const el = document.createElement('span', );
+    const el = document.createElement('span',);
 
     el.innerText = string;
     el.classList.add('carousel-item');
@@ -44,6 +44,21 @@ export default function home() {
     adjectives.forEach((adjEl) => {
         adjCarousel.appendChild(adjEl);
     });
+
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            console.log(entry);
+            // if (entry.intersectionRatio > prevRatio) {
+            //     entry.target.style.backgroundColor = increasingColor.replace("ratio", entry.intersectionRatio);
+            // } else {
+            //     entry.target.style.backgroundColor = decreasingColor.replace("ratio", entry.intersectionRatio);
+            // }
+
+            // prevRatio = entry.intersectionRatio;
+        });
+    });
+    observer.observe(document.querySelector('.home-section-3 .featured-section-image'));
 
     prepareNextWord();
 }

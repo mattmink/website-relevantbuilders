@@ -183,6 +183,9 @@
 
 .home-section-3 .featured-section-image {
     background-image: url('images/home-floor-plans.jpg');
+    background-size: 120%;
+    background-position: center 0%;
+
     @include media2x {
         background-image: url('images/home-floor-plans@2x.jpg');
     }

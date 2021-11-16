@@ -1,0 +1,30 @@
+.design-content {
+    background-image: url('images/design-bg.jpg');
+    background-color: $brand-1-dark;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.page-construction-design {
+    .featured-section {
+        min-height: 0;
+    }
+    .featured-section-image {
+        background-image: url('images/ds.jpg');
+        background-color: $brand-2;
+    }
+}
+
+@include media-breakpoint-up(md) {
+    @include media2x {
+        .design-content {
+            background-image: url('images/design-bg@2x.jpg');
+        }
+        .page-construction-design {
+            .featured-section-image {
+                background-image: url('images/ds.jpg');
+            }
+        }
+    }
+}

@@ -64,13 +64,16 @@ const injectGalleries = (str, { escapeQuotes } = {}) => str.replace(galleryRegex
     if (galleryImageKeys.length === 0) return '';
 
     const galleryManifest = getGalleryManifest(galleryName);
-    galleryImageKeys.sort((a, b) => {
-        const aIndex = galleryManifest.indexOf(a);
-        const bIndex = galleryManifest.indexOf(b);
-        if (aIndex < bIndex) return -1;
-        if (aIndex > bIndex) return 1;
-        return 0;
-    });
+
+    if (galleryManifest) {
+        galleryImageKeys.sort((a, b) => {
+            const aIndex = galleryManifest.indexOf(a);
+            const bIndex = galleryManifest.indexOf(b);
+            if (aIndex < bIndex) return -1;
+            if (aIndex > bIndex) return 1;
+            return 0;
+        });
+    }
 
     const mappedImages = galleryImageKeys
         .map(key => galleryImages[key])
