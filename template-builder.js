@@ -5,9 +5,12 @@ const htmlMinifier = require('html-minifier-terser');
 const feather = require('feather-icons');
 const path = require('path');
 
+const testimonials = JSON.parse(readFileSync(path.resolve(__dirname, './public/data/testimonials.json'), 'utf8'));
+
 const iconRegex = /<icon (?:class=\\?"([\w\s-]+)\\?" )?name=\\?"([\w-]+)\\?"(?: class=\\?"([\w\s-]+)\\?")? ?\/?>/g;
 const includeRegex = /<include file=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
 const galleryRegex = /<gallery name=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
+const testimonialsRegex = /<testimonials \/?>/g;
 
 const publicRootByMode = {
     production: path.resolve(__dirname, './public-tmp'),
@@ -89,7 +92,32 @@ const injectGalleries = (str, { escapeQuotes } = {}) => str.replace(galleryRegex
     return replacement;
 });
 
-const injectIncludes = (str, { escapeQuotes, minify, mode = 'development' } = {}) => injectGalleries(str.replace(includeRegex, (_, file) => {
+const injectTestimonials = (str, { escapeQuotes } = {}) => str.replace(testimonialsRegex, () => {
+    let testimonialsHTML = '<div class="testimonials">' +
+        '<div class="testimonials-container">' +
+            testimonials.map(({ name, location, quote }) => '<div class="testimonial">' +
+                '<blockquote>' +
+                    quote +
+                    '<cite>' +
+                        name + ', ' + location +
+                    '</cite>' +
+                '</blockquote>' +
+            '</div>').join('') +
+        '</div>' +
+        '<div class="testimonials-controls">' +
+            '<button class="previous" disabled><icon name="chevron-left" class="icon" /></button>' +
+            '<button class="next"><icon name="chevron-right" class="icon" /></button>' +
+        '</div>' +
+    '</div>';
+
+    if (escapeQuotes) {
+        testimonialsHTML = testimonialsHTML.replace(/"/g, '\\\"');
+    }
+
+    return testimonialsHTML;
+});
+
+const injectIncludes = (str, { escapeQuotes, minify, mode = 'development' } = {}) => injectGalleries(injectTestimonials(str.replace(includeRegex, (_, file) => {
     let replacement = readFileSync(path.resolve(publicRootByMode[mode], file), 'utf8');
 
     if (includeRegex.test(replacement)) {
@@ -105,7 +133,7 @@ const injectIncludes = (str, { escapeQuotes, minify, mode = 'development' } = {}
     }
 
     return replacement;
-}), { escapeQuotes });
+}), { escapeQuotes }), { escapeQuotes });
 
 class TemplateBuilderPlugin {
     constructor({ mode }) {
