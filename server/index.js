@@ -40,6 +40,7 @@ copySync(path.resolve(__dirname, '../public/assets/images'), path.resolve(__dirn
     },
 });
 copySync(path.resolve(__dirname, '../public/includes/content'), path.resolve(__dirname, './content'), { recursive: true, overwrite: false });
+copySync(path.resolve(__dirname, '../public/data/testimonials.json'), path.resolve(__dirname, './content/testimonials.json'), { overwrite: false });
 
 Array.from(galleriesWithoutManifest)
     .forEach((galleryName) => {

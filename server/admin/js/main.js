@@ -124,6 +124,8 @@
                 galleryImagesById: {},
                 contentHTMLOld: {},
                 contentHTML: {},
+                testimonials: [],
+                hasUnsavedTestimonials: false,
                 imageRequirements: {},
                 activePageId: '',
                 pages: [],
@@ -131,7 +133,6 @@
                 showPagesDropdown: false,
                 showPagesDropdownInline: false,
                 showCollapseMenu: false,
-                hasUnsavedChanges: false,
                 editorConfig: {
                     menubar: false,
                     plugins: [
@@ -176,10 +177,18 @@
                 return !this.activePage.html || this.activePage.html.length === 0;
             },
             hasPageContent() {
-                return !this.isEmptyPageImages || !this.isEmptyPageHTML;
+                return this.activePageId === 'testimonials' || !this.isEmptyPageImages || !this.isEmptyPageHTML;
             },
             activePage() {
                 if (!this.activePageId) return { images: [] };
+                if (this.activePageId === 'testimonials') {
+                    return {
+                        id: 'testimonials',
+                        images: [],
+                        name: 'Testimonials',
+                        path: '/testimonials',
+                    };
+                }
                 return this.pages.find(({ id }) => id === this.activePageId);
             },
             notActivePages() {
@@ -190,6 +199,15 @@
             },
         },
         methods: {
+            goToTestimonials() {
+                this.activePageId = 'testimonials';
+            },
+            addTestimonial() {
+                this.testimonials.push({ name: '', location: '', quote: '' });
+            },
+            deleteTestimonial(index) {
+                this.testimonials.splice(index, 1);
+            },
             closeImageUpload(imageId) {
                 const { cropper } = this.imagePreviews[imageId];
                 if (cropper) {
@@ -207,6 +225,23 @@
                     this.alertSuccess('Your changes have been published!');
                 } catch (error) {
                     this.alertError('An error occurred while publishing your changes.');
+                }
+                loading.hide();
+            },
+            async saveTestimonials() {
+                const loading = this.loading('Saving testimonials...');
+                try {
+                    await fetch('/s/api/saveTestimonials', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(this.testimonials),
+                    });
+                    this.alertSuccess('Testimonials have been saved!');
+                } catch (error) {
+                    this.alertError('An error occurred while saving testimonials.');
                 }
                 loading.hide();
             },
@@ -472,6 +507,12 @@
                 this.showPagesDropdown = false;
                 this.showPagesDropdownInline = false;
             },
+            testimonials: {
+                deep: true,
+                handler() {
+                    this.hasUnsavedTestimonials = true;
+                }
+            }
         },
         async mounted() {
             const loading = this.loading();
@@ -480,6 +521,7 @@
                 this.imageRequirements = { ...content.images };
                 this.contentHTMLOld = JSON.parse(JSON.stringify(content.html));
                 this.contentHTML = { ...content.html };
+                this.testimonials = [...content.testimonials];
                 this.galleryImagesById = content.galleryImagesById;
                 this.imagePreviews = Object.keys(content.images).reduce((obj, key) => {
                     obj[key] = null;
@@ -488,6 +530,8 @@
                 this.pages = content.pages.filter(({ gallery, images, html }) => images.length > 0 || html.length > 0 || !!gallery);
                 this.activePageId = this.pages[0].id;
                 this.editorConfig.link_list.push(...this.pages.map(({ name, path }) => ({ title: name, value: path })));
+                await this.$nextTick();
+                this.hasUnsavedTestimonials = false;
             } catch (error) {
                 this.alertError('An error occurred while loading website content.');
             }
