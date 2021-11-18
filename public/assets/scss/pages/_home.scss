@@ -205,15 +205,20 @@
     }
 }
 
-.home-testimonials {
-    padding: 3rem 2rem;
+.testimonials {
+    flex-wrap: wrap;
 
-    .testimonials {
-        max-width: 1200px;
-        margin: 0 auto;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        padding: 2rem;
+}
+.testimonial {
+    padding: 1rem;
+    flex: 1;
+    flex-basis: 50%;
+    position: relative;
+
+    blockquote {
+        padding: 2rem 1rem;
         position: relative;
+        background: white;
 
         &::before {
             display: block;
@@ -221,29 +226,19 @@
             font-size: 14rem;
             line-height: 1;
             font-weight: 700;
-            opacity: 0.2;
+            opacity: 0.1;
             position: absolute;
-            top: -2.75rem;
-            left: -3.325rem;
-            height: 8rem;
-            background-color: $brand-1-dark;
+            top: -2rem;
+            left: -1rem;
+            height: 0.5em;
         }
     }
 
-    .testimonial {
-        font-size: 1.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        z-index: 1;
-    }
-
-    .testimonial cite {
-        opacity: .75;
-        font-size: 1rem;
+    cite {
+        opacity: 0.75;
+        font-size: 0.72rem;
         display: block;
-        margin-top: .5rem;
+        margin-top: 0.5rem;
 
         &::before {
             content: '—';
@@ -251,25 +246,29 @@
         }
     }
 
-    .testimonials-controls {
-        position: absolute;
-        right: 0;
-        bottom: 0;
+    &.out {
+        display: none;
+    }
+    &.entering {
+        transition: ease-out .5s all;
+        opacity: 0;
+        transform: translateY(10%);
+    }
+    &.in {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        button {
-            background: none transparent;
-            border: 0 none;
-            color: inherit;
 
-            &:disabled {
-                opacity: .25;
-            }
-
-            .icon {
-                height: 3rem;
-                width: auto;
-            }
-        }
+@include media-breakpoint-up(md) {
+    .testimonials {
+        display: flex;
+    }
+}
+@include media-breakpoint-up(lg) {
+    .testimonial {
+        flex-basis: 33%;
     }
 }
 

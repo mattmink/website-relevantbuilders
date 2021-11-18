@@ -21,6 +21,9 @@ const imageRegex = /[-_@\.\/\~\\\w\d]+\.(?:jpe?g|png|gif)/g;
 const imageSrcMap = {};
 const registerImage = (name, source) => {
     const [mappedName] = source.match(imageRegex) || [];
+    if (name.includes('ds')) {
+        console.log(name, source, mappedName);
+    }
     imageSrcMap[name] = `/${mappedName}`;
 };
 const THUMB = 'thumb';
@@ -94,20 +97,14 @@ const injectGalleries = (str, { escapeQuotes } = {}) => str.replace(galleryRegex
 
 const injectTestimonials = (str, { escapeQuotes } = {}) => str.replace(testimonialsRegex, () => {
     let testimonialsHTML = '<div class="testimonials">' +
-        '<div class="testimonials-container">' +
-            testimonials.map(({ name, location, quote }) => '<div class="testimonial">' +
-                '<blockquote>' +
-                    quote +
-                    '<cite>' +
-                        name + ', ' + location +
-                    '</cite>' +
-                '</blockquote>' +
-            '</div>').join('') +
-        '</div>' +
-        '<div class="testimonials-controls">' +
-            '<button class="previous" disabled><icon name="chevron-left" class="icon" /></button>' +
-            '<button class="next"><icon name="chevron-right" class="icon" /></button>' +
-        '</div>' +
+        testimonials.map(({ name, location, quote }) => '<div class="testimonial">' +
+            '<blockquote>' +
+                quote +
+                '<cite>' +
+                    name + ', ' + location +
+                '</cite>' +
+            '</blockquote>' +
+        '</div>').join('') +
     '</div>';
 
     if (escapeQuotes) {
@@ -233,7 +230,8 @@ module.exports = function (source, map) {
             let resolved = 0;
 
             imageMatches.forEach((name, i) => {
-                this.loadModule(name, (err, source) => {
+                const imagePath = path.resolve(this.context, name);
+                this.loadModule(imagePath, (err, source) => {
                     registerImage(name, source);
                     resolved += 1;
                     if (resolved === imageMatches.length) resolve();

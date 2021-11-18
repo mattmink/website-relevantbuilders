@@ -1,3 +1,5 @@
+import icons from '../icons';
+
 const makeCarouselElement = function mapStringToCarouselElement(string, i) {
     const el = document.createElement('span',);
 
@@ -45,20 +47,51 @@ export default function home() {
         adjCarousel.appendChild(adjEl);
     });
 
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            console.log(entry);
-            // if (entry.intersectionRatio > prevRatio) {
-            //     entry.target.style.backgroundColor = increasingColor.replace("ratio", entry.intersectionRatio);
-            // } else {
-            //     entry.target.style.backgroundColor = decreasingColor.replace("ratio", entry.intersectionRatio);
-            // }
-
-            // prevRatio = entry.intersectionRatio;
-        });
-    });
-    observer.observe(document.querySelector('.home-section-3 .featured-section-image'));
-
     prepareNextWord();
+
+    const testimonials = Array.from(document.querySelectorAll('.testimonial'));
+    const testimonialsSection = document.querySelector('.home-testimonials');
+    let areInitialShown = false;
+
+
+    testimonials.forEach((testimonial) => {
+        testimonial.classList.add('out');
+    });
+
+    const showTestimonials = () => {
+        const itemsToShow = testimonials.splice(0, 3);
+        itemsToShow.forEach((testimonial) => {
+            testimonial.classList.add('entering');
+            testimonial.classList.remove('out');
+            setTimeout(() => {
+                testimonial.classList.add('in');
+                setTimeout(() => {
+                    testimonial.classList.remove('entering');
+                    testimonial.classList.remove('in');
+                }, 500);
+            }, 300);
+        });
+    };
+
+    const observer = new IntersectionObserver(([{ isIntersecting }]) => {
+        console.log(isIntersecting)
+        if (isIntersecting && !areInitialShown) {
+            showTestimonials();
+            observer.disconnect();
+        }
+    }, { threshold: 1 });
+    observer.observe(testimonialsSection);
+
+    if (testimonials.length > 3) {
+        const showMoreButton = document.createElement('button');
+        showMoreButton.innerHTML = `${icons.plus({ class: 'icon' })} load more testimonials`;
+        showMoreButton.classList.add('btn', 'mt-4');
+        testimonialsSection.appendChild(showMoreButton);
+        showMoreButton.addEventListener('click', () => {
+            showTestimonials();
+            if (testimonials.length === 0) {
+                testimonialsSection.removeChild(showMoreButton);
+            }
+        });
+    }
 }
