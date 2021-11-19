@@ -8,6 +8,7 @@ const path = require('path');
 const iconRegex = /<icon (?:class=\\?"([\w\s-]+)\\?" )?name=\\?"([\w-]+)\\?"(?: class=\\?"([\w\s-]+)\\?")? ?\/?>/g;
 const includeRegex = /<include file=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
 const galleryRegex = /<gallery name=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
+const testimonialsRegex = /<testimonials \/?>/g;
 
 const publicRootByMode = {
     production: path.resolve(__dirname, './public-tmp'),
@@ -18,6 +19,9 @@ const imageRegex = /[-_@\.\/\~\\\w\d]+\.(?:jpe?g|png|gif)/g;
 const imageSrcMap = {};
 const registerImage = (name, source) => {
     const [mappedName] = source.match(imageRegex) || [];
+    if (name.includes('ds')) {
+        console.log(name, source, mappedName);
+    }
     imageSrcMap[name] = `/${mappedName}`;
 };
 const THUMB = 'thumb';
@@ -64,13 +68,16 @@ const injectGalleries = (str, { escapeQuotes } = {}) => str.replace(galleryRegex
     if (galleryImageKeys.length === 0) return '';
 
     const galleryManifest = getGalleryManifest(galleryName);
-    galleryImageKeys.sort((a, b) => {
-        const aIndex = galleryManifest.indexOf(a);
-        const bIndex = galleryManifest.indexOf(b);
-        if (aIndex < bIndex) return -1;
-        if (aIndex > bIndex) return 1;
-        return 0;
-    });
+
+    if (galleryManifest) {
+        galleryImageKeys.sort((a, b) => {
+            const aIndex = galleryManifest.indexOf(a);
+            const bIndex = galleryManifest.indexOf(b);
+            if (aIndex < bIndex) return -1;
+            if (aIndex > bIndex) return 1;
+            return 0;
+        });
+    }
 
     const mappedImages = galleryImageKeys
         .map(key => galleryImages[key])
@@ -86,7 +93,28 @@ const injectGalleries = (str, { escapeQuotes } = {}) => str.replace(galleryRegex
     return replacement;
 });
 
-const injectIncludes = (str, { escapeQuotes, minify, mode = 'development' } = {}) => injectGalleries(str.replace(includeRegex, (_, file) => {
+const injectTestimonials = (str, { escapeQuotes, mode = 'development' } = {}) => str.replace(testimonialsRegex, () => {
+    const testimonials = JSON.parse(readFileSync(path.resolve(publicRootByMode[mode], 'includes/content/testimonials.json'), 'utf8'));
+
+    let testimonialsHTML = '<div class="testimonials">' +
+        testimonials.map(({ name, location, quote }) => '<div class="testimonial">' +
+            '<blockquote>' +
+                quote +
+                '<cite>' +
+                    name + ', ' + location +
+                '</cite>' +
+            '</blockquote>' +
+        '</div>').join('') +
+    '</div>';
+
+    if (escapeQuotes) {
+        testimonialsHTML = testimonialsHTML.replace(/"/g, '\\\"');
+    }
+
+    return testimonialsHTML;
+});
+
+const injectIncludes = (str, { escapeQuotes, minify, mode = 'development' } = {}) => injectGalleries(injectTestimonials(str.replace(includeRegex, (_, file) => {
     let replacement = readFileSync(path.resolve(publicRootByMode[mode], file), 'utf8');
 
     if (includeRegex.test(replacement)) {
@@ -102,7 +130,7 @@ const injectIncludes = (str, { escapeQuotes, minify, mode = 'development' } = {}
     }
 
     return replacement;
-}), { escapeQuotes });
+}), { escapeQuotes, mode }), { escapeQuotes });
 
 class TemplateBuilderPlugin {
     constructor({ mode }) {
@@ -202,7 +230,8 @@ module.exports = function (source, map) {
             let resolved = 0;
 
             imageMatches.forEach((name, i) => {
-                this.loadModule(name, (err, source) => {
+                const imagePath = path.resolve(this.context, name);
+                this.loadModule(imagePath, (err, source) => {
                     registerImage(name, source);
                     resolved += 1;
                     if (resolved === imageMatches.length) resolve();

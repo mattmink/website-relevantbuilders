@@ -6,7 +6,7 @@ const { readJsonSync, readFileSync, existsSync } = require('fs-extra');
 const { authenticate, ensureIsLoggedIn } = require('./auth.js');
 const { sendMessage } = require('./controllers/mailController.js');
 const { uploadImage, resizeImage, removeGalleryImage, saveGalleryImage, mapGalleryImage, sortGallery, makeGalleryImage } = require('./controllers/photosController.js');
-const { publish, save } = require('./controllers/contentController.js');
+const { publish, save, saveTestimonials } = require('./controllers/contentController.js');
 const { appRoot, publicRoot } = require('./config.js');
 const content = readJsonSync(path.resolve(__dirname, './admin/content.json'));
 
@@ -57,13 +57,16 @@ router.post(api('/publish'), ensureIsLoggedIn(), publish);
 
 router.post(api('/save'), ensureIsLoggedIn(), save);
 
+router.post(api('/saveTestimonials'), ensureIsLoggedIn(), saveTestimonials);
+
 router.get(
     api('/content'),
     ensureIsLoggedIn(),
     (req, res) => res.status(200).json({
         ...content,
+        testimonials: readJsonSync(path.resolve(__dirname, './content/testimonials.json')),
         html: getHTMLById(),
-        galleryImagesById: getGalleryImagesById()
+        galleryImagesById: getGalleryImagesById(),
     })
 );
 

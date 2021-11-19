@@ -23,6 +23,20 @@
             "gallery": "construction"
         },
         {
+            "path": "/construction/design",
+            "id": "custom-design",
+            "name": "Custom Design",
+            "images": [],
+            "html": ["design-main"]
+        },
+        {
+            "path": "/construction/contracting",
+            "id": "general-contracting",
+            "name": "General Contracting",
+            "images": [],
+            "html": ["construction-contracting"]
+        },
+        {
             "path": "/additions",
             "id": "additions",
             "name": "Additions",

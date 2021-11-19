@@ -1,0 +1,15 @@
+.design-content {
+    background-image: url('images/design-bg-mobile.jpg');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+
+    .dark-section {
+        background: rgba(0, 0, 0, .6);
+        box-shadow: 0 2rem 2rem rgba(0, 0, 0, .6);
+    }
+
+    @include media-breakpoint-up(lg) {
+        background-image: url('images/design-bg.jpg');
+    }
+}

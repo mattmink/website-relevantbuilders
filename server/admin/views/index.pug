@@ -20,7 +20,7 @@ html
                             |Website
                         |Admin
 
-                div.navbar-nav-wrapper.bg-dark.d-sm-flex.align-items-center.flex-fill.ml-md-3
+                div.navbar-nav-wrapper.bg-dark.d-sm-flex.flex-fill.ml-md-3
                     h5.d-sm-none.text-muted.font-weight-light
                         |Menu
                     ul.navbar-nav.mr-auto.flex-md-row
@@ -41,6 +41,10 @@ html
                                     @click.prevent="activePageId = page.id"
                                 )
                                     |{{ page.name }}
+                        li.nav-item
+                            a.nav-link(href="javascript:void(0)" @click="goToTestimonials")
+                                icon(name="message-square").mr-1
+                                |Testimonials
 
                 button.btn.btn-primary.d-none.d-md-inline-block(@click="publish")
                     |Publish
@@ -48,7 +52,15 @@ html
                     |Publish
 
             .container-fluid.pt-3
-                h2.mb-4
+                h2.mb-4(v-if="activePageId === 'testimonials'")
+                    |Testimonials
+                    button.btn.btn-sm.btn-primary.ml-2(@click="addTestimonial")
+                        icon.mr-1(name="message-square")
+                        |Add Testimonial
+                    button.btn.btn-sm.btn-success.ml-2(v-show="hasUnsavedTestimonials" @click="saveTestimonials")
+                        icon.mr-1(name="save")
+                        |Save Testimonials
+                h2.mb-4(v-else)
                     span.mr-3
                         |{{ activePage.name }} page
                     div(:class="['dropdown d-inline-block', { show: showPagesDropdownInline }]" ref="pagesDropdownInline")
@@ -68,7 +80,7 @@ html
                 .alert.alert-info(v-if="!hasPageContent")
                     |This page has no editable content
 
-                .row.content-columns(v-else)
+                .row.content-columns(v-else-if="activePageId !== 'testimonials'")
                     .col-md-6.content-column(v-if="!isEmptyPageHTML")
                         h3.bg-info.text-white.p-3.mb-3
                             |Content
@@ -142,6 +154,26 @@ html
                                     button.btn.btn-sm.btn-danger(@click="confirmRemoveGalleryImage(galleryImage)")
                                         icon(name="trash")
                                     img.img-fluid(:src="galleryImage.thumb")
+
+                .row(v-if="activePageId === 'testimonials'")
+                    .col-md-6(v-for="(testimonial, index) in testimonials" :key="index")
+                        .card.shadow.mb-4
+                            .card-body
+                                .form-group
+                                    label(for="testimonialName")
+                                        |Name
+                                    input.form-control(ref="testimonialName" type="text" name="testimonialName" v-model="testimonial.name")
+                                .form-group
+                                    label(for="testimonialLocation")
+                                        |Location
+                                    input.form-control(type="text" name="testimonialLocation" v-model="testimonial.location")
+                                .form-group
+                                    label(for="testimonialQuote")
+                                        |Quote
+                                    textarea.form-control(name="testimonialQuote" v-model="testimonial.quote" rows="5")
+                                button.btn.btn-outline-danger(@click="deleteTestimonial(index)")
+                                    icon.mr-1(name="trash")
+                                    |Delete
 
             modal(v-if="galleryImageForRemove" header-class="bg-danger text-white" @close="galleryImageForRemove = null")
                 div(slot="title")

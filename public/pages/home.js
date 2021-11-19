@@ -1,5 +1,7 @@
+import icons from '../icons';
+
 const makeCarouselElement = function mapStringToCarouselElement(string, i) {
-    const el = document.createElement('span', );
+    const el = document.createElement('span',);
 
     el.innerText = string;
     el.classList.add('carousel-item');
@@ -46,4 +48,50 @@ export default function home() {
     });
 
     prepareNextWord();
+
+    const testimonials = Array.from(document.querySelectorAll('.testimonial'));
+    const testimonialsSection = document.querySelector('.home-testimonials');
+    let areInitialShown = false;
+
+
+    testimonials.forEach((testimonial) => {
+        testimonial.classList.add('out');
+    });
+
+    const showTestimonials = () => {
+        const itemsToShow = testimonials.splice(0, 3);
+        itemsToShow.forEach((testimonial) => {
+            testimonial.classList.add('entering');
+            testimonial.classList.remove('out');
+            setTimeout(() => {
+                testimonial.classList.add('in');
+                setTimeout(() => {
+                    testimonial.classList.remove('entering');
+                    testimonial.classList.remove('in');
+                }, 500);
+            }, 300);
+        });
+    };
+
+    const observer = new IntersectionObserver(([{ isIntersecting }]) => {
+        console.log(isIntersecting)
+        if (isIntersecting && !areInitialShown) {
+            showTestimonials();
+            observer.disconnect();
+        }
+    }, { threshold: 1 });
+    observer.observe(testimonialsSection);
+
+    if (testimonials.length > 3) {
+        const showMoreButton = document.createElement('button');
+        showMoreButton.innerHTML = `${icons.plus({ class: 'icon' })} load more testimonials`;
+        showMoreButton.classList.add('btn', 'mt-4');
+        testimonialsSection.appendChild(showMoreButton);
+        showMoreButton.addEventListener('click', () => {
+            showTestimonials();
+            if (testimonials.length === 0) {
+                testimonialsSection.removeChild(showMoreButton);
+            }
+        });
+    }
 }
