@@ -5,8 +5,6 @@ const htmlMinifier = require('html-minifier-terser');
 const feather = require('feather-icons');
 const path = require('path');
 
-const testimonials = JSON.parse(readFileSync(path.resolve(__dirname, './public/data/testimonials.json'), 'utf8'));
-
 const iconRegex = /<icon (?:class=\\?"([\w\s-]+)\\?" )?name=\\?"([\w-]+)\\?"(?: class=\\?"([\w\s-]+)\\?")? ?\/?>/g;
 const includeRegex = /<include file=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
 const galleryRegex = /<gallery name=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
@@ -95,7 +93,9 @@ const injectGalleries = (str, { escapeQuotes } = {}) => str.replace(galleryRegex
     return replacement;
 });
 
-const injectTestimonials = (str, { escapeQuotes } = {}) => str.replace(testimonialsRegex, () => {
+const injectTestimonials = (str, { escapeQuotes, mode = 'development' } = {}) => str.replace(testimonialsRegex, () => {
+    const testimonials = JSON.parse(readFileSync(path.resolve(publicRootByMode[mode], 'includes/content/testimonials.json'), 'utf8'));
+
     let testimonialsHTML = '<div class="testimonials">' +
         testimonials.map(({ name, location, quote }) => '<div class="testimonial">' +
             '<blockquote>' +
@@ -130,7 +130,7 @@ const injectIncludes = (str, { escapeQuotes, minify, mode = 'development' } = {}
     }
 
     return replacement;
-}), { escapeQuotes }), { escapeQuotes });
+}), { escapeQuotes, mode }), { escapeQuotes });
 
 class TemplateBuilderPlugin {
     constructor({ mode }) {
