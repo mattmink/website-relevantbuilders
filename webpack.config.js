@@ -1,5 +1,5 @@
 const path = require('path');
-const { lstatSync, readdirSync, readFileSync, copySync, remove, removeSync } = require('fs-extra');
+const { lstatSync, readdirSync, readFileSync, copySync, remove, removeSync, existsSync } = require('fs-extra');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -34,15 +34,17 @@ module.exports = (_, { mode = 'development', analyze }) => {
     const componentsRoot = path.join(publicRoot, '/components');
 
     if (!isDev) {
+        const uploadedImagesDir = path.resolve('./server/uploads/images');
+        const uploadedContentDir = path.resolve('./server/content');
+
         removeSync(publicRoot);
-        copySync(path.resolve('./public'), publicRoot, {
-            recursive: true,
-            filter(src) {
-                return !src.includes('galleries');
-            },
-        });
-        copySync(path.resolve('./server/uploads/images'), path.join(publicRoot, '/assets/images'), { recursive: true });
-        copySync(path.resolve('./server/content'), path.join(publicRoot, '/includes/content'), { recursive: true });
+        copySync(path.resolve('./public'), publicRoot, { recursive: true });
+        if (existsSync(uploadedImagesDir)) {
+            copySync(uploadedImagesDir, path.join(publicRoot, '/assets/images'), { recursive: true });
+        }
+        if (existsSync(uploadedContentDir)) {
+            copySync(uploadedContentDir, path.join(publicRoot, '/includes/content'), { recursive: true });
+        }
     }
 
     const pages = getDirectories(pagesRoot).map((dir) => dir.replace(`${pagesRoot}/`, ''));

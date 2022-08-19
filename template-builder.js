@@ -8,7 +8,7 @@ const path = require('path');
 const iconRegex = /<icon (?:class=\\?"([\w\s-]+)\\?" )?name=\\?"([\w-]+)\\?"(?: class=\\?"([\w\s-]+)\\?")? ?\/?>/g;
 const includeRegex = /<include file=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
 const galleryRegex = /<gallery name=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
-const testimonialsRegex = /<testimonials \/?>/g;
+const testimonialsRegex = /<testimonials ?\/?>/g;
 
 const publicRootByMode = {
     production: path.resolve(__dirname, './public-tmp'),

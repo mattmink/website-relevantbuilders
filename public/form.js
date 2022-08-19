@@ -79,11 +79,10 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
     }
 
     http.post('/message/send', formData)
-        .then((response) => {
-            if (!response.ok) throw new Error();
+        .then(() => {
             afterSuccess();
         })
-        .catch(() => {
+        .catch((e) => {
             error('Hmmm. That didn\'t work. Please try sending your message again.')
         })
         .finally(() => {
