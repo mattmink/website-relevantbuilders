@@ -24,7 +24,16 @@ const sendMessage = (req, res) => {
     // email is not used. It's a hidden honeypot field to catch most spam
     const { name, contactInfo, location, description, email  } = req.body;
     const { origin } = new URL(req.get('Referrer'));
-    const handleSuccess = () => (isAjaxRequest(req) ? res.sendStatus(200) : res.redirect(`${origin}/thank-you`));
+    const handleSuccess = () => {
+        if (isAjaxRequest(req)) {
+            return res.status(200).json({
+                body: req.responseObject,
+                success: true,
+                status: req.responseStatus || 200,
+            });
+        }
+        return res.redirect(`${origin}/thank-you`);
+    };
 
     // This is likely spam, since email is the hidden honepot field. Simply return a 200.
     if (!!email) {
@@ -39,7 +48,7 @@ const sendMessage = (req, res) => {
     const formattedPhone = !phone ? '' : cleanPhone.slice(-10).replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 
     const message = {
-        from: serverEmailAddress,
+        from: `${name} <${serverEmailAddress}>`,
         to: emailTo,
         replyTo,
         subject: 'RelevantBuilders.com Inquiry',

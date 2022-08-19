@@ -1,16 +1,24 @@
 /* White Space
    ========================================================================== */
-@each $direction-key in map-keys($directions) {
-    @each $spacer-key in map-keys($spacers) {
-        .m#{$direction-key}-#{$spacer-key} {
-            @each $direction in map-get($directions, $direction-key) {
-                margin-#{$direction}: map-get($spacers, $spacer-key) !important;
-            }
-        }
-        .p#{$direction-key}-#{$spacer-key} {
-            @each $direction in map-get($directions, $direction-key) {
-                padding-#{$direction}: map-get($spacers, $spacer-key) !important;
+@each $breakpoint-name in map-keys($breakpoints) {
+    $breakpoint-modifier: if(map-get($breakpoints, $breakpoint-name) != 0, '-#{$breakpoint-name}', '');
+
+    @include media-breakpoint-up($breakpoint-name) {
+        @each $direction-key in map-keys($directions) {
+            @each $spacer-key in map-keys($spacers) {
+                .m#{$direction-key}#{$breakpoint-modifier}-#{$spacer-key} {
+                    @each $direction in map-get($directions, $direction-key) {
+                        margin-#{$direction}: map-get($spacers, $spacer-key) !important;
+                    }
+                }
+                .p#{$direction-key}#{$breakpoint-modifier}-#{$spacer-key} {
+                    @each $direction in map-get($directions, $direction-key) {
+                        padding-#{$direction}: map-get($spacers, $spacer-key) !important;
+                    }
+                }
             }
         }
     }
 }
+
+

@@ -1,14 +1,114 @@
-.wrapper {
-    max-width: 800px;
-    margin: 0 auto;
+* {
+    box-sizing: border-box;
 }
 
-.logo {
-    fill: #fff;
-    width: 75%;
-    height: auto;
-    max-width: 400px;
-    margin-bottom: 1rem;
+html {
+    height: 100%;
+    font-size: 20px;
+
+    @include media-breakpoint-up(md) {
+        font-size: 22px;
+    }
+}
+
+body {
+    height: 100%;
+    background-color: $brand-1;
+    color: $brand-1-dark;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+blockquote {
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+.wrapper {
+    min-height: 100%;
+    background-image: linear-gradient(39deg, rgba($brand-1-light, 1) 54vh, rgba($brand-1-light, 0) 54vh, rgba($brand-1-light, 0) 100%),
+        linear-gradient(-39deg, rgba($brand-1-light, 1) 54vh, rgba($brand-1-light, 0) 54vh, rgba($brand-1-light, 0) 100%);
+    background-attachment: fixed;
+
+    @include media-breakpoint-up(md) {
+        background-image: linear-gradient(128deg, rgba($brand-1, 0) 110vw, $brand-1 calc(110vw + 1px), $brand-1 100%),
+            linear-gradient(218deg, $brand-1 67vw, $brand-1-light calc(67vw + 1px), $brand-1-light 100%);
+        background-attachment: scroll;
+    }
+
+    @include media-breakpoint-up(lg) {
+        background-image: linear-gradient(128deg, rgba($brand-1, 0) 64vw, $brand-1 calc(64vw + 1px), $brand-1 100%),
+            linear-gradient(218deg, $brand-1 42vw, $brand-1-light calc(42vw + 1px), $brand-1-light 100%);
+        // background-image:
+        //     linear-gradient(128deg,
+        //         rgba($brand-1, 0) 74vw,
+        //         $brand-1 calc(74vw + 1px),
+        //         $brand-1 100%),
+        //     linear-gradient(218deg,
+        //         $brand-1 52vw,
+        //         $brand-1-light calc(52vw + 1px),
+        //         $brand-1-light 100%);
+    }
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+    margin-top: 0;
+    margin-bottom: 0.4em;
+    font-weight: 200;
+    line-height: 1em;
+}
+h1,
+.h1 {
+    @include flex-font-size($h1-size);
+}
+
+h2,
+.h2 {
+    @include flex-font-size($h2-size);
+}
+
+h3,
+.h3 {
+    line-height: 1.2em;
+    @include flex-font-size($h3-size);
+}
+
+a {
+    color: $link-color;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        text-decoration: underline;
+    }
+    &:not(.btn):focus {
+        @include focus-outline;
+    }
+}
+
+p {
+    margin: 1em 0;
+}
+
+.container,
+.container-800 {
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.container-800 {
+    max-width: 800px;
 }
 
 .img-responsive {
@@ -19,6 +119,7 @@
 .icon {
     display: inline-block;
     vertical-align: middle;
+    stroke: currentColor;
 }
 
 .spinner {
@@ -28,11 +129,33 @@
     animation-timing-function: linear;
 }
 
+body:not(.page-home) .page-content {
+    background: #fff;
+}
+
+.page-content .dark-section {
+    color: #fff;
+
+    a:not(.btn) {
+        color: $link-color-light;
+    }
+}
+
+a.text-white {
+    text-decoration: underline;
+    transition: opacity linear 0.1s;
+
+    &:hover,
+    &:focus {
+        opacity: 0.75;
+    }
+}
+
 @keyframes spin {
     from {
-        transform:rotate(0deg);
+        transform: rotate(0deg);
     }
     to {
-        transform:rotate(360deg);
+        transform: rotate(360deg);
     }
 }

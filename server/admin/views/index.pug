@@ -1,0 +1,196 @@
+doctype html
+
+html
+
+    head
+        include ../templates/head
+        link(rel="stylesheet" href="/s/admin/css/home.css")
+
+    body
+        #app
+            nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+                button.mr-2.navbar-toggler.d-md-none(type="button" @click="showCollapseMenu = !showCollapseMenu")
+                    span.navbar-toggler-icon
+
+                a.mr-auto.navbar-brand.d-flex.align-items-center(href="/s/admin")
+                    include ../img/logo-no-tag.svg
+                    include ../img/logo-r.svg
+                    span.app-name
+                        span.d-none.d-md-inline-block.mr-2
+                            |Website
+                        |Admin
+
+                div.navbar-nav-wrapper.bg-dark.d-sm-flex.flex-fill.ml-md-3
+                    h5.d-sm-none.text-muted.font-weight-light
+                        |Menu
+                    ul.navbar-nav.mr-auto.flex-md-row
+                        li.nav-item
+                            a.nav-link(href=publicRoot target="_blank")
+                                icon(name="globe").mr-1
+                                |View Website
+                        li(v-if="pages.length > 1" :class="['nav-item dropdown', { show: showPagesDropdown }]" ref="pagesDropdown")
+                            a.nav-link.dropdown-toggle.no-toggle-icon(href="javascript:void(0)" @click="showPagesDropdown = !showPagesDropdown")
+                                icon(name="file").mr-1
+                                |Pages
+                                icon(name="chevron-down").ml-1
+                            div(:class="['dropdown-menu', { show: showPagesDropdown }]")
+                                a(v-for="page in pages"
+                                    :key="page.id"
+                                    :class="['dropdown-item', { active: activePageId ===  page.id}]"
+                                    href="javascript:void(0)"
+                                    @click.prevent="activePageId = page.id"
+                                )
+                                    |{{ page.name }}
+                        li.nav-item
+                            a.nav-link(href="javascript:void(0)" @click="goToTestimonials")
+                                icon(name="message-square").mr-1
+                                |Testimonials
+
+                button.btn.btn-primary.d-none.d-md-inline-block(@click="publish")
+                    |Publish
+                button.btn.btn-primary.btn-sm.d-md-none(@click="publish")
+                    |Publish
+
+            .container-fluid.pt-3
+                h2.mb-4(v-if="activePageId === 'testimonials'")
+                    |Testimonials
+                    button.btn.btn-sm.btn-primary.ml-2(@click="addTestimonial")
+                        icon.mr-1(name="message-square")
+                        |Add Testimonial
+                    button.btn.btn-sm.btn-success.ml-2(v-show="hasUnsavedTestimonials" @click="saveTestimonials")
+                        icon.mr-1(name="save")
+                        |Save Testimonials
+                h2.mb-4(v-else)
+                    span.mr-3
+                        |{{ activePage.name }} page
+                    div(:class="['dropdown d-inline-block', { show: showPagesDropdownInline }]" ref="pagesDropdownInline")
+                        button.btn.btn-sm.btn-secondary.dropdown-toggle(@click="showPagesDropdownInline = !showPagesDropdownInline")
+                            |switch page
+                        div(:class="['dropdown-menu', { show: showPagesDropdownInline }]")
+                            a.dropdown-item(v-for="page in notActivePages"
+                                :key="page.id"
+                                href="javascript:void(0)"
+                                @click.prevent="activePageId = page.id"
+                            )
+                                |{{ page.name }}
+                    button.btn.btn-sm.btn-success.ml-2(@click="save()" v-show="unsavedContent.length > 0")
+                        icon.mr-1(name="save")
+                        |save all changes
+
+                .alert.alert-info(v-if="!hasPageContent")
+                    |This page has no editable content
+
+                .row.content-columns(v-else-if="activePageId !== 'testimonials'")
+                    .col-md-6.content-column(v-if="!isEmptyPageHTML")
+                        h3.bg-info.text-white.p-3.mb-3
+                            |Content
+                        div(v-for="htmlId in activePage.html" :key="htmlId")
+                            h4
+                                |{{ contentHTML[htmlId].title }}
+                                button.ml-2.btn.btn-success.btn-sm(v-show="contentHTML[htmlId].html !== contentHTMLOld[htmlId].html"
+                                        @click="save(htmlId)")
+                                    icon.mr-1(name="save")
+                                    |Save
+                            editor(:id="`editor_${htmlId}`"
+                                    api-key="no-api-key"
+                                    :init="editorConfig"
+                                    v-model="contentHTML[htmlId].html"
+                                    :ref="`editor${htmlId}`")
+                            hr.m-5
+                    .col-md-6.content-column(v-if="!isEmptyPageImages")
+                        h3.bg-info.text-white.p-3.mb-3
+                            |Images
+                        div(v-for="pageImage in activePage.images" :key="pageImage.id" class="mb-5")
+                            h4
+                                |{{ imageRequirements[pageImage].title }}
+                            div(v-show="!imagePreviews[pageImage]")
+                                button.btn.btn-secondary(@click="imagePreviews[pageImage] = {}")
+                                    icon(name="edit").mr-1
+                                    |Edit
+                                .mt-2.row
+                                    .col-lg-6
+                                        img.img-fluid(
+                                            :srcset="`/s/admin/uploads/images/${pageImage}.jpg, /s/admin/uploads/images/${pageImage}@2x.jpg 2x`"
+                                            :src="`/s/admin/uploads/images/${pageImage}.jpg`"
+                                            :ref="pageImage"
+                                        )
+
+                            div(v-show="!!imagePreviews[pageImage]")
+                                button.btn.btn-primary(
+                                    v-show="imagePreviews[pageImage] && imagePreviews[pageImage].img"
+                                    @click="uploadCropped(pageImage)"
+                                )
+                                    icon(name="check-circle").mr-1
+                                    |Done
+                                button.btn.btn-outline-danger(@click="closeImageUpload(pageImage)")
+                                    icon(name="x-circle").mr-1
+                                    |Cancel
+                                .mt-2.row
+                                    .col-lg-6
+                                        file-upload(
+                                            v-show="!imagePreviews[pageImage] || !imagePreviews[pageImage].img"
+                                            name="file"
+                                            description="Drop a file here, or click 'Browse'"
+                                            @change="handleImageChange($event, pageImage)"
+                                        )
+                                        div(v-show="imagePreviews[pageImage] && imagePreviews[pageImage].img")
+                                            canvas(:ref="`${pageImage}-preview`").img-fluid
+                            hr.m-5
+                    .col-md-6.content-column(v-if="activePage.gallery")
+                        h3.bg-info.text-white.p-3.mb-3
+                            |Gallery
+                        file-upload.mb-3(
+                            name="file"
+                            description="Drop a file here, or click 'Browse'"
+                            @change="uploadGalleryImage($event, activePage.gallery)"
+                        )
+                        .row
+                            .col-lg-4.mb-3.gallery-item(v-for="galleryImage in galleryImagesById[activePage.gallery]" :key="galleryImage.thumb"
+                                            draggable="true"
+                                            @dragstart="handleGalleryDragstart($event, galleryImage)"
+                                            @dragend="handleGalleryDragend"
+                                            @dragover="handleGalleryDragover($event, galleryImage)")
+                                .gallery-thumb
+                                    button.btn.btn-sm.btn-danger(@click="confirmRemoveGalleryImage(galleryImage)")
+                                        icon(name="trash")
+                                    img.img-fluid(:src="galleryImage.thumb")
+
+                .row(v-if="activePageId === 'testimonials'")
+                    .col-md-6(v-for="(testimonial, index) in testimonials" :key="index")
+                        .card.shadow.mb-4
+                            .card-body
+                                .form-group
+                                    label(for="testimonialName")
+                                        |Name
+                                    input.form-control(ref="testimonialName" type="text" name="testimonialName" v-model="testimonial.name")
+                                .form-group
+                                    label(for="testimonialLocation")
+                                        |Location
+                                    input.form-control(type="text" name="testimonialLocation" v-model="testimonial.location")
+                                .form-group
+                                    label(for="testimonialQuote")
+                                        |Quote
+                                    textarea.form-control(name="testimonialQuote" v-model="testimonial.quote" rows="5")
+                                button.btn.btn-outline-danger(@click="deleteTestimonial(index)")
+                                    icon.mr-1(name="trash")
+                                    |Delete
+
+            modal(v-if="galleryImageForRemove" header-class="bg-danger text-white" @close="galleryImageForRemove = null")
+                div(slot="title")
+                    |Remove gallery image?
+                p
+                    |Are you sure you want to remove this gallery image?
+                img.img-fluid(:src="galleryImageForRemove.thumb")
+                div(slot="footer")
+                    button.btn.btn-outline-secondary.mr-2(type="button" @click="galleryImageForRemove = null")
+                        |Cancel
+                    button.btn.btn-danger(type="button" @click="removeGalleryImage(galleryImageForRemove)")
+                        |Yes, remove this image
+
+
+        //- Components
+        include ../components/icon/icon
+        include ../components/file-upload/file-upload
+        include ../components/modal/modal
+
+        script(src="/s/admin/js/main.js")

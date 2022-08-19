@@ -1,3 +1,29 @@
-.text-center {
-    text-align: center !important;
+/* Alignment
+   ========================================================================== */
+@each $breakpoint-name in map-keys($breakpoints) {
+    $breakpoint-modifier: if(map-get($breakpoints, $breakpoint-name) != 0, '-#{$breakpoint-name}', '');
+
+    @include media-breakpoint-up($breakpoint-name) {
+        .text#{$breakpoint-modifier}-left   { text-align: left !important; }
+        .text#{$breakpoint-modifier}-right  { text-align: right !important; }
+        .text#{$breakpoint-modifier}-center { text-align: center !important; }
+    }
 }
+
+/* Colors
+   ========================================================================== */
+.text-primary   { color: $brand-1 !important; }
+.text-secondary { color: $brand-2 !important; }
+.text-dark      { color: $brand-1-dark !important; }
+.text-white     { color: #fff !important; }
+.text-white-50  { color: rgba(#fff, .5) !important; }
+.text-dark-50   { color: rgba($brand-1-dark, .5) !important; }
+.text-success   { color: $success !important; }
+.text-warning   { color: $warning !important; }
+.text-danger    { color: $danger !important; }
+
+/* Styles
+   ========================================================================== */
+.text-bold { font-weight: 500 !important; }
+.text-medium { font-weight: 300 !important; }
+.text-light { font-weight: 200 !important; }

@@ -21,3 +21,44 @@
         @content;
     }
 }
+
+@mixin media-breakpoint-down($name) {
+    $max: map-get($breakpoints, $name);
+    @if $max != map-get($breakpoints, xxl) {
+        @media (max-width: $max - 1) {
+            @content;
+        }
+    } @else {
+        @content;
+    }
+}
+
+@mixin media-breakpoint-between($min: xs, $max: xxl) {
+    @include media-breakpoint-up($min) {
+        @include media-breakpoint-down($max) {
+            @content;
+        }
+    }
+}
+
+@mixin flex-font-size($font-size, $breakpoint: lg) {
+    $n: strip-unit($font-size);
+    font-size: $n * 3.5vw;
+    @include media-breakpoint-up($breakpoint) {
+        font-size: $font-size;
+    }
+}
+
+@mixin media2x() {
+    @media
+    only screen and (min-device-pixel-ratio: 2),
+    only screen and (min-resolution: 192dpi),
+    only screen and (min-resolution: 2dppx) {
+        @content;
+    }
+}
+
+@mixin focus-outline() {
+    outline: 2px dashed currentColor;
+    outline-offset: 2px;
+}

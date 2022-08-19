@@ -1,3 +1,10 @@
-@function focus-shadow($color, $transparency: .5) {
-    @return 0 0 0 .2rem #{rgba(desaturate($color, 7%), $transparency)};
+@function focus-shadow($color, $transparency: 0.5) {
+    @return 0 0 0 0.2rem #{rgba(desaturate($color, 7%), $transparency)};
+}
+
+@function strip-unit($number) {
+    @if type-of($number) == 'number' and not unitless($number) {
+        @return $number / ($number * 0 + 1);
+    }
+    @return $number;
 }

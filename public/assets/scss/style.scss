@@ -1,3 +1,4 @@
+// TODO: Check cross browser styles
 // Variables & Mixins
 @import 'variables';
 @import 'functions';
@@ -5,21 +6,31 @@
 
 // Reset & Global Elements
 @import '~normalize.css';
-@import 'elements';
 
 // Base Styles
 @import 'base';
 
 // Components
-@import 'forms';
-@import 'buttons';
-@import 'toast';
+@import 'components/forms';
+@import 'components/gallery';
+@import 'components/buttons';
+@import 'components/toast';
+@import 'components/nav';
+@import 'components/featured-section';
+@import 'components/footer';
 
 // Utilities
 @import 'utils/whitespace';
+@import 'utils/background';
+@import 'utils/display';
 @import 'utils/flex';
 @import 'utils/text';
 
 // Pages
 @import 'pages/home';
+@import 'pages/process';
+@import 'pages/construction';
+@import 'pages/additions';
+@import 'pages/contracting';
+@import 'pages/design';
 

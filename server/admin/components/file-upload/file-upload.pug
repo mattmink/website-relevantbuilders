@@ -1,0 +1,31 @@
+script(type="text/x-template" id="fileUploadTemplate")
+    div(:class="['file-dropbox text-center', { 'file-dropbox-compact': compact, disabled, active: isDropboxActive && !disabled }]")
+        slot(name="before-content")
+        input.file-input(
+                type="file"
+                :name="name"
+                :multiple="multiple"
+                :disabled="disabled"
+                :accept="accept"
+                @dragenter="isDropboxActive = true"
+                @dragleave="isDropboxActive = false"
+                @drop="isDropboxActive = false"
+                @change="handleFilesChange"
+                ref="input")
+        icon(name="upload" v-if="!compact").my-1.upload-icon
+        p(:class="{ 'text-lg w-100': !compact, 'd-inline ml-2 mr-4 mb-0': compact }")
+            icon(name="upload" v-if="compact").icon.upload-icon-inline.mr-2.text-lg
+            |{{ descriptionComputed }}
+        button(type="button"
+                :class="['my-1 browse-button btn btn-outline-primary', { 'btn-sm': compact }]"
+                :disabled="disabled"
+                @click="$refs.input.click()")
+            icon(name="folder").mr-1
+            |{{ buttonText }}
+        slot(name="after-content")
+
+style
+    include ./file-upload.css
+
+script
+    include ./file-upload.js

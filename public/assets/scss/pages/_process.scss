@@ -1,0 +1,74 @@
+.process-content {
+    background-image: url('images/process-bg.jpg');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+.process-section-1 .featured-section-image {
+    background-image: url('images/process-vision.jpg');
+}
+.process-section-2 .featured-section-image {
+    background-image: url('images/process-plan.jpg');
+}
+.process-section-3 .featured-section-image {
+    background-image: url('images/process-build.jpg');
+}
+.process-section-4 .featured-section-image {
+    background-image: url('images/process-follow-up.jpg');
+}
+
+.page-process {
+    .featured-section {
+        counter-increment: process-section-counter;
+    }
+    .featured-section-text {
+        position: relative;
+        padding-top: 15vh;
+
+        &::before {
+            content: counter(process-section-counter);
+            display: block;
+            font-weight: 500;
+            font-size: 12vh;
+            position: absolute;
+            opacity: 0.2;
+            top: 0;
+            left: 0;
+            line-height: 1;
+            border: 0.2em solid;
+            padding: 0.05em;
+            width: 0.75em;
+            text-align: center;
+        }
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .page-process .featured-section {
+        &.process-section-2,
+        &.process-section-4 {
+            display: flex;
+            flex-direction: column-reverse;
+        }
+    }
+}
+
+@include media-breakpoint-up(md) {
+    @include media2x {
+        .process-content {
+            background-image: url('images/process-bg@2x.jpg');
+        }
+        .process-section-1 .featured-section-image {
+            background-image: url('images/process-vision@2x.jpg');
+        }
+        .process-section-2 .featured-section-image {
+            background-image: url('images/process-plan@2x.jpg');
+        }
+        .process-section-3 .featured-section-image {
+            background-image: url('images/process-build@2x.jpg');
+        }
+        .process-section-4 .featured-section-image {
+            background-image: url('images/process-follow-up@2x.jpg');
+        }
+    }
+}

@@ -1,0 +1,16 @@
+html
+    head
+        include ../templates/head
+        link(rel="stylesheet", href="/s/admin/css/login.css")
+    body
+        .card
+            .card-header=title
+            .card-body
+                .text-center
+                    include ../img/logo.svg
+                h5.card-title
+                    |Sign in
+                p
+                    |Please sign in to access your website admin dashboard
+                a(href="/s/admin/auth")
+                    img(src="/s/admin/img/google-btn.png" srcset="/s/admin/img/google-btn.png, /s/admin/img/google-btn@2x.png 2x")

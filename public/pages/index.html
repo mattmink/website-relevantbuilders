@@ -1,16 +1,92 @@
-<div class="wrapper home-wrapper">
-    <h1 class="text-center">
+<section class="dark-section home-hero text-center">
+    <div class="home-hero-text">
+        <div>
+            <h1 aria-label="A custom home to fit your lifestyle">
+                <div class="h1-sm home-hero-text-row1">a custom</div>
+                <div class="home-hero-text-row2">home</div>
+                <div class="h1-sm home-hero-text-row3">
+                    to fit your <span class="adjective-carousel" data-adjectives="lifestyle,budget,family,dreams,future">lifestyle</span>
+                </div>
+            </h1>
+            <p>We call that functional family living, and we can make it a reality for you.</p>
+            <div class="d-none d-lg-flex align-items-center justify-content-center">
+                <a class="btn btn-small btn-secondary mr-lg-3 mb-3" href="/process">Learn about our process</a>
+                <a class="btn btn-small btn-secondary mb-3" href="/construction">See our work</a>
+            </div>
+        </div>
+    </div>
+    <div class="home-hero-image-wrapper">
+        <div class="home-hero-image"></div>
+    </div>
+    <div class="container d-none d-md-block d-lg-none mt-3">
+        <a class="btn btn-large btn-secondary mb-3 mr-3" href="/process">Learn about our process</a>
+        <a class="btn btn-large btn-secondary mb-3" href="/construction">See our work</a>
+    </div>
+    <div class="container d-md-none mt-4">
+        <a class="btn btn-secondary mb-3 mr-3" href="/process">Learn about our process</a>
+        <a class="btn btn-secondary mb-3" href="/construction">See our work</a>
+    </div>
+</section>
+
+<section class="featured-section d-block text-center bg-white pt-5 home-section-2">
+    <h2 class="h1" aria-label="a personal approach to home construction">
         <div class="h1-sm">a personal approach to</div>
         home construction
-    </h1>
-    <div class="home-image-wrapper">
-        <img class="img-responsive"
-                srcset="../assets/images/home-main.jpg,
-                        ../assets/images/home-main@2x.jpg 2x"
-                src="../assets/images/home-main.jpg"
-                alt="Home with a front porch, built by Relevant Builders">
+    </h2>
+    <div class="container-800 mb-4">
+        <include file="includes/content/home-main.html">
     </div>
-    <p class="my-5">Relevant Builders is a full-service home construction company that offers something few contractors can &ndash;
-        a personal touch every step of the way. From design to move-in day, we'll work hand-in-hand with with you
-        to build a custom home shaped around the needs of your family.</p>
-</div>
+    <div class="container d-md-flex pt-3">
+        <div class="flex-fill mb-3">
+            <a href="/construction" class="home-feature-thumb d-block">
+                <img class="img-responsive mb-2"
+                        srcset="../assets/images/home-feature-thumb-1.jpg,
+                                ../assets/images/home-feature-thumb-1@2x.jpg 2x"
+                        src="../assets/images/home-feature-thumb-1.jpg"
+                        alt="New home construction in progress">
+                <div>new homes<icon class="icon ml-1" name="chevron-right" /></div>
+            </a>
+        </div>
+        <div class="flex-fill mb-3">
+            <a href="/additions" class="home-feature-thumb d-block">
+                <img class="img-responsive mb-2"
+                        srcset="../assets/images/home-feature-thumb-2.jpg,
+                                ../assets/images/home-feature-thumb-2@2x.jpg 2x"
+                        src="../assets/images/home-feature-thumb-2.jpg"
+                        alt="Construction of a new addition in progress">
+                <div>additions<icon class="icon ml-1" name="chevron-right" /></div>
+            </a>
+        </div>
+        <div class="flex-fill mb-3">
+            <a href="/construction/contracting" class="home-feature-thumb d-block">
+                <img class="img-responsive mb-2"
+                        srcset="../assets/images/home-feature-thumb-3.jpg,
+                                ../assets/images/home-feature-thumb-3@2x.jpg 2x"
+                        src="../assets/images/home-feature-thumb-3.jpg"
+                        alt="Two people shaking hands">
+                <div>general contracting<icon class="icon ml-1" name="chevron-right" /></div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="featured-section home-section-3 bg-gray dark-section">
+    <div class="featured-section-image"></div>
+    <div class="featured-section-text">
+        <div>
+            <h2 class="h1" aria-label="custom floor plans">
+                <div class="h1-sm ml-5">custom</div>
+                floor plans
+            </h2>
+            <include file="includes/content/home-2.html" />
+            <p><a href="/construction/design" class="text-lg text-white">Custom design<icon class="icon ml-1" name="chevron-right" /></a></p>
+        </div>
+    </div>
+</section>
+
+<section class="home-testimonials py-5 bg-blue-dark text-center">
+    <div class="dark-section">
+        <h2>what our clients say</h2>
+    </div>
+    <testimonials />
+</section>

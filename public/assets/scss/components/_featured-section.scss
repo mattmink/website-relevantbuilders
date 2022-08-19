@@ -1,0 +1,38 @@
+.featured-section {
+    .featured-section-text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: map-get($spacers, 5) 1rem;
+    }
+
+    .featured-section-image {
+        min-height: 50vh;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-color: transparent;
+    }
+    @include media-breakpoint-up(md) {
+        min-height: 75vh;
+        display: flex;
+
+        .featured-section-text,
+        .featured-section-image {
+            width: 50%;
+        }
+
+        .featured-section-text {
+            padding-left: 6vh;
+            padding-right: 6vh;
+        }
+    }
+    @include media-breakpoint-up(lg) {
+        min-height: 100vh;
+
+        .featured-section-text {
+            padding-left: 10vh;
+            padding-right: 10vh;
+        }
+    }
+}
