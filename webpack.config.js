@@ -179,6 +179,9 @@ module.exports = (_, { mode = 'development', analyze }) => {
         stats: 'errors-warnings',
         devServer: {
             contentBase: './dist',
+            proxy: {
+                '/.netlify/functions': 'http://localhost:9999',
+            },
         },
     };
     if (isDev) {

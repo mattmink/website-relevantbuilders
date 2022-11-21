@@ -123,7 +123,7 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
         return;
     }
 
-    http.post('/message/send', formData)
+    http.post('/mailer', formData)
         .then(() => {
             afterSuccess();
         })

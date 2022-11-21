@@ -16,9 +16,6 @@ const imageRegex = /[-_@\.\/\~\\\w\d]+\.(?:jpe?g|png|gif)/g;
 const imageSrcMap = {};
 const registerImage = (name, source) => {
     const [mappedName] = source.match(imageRegex) || [];
-    if (name.includes('ds')) {
-        console.log(name, source, mappedName);
-    }
     imageSrcMap[name] = `/${mappedName}`;
 };
 const THUMB = 'thumb';

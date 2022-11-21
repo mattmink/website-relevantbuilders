@@ -74,7 +74,6 @@ export default function home() {
     };
 
     const observer = new IntersectionObserver(([{ isIntersecting }]) => {
-        console.log(isIntersecting)
         if (isIntersecting && !areInitialShown) {
             showTestimonials();
             observer.disconnect();

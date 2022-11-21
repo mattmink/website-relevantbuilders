@@ -1,3 +1,1 @@
-export default function contracting() {
-    console.log('this is contracting');
-}
+export default function contracting() {}

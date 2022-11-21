@@ -1,4 +1,4 @@
-const baseUrl = '/s/api';
+const baseUrl = '/.netlify/functions';
 const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
