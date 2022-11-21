@@ -1,4 +1,4 @@
-const { readFileSync, readJSONSync, existsSync } = require('fs-extra');
+const { readFileSync } = require('fs-extra');
 const glob = require('glob');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const htmlMinifier = require('html-minifier-terser');
@@ -10,10 +10,7 @@ const includeRegex = /<include file=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
 const galleryRegex = /<gallery name=\\?"([\w-\/\.]+)\\?" ?\/?>/g;
 const testimonialsRegex = /<testimonials ?\/?>/g;
 
-const publicRootByMode = {
-    production: path.resolve(__dirname, './public-tmp'),
-    development: path.resolve(__dirname, './public'),
-};
+const publicRoot =  path.resolve(__dirname, './src');
 const templateMap = {};
 const imageRegex = /[-_@\.\/\~\\\w\d]+\.(?:jpe?g|png|gif)/g;
 const imageSrcMap = {};
@@ -26,18 +23,8 @@ const registerImage = (name, source) => {
 };
 const THUMB = 'thumb';
 const FULL = 'full';
-const galleryManifests = {};
 let updated = [];
 let galleries = {};
-
-const getGalleryManifest = (galleryName) => {
-    if (galleryManifests[galleryName] === undefined) {
-        const manifestPath = path.resolve(__dirname, `./server/uploads/images/galleries/${galleryName}/manifest.json`);
-        if (!existsSync(manifestPath)) galleryManifests[galleryName] = null;
-        else galleryManifests[galleryName] = readJSONSync(manifestPath);
-    }
-    return galleryManifests[galleryName];
-}
 
 const convertIcons = (str, { escapeQuotes } = {}) => str.replace(iconRegex, (_, _styleClass, name, styleClass = _styleClass) => {
     const replacement = feather.icons[name].toSvg({ class: styleClass });
@@ -67,18 +54,6 @@ const injectGalleries = (str, { escapeQuotes } = {}) => str.replace(galleryRegex
 
     if (galleryImageKeys.length === 0) return '';
 
-    const galleryManifest = getGalleryManifest(galleryName);
-
-    if (galleryManifest) {
-        galleryImageKeys.sort((a, b) => {
-            const aIndex = galleryManifest.indexOf(a);
-            const bIndex = galleryManifest.indexOf(b);
-            if (aIndex < bIndex) return -1;
-            if (aIndex > bIndex) return 1;
-            return 0;
-        });
-    }
-
     const mappedImages = galleryImageKeys
         .map(key => galleryImages[key])
         .reduce((galleryHtml, img) => `${galleryHtml}${makeGalleryItem(img)}`, '');
@@ -94,7 +69,7 @@ const injectGalleries = (str, { escapeQuotes } = {}) => str.replace(galleryRegex
 });
 
 const injectTestimonials = (str, { escapeQuotes, mode = 'development' } = {}) => str.replace(testimonialsRegex, () => {
-    const testimonials = JSON.parse(readFileSync(path.resolve(publicRootByMode[mode], 'includes/content/testimonials.json'), 'utf8'));
+    const testimonials = JSON.parse(readFileSync(path.resolve(publicRoot, 'includes/content/testimonials.json'), 'utf8'));
 
     let testimonialsHTML = '<div class="testimonials">' +
         testimonials.map(({ name, location, quote }) => '<div class="testimonial">' +
@@ -115,7 +90,7 @@ const injectTestimonials = (str, { escapeQuotes, mode = 'development' } = {}) =>
 });
 
 const injectIncludes = (str, { escapeQuotes, minify, mode = 'development' } = {}) => injectGalleries(injectTestimonials(str.replace(includeRegex, (_, file) => {
-    let replacement = readFileSync(path.resolve(publicRootByMode[mode], file), 'utf8');
+    let replacement = readFileSync(path.resolve(publicRoot, file), 'utf8');
 
     if (includeRegex.test(replacement)) {
         replacement = injectIncludes(replacement);
@@ -140,7 +115,7 @@ class TemplateBuilderPlugin {
     apply(compiler) {
         const isDev = this.mode === 'development';
         // TODO: Find a way to refresh on change for includes from other directories
-        const pagesPath = path.join(publicRootByMode[this.mode], '/pages');
+        const pagesPath = path.join(publicRoot, '/pages');
 
         const getTemplateName = (filePath) => {
             if (filePath.slice(-5) !== '.html' || filePath.indexOf(pagesPath) !== 0) return null;
@@ -183,7 +158,7 @@ module.exports = function (source, map) {
     const callback = this.async();
     Promise.all([
         new Promise((resolve) => {
-            const galleriesRoot = path.join(publicRootByMode[this.mode], 'assets/images/galleries/');
+            const galleriesRoot = path.join(publicRoot, 'assets/images/galleries/');
             const galleryMatches = [...source.matchAll(galleryRegex)];
             let resolved = 0;
 

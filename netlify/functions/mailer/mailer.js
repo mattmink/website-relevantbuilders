@@ -1,44 +1,37 @@
+require('dotenv').config();
+
 const nodemailer = require("nodemailer");
 
 const {
-    host,
-    port,
-    serverEmailAddress,
-    serverEmailPassword,
-    emailTo
-} = require("../config").mailer;
+    MAILER_HOST,
+    MAILER_PORT,
+    MAILER_SERVER_EMAIL,
+    MAILER_SERVER_PASSWORD,
+    MAILER_EMAIL_TO,
+} = process.env;
 
 const transporter = nodemailer.createTransport({
-    host,
-    port,
+    host: MAILER_HOST,
+    port: MAILER_PORT,
     auth: {
-        user: serverEmailAddress,
-        pass: serverEmailPassword,
+        user: MAILER_SERVER_EMAIL,
+        pass: MAILER_SERVER_PASSWORD,
     },
 });
-const isAjaxRequest = req => req.xhr || req.headers.accept.indexOf('json') > -1;
 const emailRegex = /(?!.*\.{2})^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
 const usPhoneRegex = /^(?:\+(?=1)){0,1}(1[ -]|1){0,1}(?:\((?=\d{3}\))[2-9](?!11)\d{2}\)|[2-9](?!11)\d{2})[ -]{0,1}[2-9](?!11)\d{2}[ -]{0,1}\d{4}$/;
 
-const sendMessage = (req, res) => {
+const sendMessage = async (event) => {
     // email is not used. It's a hidden honeypot field to catch most spam
-    const { name, contactInfo, location, description, email  } = req.body;
-    const { origin } = new URL(req.get('Referrer'));
-    const handleSuccess = () => {
-        if (isAjaxRequest(req)) {
-            return res.status(200).json({
-                body: req.responseObject,
-                success: true,
-                status: req.responseStatus || 200,
-            });
-        }
-        return res.redirect(`${origin}/thank-you`);
-    };
+    const { name, contactInfo, location, description, email  } = JSON.parse(event.body);
+    const getSuccessResponse = () => ({
+        body: JSON.stringify({ name, contactInfo, location, description }),
+        statusCode: 200,
+    });
 
     // This is likely spam, since email is the hidden honepot field. Simply return a 200.
     if (!!email) {
-        handleSuccess();
-        return;
+        return getSuccessResponse();
     }
 
     const contactInfoParts = contactInfo.split(/([,\/:]|(?<!\(\d{3}\)) )/).map(part => part.trim());
@@ -48,8 +41,8 @@ const sendMessage = (req, res) => {
     const formattedPhone = !phone ? '' : cleanPhone.slice(-10).replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 
     const message = {
-        from: `${name} <${serverEmailAddress}>`,
-        to: emailTo,
+        from: `${name} <${MAILER_SERVER_EMAIL}>`,
+        to: MAILER_EMAIL_TO,
         replyTo,
         subject: 'RelevantBuilders.com Inquiry',
         html: `<html>
@@ -150,14 +143,15 @@ const sendMessage = (req, res) => {
         </html>`,
     };
 
-    transporter
-        .sendMail(message)
-        .then(() => handleSuccess())
-        .catch((error = {}) => {
-            const { response = 'An unknown error occurred while sending your message', responseCode = 500 } = error;
-            res.status(responseCode).send(response);
-            console.error(error);
-        });
+    try {
+        await transporter.sendMail(message);
+        return getSuccessResponse();
+    } catch (error) {
+        return {
+            body: 'An unknown error occurred while sending your message',
+            statusCode: 500
+        };
+    }
 };
 
-module.exports = { sendMessage };
+module.exports = { handler: sendMessage };

@@ -14,7 +14,7 @@ const {
     defaultDescription,
     baseTitle,
     pages: seoPages
-} = JSON.parse(readFileSync(path.resolve(__dirname, './public/data/seo.json'), 'utf8'));
+} = JSON.parse(readFileSync(path.resolve(__dirname, './src/data/seo.json'), 'utf8'));
 
 const getBodyClassFromPath = (pathStr = '/') => `page-${pathStr === '/' ? 'home' : pathStr.slice(1).split('/').join('-')}`;
 const isDirectory = (source) => lstatSync(source).isDirectory();
@@ -29,23 +29,9 @@ const getDirectories = (source) => readdirSync(source)
 
 module.exports = (_, { mode = 'development', analyze }) => {
     const isDev = mode === 'development';
-    const publicRoot = path.resolve(__dirname, `./public${isDev ? '' : '-tmp'}`);
+    const publicRoot = path.resolve(__dirname, './src');
     const pagesRoot = path.join(publicRoot, '/pages');
     const componentsRoot = path.join(publicRoot, '/components');
-
-    if (!isDev) {
-        const uploadedImagesDir = path.resolve('./server/uploads/images');
-        const uploadedContentDir = path.resolve('./server/content');
-
-        removeSync(publicRoot);
-        copySync(path.resolve('./public'), publicRoot, { recursive: true });
-        if (existsSync(uploadedImagesDir)) {
-            copySync(uploadedImagesDir, path.join(publicRoot, '/assets/images'), { recursive: true });
-        }
-        if (existsSync(uploadedContentDir)) {
-            copySync(uploadedContentDir, path.join(publicRoot, '/includes/content'), { recursive: true });
-        }
-    }
 
     const pages = getDirectories(pagesRoot).map((dir) => dir.replace(`${pagesRoot}/`, ''));
     const templateConfig = {
@@ -56,10 +42,10 @@ module.exports = (_, { mode = 'development', analyze }) => {
 
     const config = {
         entry: {
-            common: `./public${isDev ? '' : '-tmp'}/common.js`,
-            home: `./public${isDev ? '' : '-tmp'}/pages/index.js`,
+            common: `./src/common.js`,
+            home: `./src/pages/index.js`,
             ...pages.reduce((pageEntries, page) => {
-                pageEntries[page] = `./public${isDev ? '' : '-tmp'}/pages/${page}`;
+                pageEntries[page] = `./src/pages/${page}`;
                 return pageEntries;
             }, {})
         },
@@ -99,7 +85,7 @@ module.exports = (_, { mode = 'development', analyze }) => {
                     ]
                 },
                 {
-                    test: /public\/assets\/.*\.svg(\?.*)?$/,
+                    test: /src\/assets\/.*\.svg(\?.*)?$/,
                     oneOf: [
                         {
                             resourceQuery: /fill=/,
@@ -193,28 +179,16 @@ module.exports = (_, { mode = 'development', analyze }) => {
         stats: 'errors-warnings',
         devServer: {
             contentBase: './dist',
-            proxy: {
-                '/s/api': 'http://localhost:3000',
-            },
         },
     };
     if (isDev) {
         config.plugins.push(
             new WatchFilesPlugin({
-                files: ['./public/**/*.html'],
+                files: ['./src/**/*.html'],
             })
         );
         config.devtool = 'cheap-eval-source-map';
     } else {
-        config.plugins.push(
-            {
-                apply: (compiler) => {
-                    compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => {
-                        remove(publicRoot);
-                    });
-                }
-            }
-        )
         config.optimization = {
             minimize: true,
             minimizer: [
