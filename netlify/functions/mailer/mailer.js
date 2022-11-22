@@ -22,6 +22,8 @@ const emailRegex = /(?!.*\.{2})^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-
 const usPhoneRegex = /^(?:\+(?=1)){0,1}(1[ -]|1){0,1}(?:\((?=\d{3}\))[2-9](?!11)\d{2}\)|[2-9](?!11)\d{2})[ -]{0,1}[2-9](?!11)\d{2}[ -]{0,1}\d{4}$/;
 
 const sendMessage = async (event) => {
+    console.log('START MAILER');
+    console.log(event);
     // email is not used. It's a hidden honeypot field to catch most spam
     const { name, contactInfo, location, description, email  } = JSON.parse(event.body);
     const getSuccessResponse = () => ({
@@ -31,6 +33,7 @@ const sendMessage = async (event) => {
 
     // This is likely spam, since email is the hidden honepot field. Simply return a 200.
     if (!!email) {
+        console.log('SPAM');
         return getSuccessResponse();
     }
 
@@ -144,6 +147,7 @@ const sendMessage = async (event) => {
     };
 
     try {
+        console.log('ATTEMPTING TO SEND MAIL');
         await transporter.sendMail(message);
         console.log('SUCCESS');
         return getSuccessResponse();
