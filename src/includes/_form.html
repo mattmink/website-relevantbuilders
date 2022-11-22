@@ -1,4 +1,4 @@
-<form id="footerForm" action="/api/message/send" method="post">
+<form id="footerForm" name="contact" netlify netlify-honeypot="honeypot">
     <div class="form-group">
         <label for="footerFormName" class="control-label">What's your name?</label>
         <input class="form-control"
@@ -13,7 +13,7 @@
         <label for="footerFormEmail" class="control-label">What is your email?</label>
         <input class="form-control"
                 type="email"
-                name="email"
+                name="honeypot"
                 id="footerFormEmail"
                 placeholder="example@example.com">
     </div>
@@ -41,5 +41,8 @@
                 name="description"
                 id="footerFormDescription"></textarea>
     </div>
+    
+    <input type="hidden" name="form-name" value="contact">
+
     <button class="btn" type="submit">Submit</button>
 </form>

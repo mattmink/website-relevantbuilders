@@ -1,10 +1,7 @@
-const baseUrl = '/.netlify/functions';
-const headers = {
+const defaultHeaders = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
 };
-
-const buildUrl = url => `${url.slice(0, 4) === 'http' ? '' : baseUrl}${url}`
 
 const jsonResponse = (response) => {
     if (!response.ok) throw new Error(response.statusText);
@@ -12,18 +9,24 @@ const jsonResponse = (response) => {
 };
 
 export const get = (url, { headers }) => fetch(
-    buildUrl(url),
+    url,
     {
         method: 'GET',
-        headers,
+        headers: {
+            ...defaultHeaders,
+            ...headers,
+        },
     }
 ).then(jsonResponse);
 
-export const post = (url, body) => fetch(
-    buildUrl(url),
+export const post = (url, body, { headers }) => fetch(
+    url,
     {
         method: 'POST',
-        headers,
+        headers: {
+            ...defaultHeaders,
+            ...headers,
+        },
         body: JSON.stringify(body),
     }
 ).then(jsonResponse);

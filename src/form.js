@@ -4,6 +4,9 @@ import http from './http';
 
 const loadedTime = Date.now();
 const footerForm = document.querySelector('#footerForm');
+const emailRegex = /(?!.*\.{2})^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+const usPhoneRegex = /^(?:\+(?=1)){0,1}(1[ -]|1){0,1}(?:\((?=\d{3}\))[2-9](?!11)\d{2}\)|[2-9](?!11)\d{2})[ -]{0,1}[2-9](?!11)\d{2}[ -]{0,1}\d{4}$/;
+
 let antiSpamField;
 let antiSpamAnswer;
 
@@ -60,11 +63,20 @@ const addAntiSpamField = function addAntiSpamField() {
     antiSpamField = container.querySelector('#footerFormSpamCheck');
 };
 
+const encode = function encodeFormData(data) {
+    return Object.keys(data)
+        .map(
+            (key) =>
+                encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
+        )
+        .join("&");
+};
+
 let isSubmitting = false;
 const handleFormSubmit = function handleContactFormSubmitEvent(e) {
     const submitTime = Date.now();
     e.preventDefault();
-    
+
     if (submitTime - loadedTime <= 3000 && !antiSpamField) {
         addAntiSpamField();
         antiSpamField.scrollIntoView({ behavior: "smooth" });
@@ -92,18 +104,27 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
     $submit.appendChild($loading);
     $submit.disabled = true;
 
-    // email is a honeypot field to catch most spam
     const formData = {
+        'form-name': '',
         name: '',
-        email: '',
         contactInfo: '',
         location: '',
         description: '',
+        honeypot: '',
     };
 
     Object.keys(formData).forEach((dataKey) => {
-        formData[dataKey] = e.target.querySelector(`[name="${dataKey}"]`).value;
+        formData[dataKey] = e.target.querySelector(`[name="${dataKey}"]`).value || '';
     });
+
+    const contactInfoParts = formData.contactInfo.split(/([,\/:]|(?<!\(\d{3}\)) )/).map(part => part.trim());
+    const email = contactInfoParts.find(part => emailRegex.test(part));
+    const phone = contactInfoParts.find(part => usPhoneRegex.test(part));
+    const cleanPhone = !phone ? '' : phone.replace(/[^\d]/g, '');
+    const formattedPhone = !phone ? '' : cleanPhone.slice(-10).replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+
+    formData.email = email;
+    formData.phone = formattedPhone;
 
     const afterSuccess = () => {
         success('Thank you for your message. We look forward to speaking with you soon.', { autoClose: false });
@@ -117,13 +138,13 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
     };
 
     // email is a honeypot field to catch most spam
-    if (formData.email !== '') {
+    if (formData.honeypot !== '') {
         afterSuccess();
         afterSubmit();
         return;
     }
 
-    http.post('/mailer', formData)
+    http.post('/', encode(formData), { "Content-Type": "application/x-www-form-urlencoded" })
         .then(() => {
             afterSuccess();
         })
