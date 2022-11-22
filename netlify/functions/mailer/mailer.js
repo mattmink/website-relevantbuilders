@@ -145,8 +145,11 @@ const sendMessage = async (event) => {
 
     try {
         await transporter.sendMail(message);
+        console.log('SUCCESS');
         return getSuccessResponse();
     } catch (error) {
+        console.log('ERROR');
+        console.log(error);
         return {
             body: 'An unknown error occurred while sending your message',
             statusCode: 500
