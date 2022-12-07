@@ -144,7 +144,7 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
         return;
     }
 
-    http.post('/', encode(formData), { "Content-Type": "application/x-www-form-urlencoded" })
+    http.post('/', new URLSearchParams(Object.entries(formData)).toString(), { "Content-Type": "application/x-www-form-urlencoded" })
         .then(() => {
             afterSuccess();
         })
