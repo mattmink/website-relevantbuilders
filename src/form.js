@@ -1,6 +1,5 @@
 import { error, success } from "./toast";
 import icons from './icons';
-import http from './http';
 
 const loadedTime = Date.now();
 const footerForm = document.querySelector('#footerForm');
@@ -61,15 +60,6 @@ const addAntiSpamField = function addAntiSpamField() {
 
     footerForm.insertBefore(container, submitButton);
     antiSpamField = container.querySelector('#footerFormSpamCheck');
-};
-
-const encode = function encodeFormData(data) {
-    return Object.keys(data)
-        .map(
-            (key) =>
-                encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
-        )
-        .join("&");
 };
 
 let isSubmitting = false;
@@ -144,8 +134,13 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
         return;
     }
 
-    http.post('/', new URLSearchParams(Object.entries(formData)).toString(), { "Content-Type": "application/x-www-form-urlencoded" })
-        .then(() => {
+    fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(Object.entries(formData)).toString()
+    })
+        .then(({ status, statusText }) => {
+            if (status >= 400) throw new Error(statusText);
             afterSuccess();
         })
         .catch((e) => {
