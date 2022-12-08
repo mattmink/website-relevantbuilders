@@ -107,7 +107,22 @@ const handleFormSubmit = function handleContactFormSubmitEvent(e) {
         formData[dataKey] = e.target.querySelector(`[name="${dataKey}"]`).value || '';
     });
 
-    const contactInfoParts = formData.contactInfo.split(/([,\/:]|(?<!\(\d{3}\)) )/).map(part => part.trim());
+    const contactInfoParts = formData.contactInfo.split(/[,\/: ]/).reduce((parts, part, i, original) => {
+        const trimmed = part.trim();
+        if (trimmed === '') return parts;
+
+        // Check to see if we split up a phone number after the area code. If so, piece it back together.
+        // Note: a negative lookbehind RegEx would solve this, but that's not fully supported yet...
+        const previousIndex = parts.length - 1;
+        const previous = parts[previousIndex] || '';
+        const isSplitPhoneNumber = previous && previous.search(/^\(\d{3}\)$/) === 0;
+        if(isSplitPhoneNumber) {
+            parts[previousIndex] = `${previous} ${trimmed}`;
+        } else {
+            parts.push(trimmed);
+        }
+        return parts;
+    }, []);
     const email = contactInfoParts.find(part => emailRegex.test(part));
     const phone = contactInfoParts.find(part => usPhoneRegex.test(part));
     const cleanPhone = !phone ? '' : phone.replace(/[^\d]/g, '');
